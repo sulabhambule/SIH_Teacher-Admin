@@ -1,0 +1,206 @@
+.fs-container {
+    position: relative;
+    width: 768px;
+    max-width: 100%;
+    min-height: 480px;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
+.fs-sign-up, .fs-sign-in {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    transition: all 0.6s ease-in-out;
+}
+
+.fs-sign-up {
+    width: 50%;
+    opacity: 0;
+    z-index: 1;
+}
+
+.fs-sign-in {
+    width: 50%;
+    z-index: 2;
+}
+
+.fs-container form {
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 50px;
+    height: 100%;
+    text-align: center;
+}
+
+.fs-container h1 {
+    margin-bottom: 1rem;
+    color: #1e3a8a; /* Update 1 */
+}
+
+.fs-input {
+    background-color: #f0f9ff;
+    border: 1px solid #bfdbfe;
+    padding: 12px 15px;
+    margin: 8px 0;
+    width: 100%;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s ease;
+    color: #1e3a8a; /* Update 1 */
+}
+
+.fs-input::placeholder { /* Update 1 */
+    color: #64748b;
+}
+
+.fs-input:focus {
+    border-color: #3b82f6;
+}
+
+.fs-button {
+    color: #fff;
+    background: #2563eb;
+    font-size: 14px;
+    font-weight: 600; /* Update 3 */
+    padding: 12px 45px;
+    margin: 20px 0;
+    border-radius: 20px;
+    border: 1px solid #1d4ed8;
+    outline: none;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.3s ease; /* Update 3 */
+    cursor: pointer;
+    color: #ffffff; /* Update 3 */
+}
+
+.fs-button:hover {
+    background-color: #1d4ed8;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Update 3 */
+}
+
+.fs-button:active {
+    transform: scale(0.95);
+}
+
+.fs-container #fs-signIn, .fs-container #fs-signUp {
+    background-color: transparent;
+    border: 2px solid #fff;
+}
+
+.fs-container.right-panel-active .fs-sign-in {
+    transform: translateX(100%);
+}
+
+.fs-container.right-panel-active .fs-sign-up {
+    transform: translateX(100%);
+    opacity: 1;
+    z-index: 5;
+}
+
+.fs-overlay-container {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    transition: transform 0.6s ease-in-out;
+    z-index: 100;
+}
+
+.fs-container.right-panel-active .fs-overlay-container {
+    transform: translateX(-100%);
+}
+
+.fs-overlay {
+    position: relative;
+    color: #fff;
+    left: -100%;
+    height: 100%;
+    width: 200%;
+    background: linear-gradient(to right, #1e40af, #2563eb); /* Update 2 */
+    transform: translateX(0);
+    transition: transform 0.6s ease-in-out;
+}
+
+.fs-overlay h1 { /* Update 2 */
+    color: #ffffff;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.fs-overlay p { /* Update 2 */
+    color: #e0f2fe;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.fs-container.right-panel-active .fs-overlay {
+    transform: translateX(50%);
+}
+
+.fs-overlay-left, .fs-overlay-right {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 40px;
+    text-align: center;
+    top: 0;
+    height: 100%;
+    width: 50%;
+    transform: translateX(0);
+    transition: transform 0.6s ease-in-out;
+}
+
+.fs-overlay-left {
+    transform: translateX(-20%);
+}
+
+.fs-overlay-right {
+    right: 0;
+    transform: translateX(0);
+}
+
+.fs-container.right-panel-active .fs-overlay-left {
+    transform: translateX(0);
+}
+
+.fs-container.right-panel-active .fs-overlay-right {
+    transform: translateX(20%);
+}
+
+.fs-overlay-button {
+    background-color: transparent;
+    border: 2px solid #ffffff; /* Update 3 */
+    color: #ffffff; /* Update 3 */
+    font-size: 14px;
+    font-weight: 600; /* Update 3 */
+    padding: 12px 45px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.3s ease; /* Update 3 */
+    cursor: pointer;
+}
+
+.fs-overlay-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Update 3 */
+}
+
+.fs-overlay-button:active {
+    transform: scale(0.95);
+}
+
+.fs-icon {
+    margin-bottom: 20px;
+}
