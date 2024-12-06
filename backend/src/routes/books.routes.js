@@ -7,7 +7,7 @@ import { addBook, getAllBooks } from "../controllers/book.controllers.js";
 const router = Router();
 
 router.post("/book/add", verifyTeacherJWT, addBook);
-router.get("/book/", verifyTeacherJWT, getAllBooks);
+router.get("/book", verifyTeacherJWT, getAllBooks);
 
 
 export default router;

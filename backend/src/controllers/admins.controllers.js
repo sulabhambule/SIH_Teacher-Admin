@@ -1287,7 +1287,6 @@ const getSubmitters = asyncHandler(async (req, res) => {
 });
 
 const loginAdmin = asyncHandler(async (req, res) => {
-  console.log("request : ", req);
   console.log("request's body : ", req.body);
   const { email, password } = req.body;
 

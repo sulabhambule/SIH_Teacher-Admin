@@ -1,7 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-// import { DomainPoint } from "./domainpoints.models";
 import { Point } from "./points.models.js";
-// import { domainPoints } from "../utils/domainPoints.js";
 import { DomainPoint } from "./domainpoints.models.js";
 
 const contributionsSchema = new Schema(
@@ -29,7 +27,7 @@ const contributionsSchema = new Schema(
       required: true,
       enum: [
         "Industrial Visit",
-        "Wookshop Conducted",
+        "Workshop Conducted",
         "Extra Course Studied",
         "Made Study Materials",
         "Miscellaneous",
@@ -47,12 +45,12 @@ const contributionsSchema = new Schema(
 const mapContributionTypeToDomain = (type) => {
   const mapping = {
     "Industrial Visit": "Industrial-Visit-Other",
-    "Workshop Conducted": "Wookshop-Conducted-Other",
+    "Workshop Conducted": "Workshop-Conducted-Other",
     "Extra Course Studied": "Extra-Course-Studied-Other",
     "Made Study Materials": "Made-Study-Materials-Other",
-    Miscellaneous: "Task-Points-Other",
+    "Miscellaneous": "Miscellaneous",
   };
-  return mapping[type] || "Task-Points-Other";
+  return mapping[type] || "Miscellaneous";
 };
 
 // Pre-save hook to allocate points

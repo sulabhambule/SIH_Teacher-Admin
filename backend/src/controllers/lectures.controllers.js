@@ -230,9 +230,6 @@ const markLectureAttendance = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Student IDs are required");
   }
 
-  console.log({studentIds})
-
-  // (Optional) Verify if the students belong to the correct branch and year (based on your backend logic).
   const validStudents = await Student.find({
     _id: { $in: studentIds },
     branch,
@@ -266,7 +263,7 @@ const markLectureAttendance = asyncHandler(async (req, res) => {
 
   const attendance = await Attendance.create({
     subject_name,
-    subject_code, // new 
+    subject_code,
     subject_credit,
     teacher,
     branch,
@@ -291,6 +288,28 @@ const markLectureAttendance = asyncHandler(async (req, res) => {
     );
 });
 
+const viewAttendanceOfALecture = asyncHandler(async (req, res) => {
+  const { lectureId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(lectureId)) {
+    throw new ApiError(404, "Invalid Lecture ID");
+  }
+
+  const attendance = await Attendance.findOne({ lecture: lectureId })
+    .populate({
+      path: "studentsPresent",
+      select: "name rollNumber email", // Specify the fields you want from the Student model
+    })
+
+  if (!attendance) {
+    throw new ApiError(404, "Attendance not found for this lecture");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, attendance, "Attendance found successfully"));
+});
+
 export {
   addNewLecture,
   editLecture,
@@ -299,4 +318,5 @@ export {
   fetchAllStudents,
   markLectureAttendance,
   getStudentsByBranch,
+  viewAttendanceOfALecture,
 };
