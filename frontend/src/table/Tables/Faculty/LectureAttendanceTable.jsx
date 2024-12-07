@@ -72,7 +72,7 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
     }
   }, [selectedLecture, isMarkAttendanceDialogOpen]);
 
-  // Columns for the table
+  // Memoize columns
   const columns = useMemo(() => {
     return columnDef.map((col) => {
       if (col.accessorKey === "attendance") {
@@ -94,6 +94,16 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
       return col;
     });
   }, [columnDef]);
+
+  // Initialize the table object
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+  });
 
   // Add new lecture
   const handleAddLecture = async (lectureData) => {
