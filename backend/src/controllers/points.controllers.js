@@ -1278,7 +1278,6 @@ const completeLecturePoints = asyncHandler(async (req, res) => {
     },
   ]);
 
-  console.log({aggregatedPoints});
 
   if (aggregatedPoints.length === 0) {
     throw new ApiError(404, "No lecture points found");
@@ -1304,14 +1303,6 @@ const completeLecturePoints = asyncHandler(async (req, res) => {
   const requestedTeacherName = requestedTeacher
     ? requestedTeacher.teacher.name
     : null;
-
-  if (
-    !requestedTeacherRank ||
-    !requestedTeacherPoints ||
-    !requestedTeacherName
-  ) {
-    throw new ApiError(404, "Teacher's data not found");
-  }
 
   return res.status(200).json(
     new ApiResponse(
@@ -1481,6 +1472,8 @@ const completeStudentGuidedPoints = asyncHandler(async (req, res) => {
     },
   ]);
 
+  console.log({aggregatedPoints});
+
   if (aggregatedPoints.length === 0) {
     throw new ApiError(404, "No student guided points found");
   }
@@ -1494,6 +1487,7 @@ const completeStudentGuidedPoints = asyncHandler(async (req, res) => {
   const requestedTeacher = aggregatedPoints.find(
     (entry) => entry._id.toString() === teacherId.toString()
   );
+  console.log({requestedTeacher});
   const requestedTeacherRank = requestedTeacher
     ? aggregatedPoints.findIndex(
         (entry) => entry._id.toString() === teacherId.toString()
