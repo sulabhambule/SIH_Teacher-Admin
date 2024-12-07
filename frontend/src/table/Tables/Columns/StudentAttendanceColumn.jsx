@@ -1,6 +1,14 @@
+// StudentAttendanceColumn.jsx
 import { Checkbox } from "@/components/ui/checkbox";
 
 export const studentColumnDef = [
+    {
+        id: "srNo", // Unique ID for the column
+        header: "Sr. No.",
+        cell: ({ row }) => row.index + 1, // Automatically calculate the serial number
+        enableSorting: false, // Disable sorting for this column
+        enableHiding: false, // Prevent hiding
+      },
   {
     id: "select",
     header: ({ table }) => (
@@ -17,18 +25,19 @@ export const studentColumnDef = [
         aria-label="Select row"
       />
     ),
+    enableSorting: false,
+    enableHiding: false,
   },
   {
     accessorKey: "name",
     header: "Name",
+    enableSorting: true,
   },
   {
     accessorKey: "roll_no",
     header: "Roll No",
-  },
-  {
-    accessorKey: "actions",
-    header: "Actions",
-    enableSorting: false,
+    enableSorting: true,
   },
 ];
+
+export default studentColumnDef;

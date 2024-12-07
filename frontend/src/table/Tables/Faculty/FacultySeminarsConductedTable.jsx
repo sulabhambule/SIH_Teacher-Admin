@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams, Outlet } from "react-router-dom";
-import { ColumnVisibilityToggle } from "./ColumnVisiblityToggle";
+
 import {
   useReactTable,
   getCoreRowModel,
@@ -9,16 +9,22 @@ import {
   getSortedRowModel,
   flexRender,
 } from "@tanstack/react-table";
-import { columnDef } from "./Columns/AppraisalReportColumn";
-import "../table.css";
-import DebouncedInput from "../DebouncedInput.jsx";
+import { columnDef } from "../Columns/SeminarsConductedColumn.jsx";
+import "../../table.css";
+import DownloadBtn from "../../DownloadBtn.jsx";
+import DebouncedInput from "../../DebouncedInput.jsx";
 import { SearchIcon, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button.jsx";
 import { Checkbox } from "@/components/ui/checkbox.jsx";
+import DrawerComponent from "../../../Forms/AddEntry/DrawerComponent.jsx";
+import LoadingPage from "@/pages/LoadingPage.jsx";
+
+import DeleteDialog from "../../DeleteDialog.jsx";
 import axios from "axios";
 
-export default function AppraisalReportTable() {
+export default function FacultySeminarsConductedTable() {
   const { id } = useParams();
+  // console.log(id);
   const [data, setData] = useState("");
   const [globalFilter, setGlobalFilter] = useState("");
   const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -27,79 +33,59 @@ export default function AppraisalReportTable() {
   const [rowToDelete, setRowToDelete] = useState(null);
   const [sorting, setSorting] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [appraisalData, setAppraisalData] = useState([]);
+  // data of the teacher email wegera
+  // useEffect(() => {
+  //   const fetchTeacherInfo = async () => {
+  //     try {
+  //       // Retrieve the token from session storage
+  //       const token = sessionStorage.getItem("adminAccessToken"); // Adjust this if using cookies
 
-  const endpoints = {
-    journals: `http://localhost:6005/api/v1/points/journals/${id}`,
-    books: `http://localhost:6005/api/v1/points/books/${id}`,
-    patents: `http://localhost:6005/api/v1/points/patents/${id}`,
-    conferences: `http://localhost:6005/api/v1/points/conferences/${id}`,
-    projects: `http://localhost:6005/api/v1/points/projects/${id}`,
-    events: `http://localhost:6005/api/v1/points/events/${id}`,
-    sttp: `http://localhost:6005/api/v1/points/sttp/${id}`,
-    "expert-lectures": `http://localhost:6005/api/v1/points/expert-lectures/${id}`,
-  };
+  //       const response = await axios.get(
+  //         `http://localhost:6005/api/v1/admins/teachers/${id}`, // Adjust URL to your API endpoint
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${token}`, // Set the Authorization header
+  //           },
+  //         }
+  //       );
+  //       console.log(response.data.data.teacher);
+  //       setTeacherInfo(response.data.data);
+  //     } catch (error) {
+  //       console.log("An error occurred while fetching teacher info.");
+  //     }
+  //   };
 
-  const [seminarData, setSeminarData] = useState("");
+  //   fetchTeacherInfo();
+  // }, [id]); // Runs when 'id' changes
+
+  // dtaa of the reaserch paper of the teacher aditi sharma
+
   useEffect(() => {
     const fetchTeacherInfo = async () => {
       try {
-        const token = sessionStorage.getItem("adminAccessToken");
+        const token = sessionStorage.getItem("teacherAccessToken");
 
         const response = await axios.get(
-          `http://localhost:6005/api/v1/admins/teachers/${id}/seminars/conducted`,
+          `http://localhost:6005/api/v1/seminars/seminars/conducted`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        console.log("Tecaher Seminar Data", response.data.data);
+        // console.log( response.data.data);
         setData(response.data.data);
       } catch (error) {
         console.log("An error occurred while fetching teacher info.");
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    // fetchTeacherInfo();
-    fetchAppraisalData();
+    fetchTeacherInfo();
   }, []);
-
-  const fetchAppraisalData = async () => {
-    try {
-      const results = await Promise.all(
-        Object.entries(endpoints).map(async ([key, url]) => {
-          const response = await axios.get(url, {
-            headers: {
-              Authorization: `Bearer ${sessionStorage.getItem(
-                "teacherAccessToken"
-              )}`,
-            },
-          });
-          console.log(response);
-          return { field: key, ...response.data.data };
-        })
-      );
-
-      console.log("results", results);
-
-      const formattedData = results.map((item) => ({
-        field: item.field
-          .replace(/([A-Z])/g, " $1")
-          .replace(/^./, (str) => str.toUpperCase()),
-        currentPoints: item.requestedTeacherPoints || 0,
-        highestPoints: item.highestPoints || 0,
-        rank: item.requestedTeacherRank || 0,
-      }));
-
-      console.log("formattedData", formattedData);
-
-      setAppraisalData(formattedData);
-    } catch (error) {
-      console.error("Error fetching appraisal data:", error.message);
-    }
-  };
 
   const columns = useMemo(() => {
     return columnDef.map((col) => {
@@ -135,7 +121,7 @@ export default function AppraisalReportTable() {
   }, []);
 
   const table = useReactTable({
-    data: appraisalData,
+    data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -163,15 +149,40 @@ export default function AppraisalReportTable() {
 
   const handleEditEntry = (updatedData) => {
     setData((prevData) =>
-      prevData.map((row) => (row.id === updatedData.id ? updatedData : row))
+      prevData.map((row) => (row._id === updatedData._id ? updatedData : row))
     );
   };
 
-  const handleDeleteRow = () => {
-    setData((prevData) => prevData.filter((row) => row.id !== rowToDelete.id));
-    setDeleteDialogOpen(false);
-    setRowToDelete(null);
+  const handleDeleteRow = async () => {
+    try {
+      console.log(rowToDelete);
+      const token = sessionStorage.getItem("teacherAccessToken");
+
+      await axios.delete(
+        `http://localhost:6005/api/v1/seminars/seminars/${rowToDelete._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Remove the deleted item from the local state
+      setData((prevData) =>
+        prevData.filter((row) => row._id !== rowToDelete._id)
+      );
+
+      setDeleteDialogOpen(false);
+      setRowToDelete(null);
+    } catch (error) {
+      console.error("Failed to delete Seminar Data:", error);
+    }
   };
+
+  if (isLoading) {
+    return <LoadingPage />;
+  }
 
   return (
     <div className="container mx-auto p-4">
@@ -185,12 +196,33 @@ export default function AppraisalReportTable() {
             placeholder="Search all columns..."
           />
         </div>
-        <ColumnVisibilityToggle table={table} />
+        <DownloadBtn data={data} fileName="Research" />
+      </div>
+
+      <div className="flex justify-end mb-4">
+        <Button onClick={() => setDrawerOpen(true)} className="add-entry-btn">
+          Add Entry
+        </Button>
+      </div>
+
+      <div className="mb-4 flex flex-wrap gap-2">
+        {table.getAllLeafColumns().map((column) => (
+          <div key={column.id} className="flex items-center">
+            <Checkbox
+              checked={column.getIsVisible()}
+              onCheckedChange={(value) => column.toggleVisibility(!!value)}
+              id={column.id}
+            />
+            <label htmlFor={column.id} className="ml-2 text-sm font-medium">
+              {column.id}
+            </label>
+          </div>
+        ))}
         <Button
           onClick={resetFilters}
           variant="outline"
           size="sm"
-          className="mb-4"
+          className="ml-2"
         >
           Reset Filters
         </Button>
@@ -202,7 +234,7 @@ export default function AppraisalReportTable() {
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers
-                  .filter((header) => header.column.id !== "actions") // Filter out the actions column
+                  // .filter((header) => header.column.id !== "actions") // Filter out the actions column
                   .map((header) => (
                     <th key={header.id} className="px-4 py-2">
                       {header.isPlaceholder
@@ -221,7 +253,7 @@ export default function AppraisalReportTable() {
               <tr key={row.id}>
                 {row
                   .getVisibleCells()
-                  .filter((cell) => cell.column.id !== "actions") // Filter out the actions cell
+                  // .filter((cell) => cell.column.id !== "actions") // Filter out the actions cell
                   .map((cell) => (
                     <td key={cell.id} className="px-4 py-2">
                       {flexRender(
@@ -236,7 +268,65 @@ export default function AppraisalReportTable() {
         </table>
       </div>
 
-      {/* <div className="flex items-center justify-end mt-4 gap-2">
+      <DrawerComponent
+        isOpen={isDrawerOpen}
+        onClose={() => {
+          setDrawerOpen(false);
+          setRowToEdit(null);
+        }}
+        onSubmit={async (formData) => {
+          // console.log(formData);
+          const token = sessionStorage.getItem("teacherAccessToken");
+
+          try {
+            if (rowToEdit) {
+              // console.log("editing  the data", formData);
+              const response = await axios.put(
+                `http://localhost:6005/api/v1/seminars/seminars/${rowToEdit._id}`,
+                formData,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                  },
+                }
+              );
+              // console.log(response.data.data);
+              handleEditEntry(response.data.data);
+            } else {
+              // Add (POST Request)
+              // console.log("posting the data", formData);
+              const response = await axios.post(
+                `http://localhost:6005/api/v1/seminars/seminars/conducted`,
+                formData,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application.json",
+                  },
+                }
+              );
+              console.log(response.data.data);
+              handleAddEntry(response.data.data);
+            }
+          } catch (error) {
+            console.error("Failed to submit Seminar data:", error);
+          }
+
+          setDrawerOpen(false);
+        }}
+        columns={columns}
+        rowData={rowToEdit}
+      />
+
+      <DeleteDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        onConfirm={handleDeleteRow}
+        rowData={rowToDelete}
+      />
+
+      <div className="flex items-center justify-end mt-4 gap-2">
         <Button
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
@@ -280,7 +370,7 @@ export default function AppraisalReportTable() {
             </option>
           ))}
         </select>
-      </div> */}
+      </div>
     </div>
   );
 }
