@@ -396,7 +396,7 @@ const completeProjectsPoints = asyncHandler(async (req, res) => {
   const projectPointsBreakdown = await Point.aggregate([
     {
       $match: {
-        owner: mongoose.Types.ObjectId(teacherId),
+        owner:new mongoose.Types.ObjectId(teacherId),
         domain: { $in: projectDomains },
       },
     },
@@ -1801,8 +1801,7 @@ const calculateTeacherRanks = asyncHandler(async (req, res) => {
         "Wookshop-Conducted-Other",
         "Extra-Course-Studied-Other",
         "Made-Study-Materials-Other",
-        "Miscellaneous",
-        "Task-Points-Other",];
+        "Miscellaneous"];
 
   // Aggregate points for all teachers
   const teacherPoints = await Point.aggregate([
@@ -1869,7 +1868,7 @@ const calculateTeacherRanks = asyncHandler(async (req, res) => {
     // Add feedbackPoints if maxPoints.feedbackPoints is greater than 0
     if (maxPoints.feedbackPoints > 0) {
       totalPoints +=
-        (teacher.feedbackPoints / maxPoints.feedbackPoints) * 25;
+        (teacher.feedbackPoints / maxPoints.feedbackPoints) * 35;
       weightSum += 25;
     }
   
