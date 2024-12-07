@@ -33,12 +33,16 @@ export default function AdminAppraisalReportTable() {
   const endpoints = {
     journals: `http://localhost:6005/api/v1/points/ad-journals/${id}`,
     books: `http://localhost:6005/api/v1/points/ad-books/${id}`,
+    chapter: `http://localhost:6005/api/v1/points/ad-chapter/${id}`,
     patents: `http://localhost:6005/api/v1/points/ad-patents/${id}`,
     conferences: `http://localhost:6005/api/v1/points/ad-conferences/${id}`,
     projects: `http://localhost:6005/api/v1/points/ad-projects/${id}`,
     events: `http://localhost:6005/api/v1/points/ad-events/${id}`,
     sttp: `http://localhost:6005/api/v1/points/ad-sttp/${id}`,
-    "expert-lectures": `http://localhost:6005/api/v1/points/ad-expert-lectures/${id}`,
+    "Expert-lectures": `http://localhost:6005/api/v1/points/ad-expert-lectures/${id}`,
+    "Student-Guide": `http://localhost:6005/api/v1/points/ad-student-guided/${id}`,
+    // lecture: `http://localhost:6005/api/v1/points/ad-lecture/${id}`,
+    // Contribution: `http://localhost:6005/api/v1/points/ad-contribution/${id}`,
   };
 
   const [seminarData, setSeminarData] = useState("");

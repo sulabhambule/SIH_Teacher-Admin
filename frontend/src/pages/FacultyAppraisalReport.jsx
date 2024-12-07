@@ -29,6 +29,7 @@ const FacultyAppraisalReport = ({
 }) => {
   const [facultyData, setFacultyData] = useState("");
   const [rank, setRank] = useState(null);
+  const [point, setPoint] = useState(null);
   const [performance, setPerformance] = useState(null);
 
   const reportRef = useRef(null);
@@ -68,12 +69,17 @@ const FacultyAppraisalReport = ({
       const endpoints = {
         journals: `http://localhost:6005/api/v1/points/journals/${id}`,
         books: `http://localhost:6005/api/v1/points/books/${id}`,
+        chapter: `http://localhost:6005/api/v1/points/chapter/${id}`,
         patents: `http://localhost:6005/api/v1/points/patents/${id}`,
         conferences: `http://localhost:6005/api/v1/points/conferences/${id}`,
         projects: `http://localhost:6005/api/v1/points/projects/${id}`,
         events: `http://localhost:6005/api/v1/points/events/${id}`,
         sttp: `http://localhost:6005/api/v1/points/sttp/${id}`,
         "expert-lectures": `http://localhost:6005/api/v1/points/expert-lectures/${id}`,
+        "Student-Guide": `http://localhost:6005/api/v1/points/student-guided/${id}`,
+        // lecture: `http://localhost:6005/api/v1/points/lecture/${id}`,
+        // "Contribution": `http://localhost:6005/api/v1/points/contribution/${id}`,
+
       };
 
       try {
@@ -122,15 +128,19 @@ const FacultyAppraisalReport = ({
             },
           }
         );
+        console.log(response.data.data);
 
         // console.log("Response data:", response.data);
         const matchingTeacher = response.data?.data?.find(
-          (teacher) => teacher._id === id
+          (teacher) => teacher.teacherId === id
         );
+
+        // console.log(matchingTeacher);
 
         if (matchingTeacher) {
           setRank(matchingTeacher.rank);
           setPerformance(matchingTeacher.performanceCategory);
+          setPoint(matchingTeacher.totalPoints)
         } else {
           console.log("No matching teacher found for the given facultyId");
         }
@@ -285,6 +295,9 @@ const FacultyAppraisalReport = ({
           <CardContent className="text-center">
             <p className="text-4xl font-bold mb-2">Rank : {rank}</p>
             <p className="text-xl text-gray-600">Performance : {performance}</p>
+            <p className="text-xl text-gray-700 font-semibold">
+  Points out of 100: {point !== null ? point.toFixed(2) : "Loading..."}
+</p>
           </CardContent>
         </Card>
         <div>
