@@ -35,7 +35,7 @@ const lectureSchema = new Schema(
 // Helper function to get points for a domain
 const getPointsForDomain = async (domain) => {
   const domainPoint = await DomainPoint.findOne({ domain });
-  return domainPoint?.points || 0;
+  return domainPoint?.points || 0; 
 };
 
 // Post-save hook to allocate extra lecture points
