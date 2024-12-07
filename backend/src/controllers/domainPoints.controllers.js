@@ -1519,6 +1519,123 @@ const editAllEventPoints = asyncHandler(async (req, res) => {
     );
 });
 
+const getAllResearchProjectPoints = asyncHandler(async (req, res) => {
+  const researchProjectDomains = [
+    "Ongoing Funded Above ₹10 Lakh Research",
+    "Ongoing Funded Below ₹10 Lakh Research",
+    "Completed Funded Above ₹10 Lakh Research",
+    "Completed Funded Below ₹10 Lakh Research",
+  ];
+  const researchProjectPoints = await DomainPoint.find({
+    domain: { $in: researchProjectDomains },
+  });
+
+  if (!researchProjectPoints || researchProjectPoints.length === 0) {
+    throw new ApiError(404, "No research project points found");
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        researchProjectPoints,
+        "Research project points retrieved successfully"
+      )
+    );
+});
+
+const editResearchProjectPoints = asyncHandler(async (req, res) => {
+  const { researchProjectPoints } = req.body;
+
+  if (!researchProjectPoints || !Array.isArray(researchProjectPoints)) {
+    throw new ApiError(400, "Invalid research project points data");
+  }
+
+  const updatedResearchProjectPoints = await Promise.all(
+    researchProjectPoints.map(async ({ domain, points }) => {
+      const updatedPoint = await DomainPoint.findOneAndUpdate(
+        { domain },
+        { points },
+        { new: true, runValidators: true }
+      );
+      if (!updatedPoint) {
+        throw new ApiError(404, `Domain not found: ${domain}`);
+      }
+      return updatedPoint;
+    })
+  );
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        updatedResearchProjectPoints,
+        "Research project points updated successfully"
+      )
+    );
+});
+
+const getAllExtraContributionsPoints = asyncHandler(async (req, res) => {
+  const extraContributionsDomains = [
+    "Industrial-Visit-Other",
+    "Workshop-Conducted-Other",
+    "Extra-Course-Studied-Other",
+    "Made-Study-Materials-Other",
+    "Miscellaneous",
+  ];
+  const extraContributionsPoints = await DomainPoint.find({
+    domain: { $in: extraContributionsDomains },
+  });
+
+  if (!extraContributionsPoints || extraContributionsPoints.length === 0) {
+    throw new ApiError(404, "No extra contributions points found");
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        extraContributionsPoints,
+        "Extra contributions points retrieved successfully"
+      )
+    );
+});
+
+const editExtraContributionsPoints = asyncHandler(async (req, res) => {
+  const { extraContributionsPoints } = req.body;
+
+  if (!extraContributionsPoints || !Array.isArray(extraContributionsPoints)) {
+    throw new ApiError(400, "Invalid extra contributions points data");
+  }
+
+  const updatedExtraContributionsPoints = await Promise.all(
+    extraContributionsPoints.map(async ({ domain, points }) => {
+      const updatedPoint = await DomainPoint.findOneAndUpdate(
+        { domain },
+        { points },
+        { new: true, runValidators: true }
+      );
+      if (!updatedPoint) {
+        throw new ApiError(404, `Domain not found: ${domain}`);
+      }
+      return updatedPoint;
+    })
+  );
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        updatedExtraContributionsPoints,
+        "Extra contributions points updated successfully"
+      )
+    );
+});
+
 export {
   addPoints,
   updatePoints,
@@ -1572,4 +1689,8 @@ export {
   editSeminarPoints,
   getAllEventPoints,
   editAllEventPoints,
+  getAllResearchProjectPoints,
+  editResearchProjectPoints,
+  getAllExtraContributionsPoints,
+  editExtraContributionsPoints,
 };

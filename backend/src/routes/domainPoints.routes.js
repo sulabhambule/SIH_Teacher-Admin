@@ -52,6 +52,10 @@ import {
   editSeminarPoints,
   getAllEventPoints,
   editAllEventPoints,
+  getAllResearchProjectPoints,
+  editResearchProjectPoints,
+  getAllExtraContributionsPoints,
+  editExtraContributionsPoints,
 } from "../controllers/domainPoints.controllers.js";
 import { verifyAdminJWT } from "../middleware/admin.auth.middleware.js";
 import { verifyTeacherJWT } from "../middleware/teacher.auth.middleware.js";
@@ -89,6 +93,8 @@ adminRouter.put("/practical-course", editPracticalCoursePoints);
 adminRouter.put("/sttp", editSttpPoints);
 adminRouter.put("/seminar", editSeminarPoints);
 adminRouter.put("/all-event-points", editAllEventPoints);
+adminRouter.put("/research-project", editResearchProjectPoints);
+adminRouter.put("/extra-contributions", editExtraContributionsPoints);
 
 // Teacher routes
 teacherRouter.get("/points", getAllPoints);
@@ -116,6 +122,8 @@ teacherRouter.get("/practical-course", getPracticalCoursePoints);
 teacherRouter.get("/sttp", getSttpPoints);
 teacherRouter.get("/seminar", getSeminarPoints);
 teacherRouter.get("/all-event-points", getAllEventPoints);
+teacherRouter.get("/research-project", getAllResearchProjectPoints);
+teacherRouter.get("/extra-contributions", getAllExtraContributionsPoints);
 
 // Apply middleware to routers
 const adminRoutes = express.Router();

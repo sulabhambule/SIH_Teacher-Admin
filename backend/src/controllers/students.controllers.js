@@ -145,6 +145,7 @@ const getFeedbackForms = asyncHandler(async (req, res) => {
     if (totalLectures === 0) {
       continue;
     }
+
     // Fetch lectures attended by the student for this subject
     const attendedLectures = await Attendance.find({
       subject_name: subject.subject_name,
@@ -171,14 +172,27 @@ const getFeedbackForms = asyncHandler(async (req, res) => {
       }).lean();
 
       if (allocatedSubject && allocatedSubject.feedbackReleased) {
-        eligibleSubjects.push({
+        // Check if the student has already filled the feedback form for this subject
+        const feedbackAlreadyFilled = await LectureFeedback.findOne({
+          submitter: studentId,
           subject_name: subject.subject_name,
           subject_code: subject.subject_code,
           subject_credit: subject.subject_credit,
+          branch: branch,
+          year: year,
           teacher: subject.teacher,
-          attendancePercentage: attendancePercentage.toFixed(2),
-          branch : branch
-        });
+        }).lean();
+
+        if (!feedbackAlreadyFilled) {
+          eligibleSubjects.push({
+            subject_name: subject.subject_name,
+            subject_code: subject.subject_code,
+            subject_credit: subject.subject_credit,
+            teacher: subject.teacher,
+            attendancePercentage: attendancePercentage.toFixed(2),
+            branch: branch,
+          });
+        }
       }
     }
   }
@@ -186,7 +200,7 @@ const getFeedbackForms = asyncHandler(async (req, res) => {
   if (eligibleSubjects.length === 0) {
     throw new ApiError(
       403,
-      "No feedback forms are available for the student due to attendance eligibility or unreleased feedback."
+      "No feedback forms are available for the student due to attendance eligibility, unreleased feedback, or already submitted feedback."
     );
   }
 
