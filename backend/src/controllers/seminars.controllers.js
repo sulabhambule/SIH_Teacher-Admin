@@ -133,38 +133,78 @@ const getFeedbackSubmitters = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(200, submitters , "Feedback submitters fetched successfully."));
 });
 
-const markAttendance = asyncHandler(async (req, res) => {
-  const { seminarId, teacherId } = req.params;
-  const { rollNumbers } = req.body;
+const getStudentsByBranch = asyncHandler(async (req, res) => {
+  const { branchName } = req.params;
 
-  if (!rollNumbers || !Array.isArray(rollNumbers) || rollNumbers.length === 0) {
-    return next(new ApiError("Please provide an array of roll numbers.", 400));
+  if (!branchName?.trim()) {
+    throw new ApiError(400, "Branch name is required");
   }
 
-  const seminar = await Seminar.findById(seminarId);
-  if (!seminar) {
-    return next(new ApiError("Seminar not found.", 404));
-  }
-
-  const students = await Student.find({ roll_no: { $in: rollNumbers } });
-
-  if (students.length === 0) {
-    return next(new ApiError("No students found for the provided roll numbers.", 404));
-  }
-
-  const studentIds = students.map((student) => student._id);
-
-  const attendanceRecord = await SAttendance.findOneAndUpdate(
-    { seminar: seminarId, date: new Date().toISOString().split("T")[0], teacher: teacherId },
-    { $addToSet: { studentsPresent: { $each: studentIds } } },
-    { upsert: true, new: true }
+  const students = await Student.find({ branch: branchName }).select(
+    "name email roll_no branch year"
   );
 
-  res.status(200).json(new ApiResponse(200, attendanceRecord, "Attendance marked successfully."));
+  if (!students.length) {
+    throw new ApiError(404, "No students found for the given branch");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, students, "Students retrieved successfully"));
+});
+
+const markAttendance = asyncHandler(async (req, res, next) => {
+  const { seminarId, teacherId } = req.params;
+  const { studentIds } = req.body; // Array of student IDs from the fetched students.
+
+  // Validate the request
+  if (!studentIds || !Array.isArray(studentIds) || studentIds.length === 0) {
+    throw new ApiError("Please provide an array of student IDs.", 400);
+  }
+
+  // Check if the seminar exists
+  const seminar = await Seminar.findById(seminarId);
+  if (!seminar) {
+    throw new ApiError("Seminar not found.", 404);
+  }
+
+  // Use the seminar's scheduled date for matching
+  const seminarDate = seminar.date; // Assuming `date` is a field in the Seminar schema.
+
+  // Validate that the provided student IDs exist
+  const students = await Student.find({ _id: { $in: studentIds } });
+
+  if (students.length === 0) {
+    throw new ApiError("No students found for the provided IDs.", 404);
+  }
+
+   // Check if an attendance record already exists for this seminar, date, and teacher
+   const existingRecord = await SAttendance.findOne({
+    seminar: seminarId,
+    date: seminarDate,
+    teacher: teacherId,
+  });
+
+  if (existingRecord) {
+    return next(new ApiError("Attendance already marked for this seminar on this date.", 400));
+  }
+
+  // Create a new attendance record
+  const attendanceRecord = SAttendance.create({
+    seminar: seminarId,
+    date: seminarDate,
+    teacher: teacherId,
+    studentsPresent: studentIds,
+  });
+
+  // Respond with success
+  res.status(200).json(
+    new ApiResponse(200, attendanceRecord, "Attendance marked successfully.")
+  );
 });
 
 const viewSeminarFeedbackFormsAvailable = asyncHandler(async (req, res) => {
-  const studentId = req.user._id; // Assuming student is authenticated and `req.user` contains their details.
+  const studentId = req.student._id; // Assuming student is authenticated and `req.user` contains their details.
 
   const attendanceRecords = await SAttendance.find({ studentsPresent: studentId }).populate("seminar");
 
@@ -229,4 +269,5 @@ export {
   markAttendance,
   viewSeminarFeedbackFormsAvailable,
   fillEligibleFeedbackForm,
+  getStudentsByBranch
 };
