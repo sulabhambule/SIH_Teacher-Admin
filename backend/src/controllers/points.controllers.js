@@ -1254,7 +1254,7 @@ const completeLecturePoints = asyncHandler(async (req, res) => {
   // Aggregate total lecture points for each teacher
   const aggregatedPoints = await Point.aggregate([
     {
-      $match: { domain: lectureDomain }, // Filter by lecture domain
+      $match: { domain: { $in: lectureDomain} }, // Filter by lecture domain
     },
     {
       $group: {
@@ -1277,6 +1277,8 @@ const completeLecturePoints = asyncHandler(async (req, res) => {
       $sort: { totalPoints: -1 }, // Sort by total points (descending)
     },
   ]);
+
+  console.log({aggregatedPoints});
 
   if (aggregatedPoints.length === 0) {
     throw new ApiError(404, "No lecture points found");
@@ -1442,8 +1444,8 @@ const completeContributionPoints = asyncHandler(async (req, res) => {
 
 const completeStudentGuidedPoints = asyncHandler(async (req, res) => {
   const studentGuidedDomains = [
-    "PhD",
-    "Mtech"
+    "Mtech Students Guided",
+    "PhD Students Guided",
   ];
 
   const {teacherId} = req.params;
@@ -1901,7 +1903,6 @@ const calculateTeacherRanks = asyncHandler(async (req, res) => {
       performanceCategory,
     };
   });
-  
 
   // Sort teachers by total points (descending) and assign ranks
   rankedTeachers.sort((a, b) => b.totalPoints - a.totalPoints);
