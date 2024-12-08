@@ -24,6 +24,8 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
   const [students, setStudents] = useState([]);
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
+  const [rowSelection, setRowSelection] = useState({});
+
 
   // Fetch lectures
   useEffect(() => {
@@ -62,6 +64,7 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
               },
             }
           );
+          // console.log(response.data)
           setStudents(response.data.data);
           setSelectedStudents([]); // Reset selected students
         } catch (error) {
@@ -70,7 +73,7 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
       };
       fetchStudents();
     }
-  }, [selectedLecture, isMarkAttendanceDialogOpen]);
+  }, [selectedLecture, isMarkAttendanceDialogOpen, ]);
 
   // Memoize columns
   const columns = useMemo(() => {
@@ -110,7 +113,7 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
     try {
       const token = sessionStorage.getItem("teacherAccessToken");
       const response = await axios.post(
-        `http://localhost:6005/api/v1/lecture`,
+        `http://localhost:6005/api/v1/lecture/${subjectId}/${teacherId}/lectures`,
         lectureData,
         {
           headers: {
@@ -119,7 +122,7 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
           },
         }
       );
-      console.log("Lecture Added:", response.data);
+      // console.log("Lecture Added:", response.data);
       setData((prev) => [...prev, response.data]); // Update table data
       setSelectedLecture(response.data); // Store the added lecture for attendance
     } catch (error) {
@@ -162,6 +165,51 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="flex items-center justify-end mt-4 gap-2">
+        <Button
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          Previous
+        </Button>
+        <Button
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          Next
+        </Button>
+        <span className="flex items-center gap-1">
+          <div>Page</div>
+          <strong>
+            {table.getState().pagination.pageIndex + 1} of{" "}
+            {table.getPageCount()}
+          </strong>
+        </span>
+        <span className="flex items-center gap-1">
+          | Go to page:
+          <input
+            type="number"
+            defaultValue={table.getState().pagination.pageIndex + 1}
+            onChange={(e) => {
+              const page = e.target.value ? Number(e.target.value) - 1 : 0;
+              table.setPageIndex(page);
+            }}
+            className="border p-1 rounded w-16"
+          />
+        </span>
+        <select
+          value={table.getState().pagination.pageSize}
+          onChange={(e) => {
+            table.setPageSize(Number(e.target.value));
+          }}
+        >
+          {[5,10, 20, 30, 40, 50].map((pageSize) => (
+            <option key={pageSize} value={pageSize}>
+              Show {pageSize}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* Drawer for Adding Lectures */}

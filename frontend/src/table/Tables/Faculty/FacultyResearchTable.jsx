@@ -8,7 +8,16 @@ import {
   getExpandedRowModel,
   flexRender,
 } from "@tanstack/react-table";
-import { ChevronDown, ChevronRight, ChevronLeft, Search, Plus, Edit, Trash2, Download } from 'lucide-react';
+import {
+  ChevronDown,
+  ChevronRight,
+  ChevronLeft,
+  Search,
+  Plus,
+  Edit,
+  Trash2,
+  Download,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -23,11 +32,11 @@ import DrawerComponent from "../../../Forms/AddEntry/DrawerComponent.jsx";
 import DeleteDialog from "../../DeleteDialog.jsx";
 import axios from "axios";
 import { CSVLink } from "react-csv";
-import { PatentcolumnDef } from "../Columns/PatentColumn.jsx";
-import { bookColumnDef } from "../Columns/BookColumn.jsx";
-import { JournalColumnDef } from "../Columns/JournalColumn.jsx";
-import { conferenceColumnDef } from "../Columns/ConferenceColumn.jsx";
-import { chapterColumnDef } from "../Columns/ChapterColumn.jsx";
+import { PatentcolumnDef } from "../Columns/PublicationsColumn/PatentColumn.jsx";
+import { bookColumnDef } from "../Columns/PublicationsColumn/BookColumn.jsx";
+import { JournalColumnDef } from "../Columns/PublicationsColumn/JournalColumn.jsx";
+import { conferenceColumnDef } from "../Columns/PublicationsColumn/ConferenceColumn.jsx";
+import { chapterColumnDef } from "../Columns/PublicationsColumn/ChapterColumn.jsx";
 import { ResearchInstructionMessage } from "@/components/ResearchInstructionMessage.jsx";
 
 export default function FacultyResearchTable() {
@@ -46,7 +55,7 @@ export default function FacultyResearchTable() {
   const [rowToDelete, setRowToDelete] = useState(null);
   const [typeFilter, setTypeFilter] = useState("");
   const [columnVisibility, setColumnVisibility] = useState({});
-  
+
   const [colu, setColu] = useState(PatentcolumnDef);
 
   useEffect(() => {
@@ -99,7 +108,7 @@ export default function FacultyResearchTable() {
 
   const columnMap = {
     Patent: PatentcolumnDef,
-    "Book": bookColumnDef,
+    Book: bookColumnDef,
     "Journal Article": JournalColumnDef,
     "Conference Paper": conferenceColumnDef,
     "Book Chapter": chapterColumnDef,
@@ -193,8 +202,22 @@ export default function FacultyResearchTable() {
   const handleEditEntry = async (formData) => {
     try {
       const token = sessionStorage.getItem("teacherAccessToken");
+      const type = typeFilter;
+      const publicationType = mapPublicationType(type);
+      const endpointMap = {
+        Book: "/api/v1/book/book/edit",
+        "Book Chapter": "/api/v1/chapter/chapter/edit",
+        "Journal Article": "/api/v1/journals/journal/edit",
+        Patent: "/api/v1/patents/patent/edit",
+        "Conference Paper": "/api/v1/conferences/conference/edit",
+      };
+      const endpoint = endpointMap[publicationType];
+      if (!endpoint) {
+        console.error("Unsupported publication type");
+        return;
+      }
       const response = await axios.patch(
-        `http://localhost:6005/api/v1/research-paper/update/${rowToEdit._id}`,
+        `http://localhost:6005${endpoint}/${rowToEdit._id}`,
         formData,
         {
           headers: {
@@ -203,11 +226,13 @@ export default function FacultyResearchTable() {
           },
         }
       );
-      setData((prevData) =>
+      console.log(response);
+      setData2((prevData) =>
         prevData.map((item) =>
           item._id === response.data.data._id ? response.data.data : item
         )
       );
+
       setDrawerOpen(false);
       setRowToEdit(null);
     } catch (error) {
@@ -218,15 +243,27 @@ export default function FacultyResearchTable() {
   const handleDeleteEntry = async () => {
     try {
       const token = sessionStorage.getItem("teacherAccessToken");
-      await axios.delete(
-        `http://localhost:6005/api/v1/research-paper/delete/${rowToDelete._id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setData((prevData) =>
+      const endpointMap = {
+        Book: "/api/v1/book/book/delete",
+        "Book Chapter": "/api/v1/chapter/chapter/delete",
+        "Journal Article": "/api/v1/journals/journal/delete",
+        Patent: "/api/v1/patents/patent/delete",
+        "Conference Paper": "/api/v1/conferences/conference/delete",
+      };
+      const publicationType = mapPublicationType(typeFilter);
+      const endpoint = endpointMap[publicationType];
+      if (!endpoint) {
+        console.error("Unsupported publication type");
+        return;
+      }
+      const deleteUrl = `http://localhost:6005${endpoint}/${rowToDelete._id}`;
+      const response = await axios.delete(deleteUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(response);
+      setData2((prevData) =>
         prevData.filter((item) => item._id !== rowToDelete._id)
       );
       setDeleteDialogOpen(false);
@@ -318,7 +355,10 @@ export default function FacultyResearchTable() {
                 <tr key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <td key={cell.id} className="px-4 py-2">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </td>
                   ))}
                 </tr>
@@ -326,7 +366,54 @@ export default function FacultyResearchTable() {
             </tbody>
           </table>
         </div>
+        
       )}
+            <div className="flex items-center justify-end mt-4 gap-2">
+        <Button
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          Previous
+        </Button>
+        <Button
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          Next
+        </Button>
+        <span className="flex items-center gap-1">
+          <div>Page</div>
+          <strong>
+            {table.getState().pagination.pageIndex + 1} of{" "}
+            {table.getPageCount()}
+          </strong>
+        </span>
+        <span className="flex items-center gap-1">
+          | Go to page:
+          <input
+            type="number"
+            defaultValue={table.getState().pagination.pageIndex + 1}
+            onChange={(e) => {
+              const page = e.target.value ? Number(e.target.value) - 1 : 0;
+              table.setPageIndex(page);
+            }}
+            className="border p-1 rounded w-16"
+          />
+        </span>
+        <select
+          value={table.getState().pagination.pageSize}
+          onChange={(e) => {
+            table.setPageSize(Number(e.target.value));
+          }}
+        >
+          {[5,10, 20, 30, 40, 50].map((pageSize) => (
+            <option key={pageSize} value={pageSize}>
+              Show {pageSize}
+            </option>
+          ))}
+        </select>
+      </div>
+
 
       <DrawerComponent
         isOpen={isDrawerOpen}
@@ -347,4 +434,3 @@ export default function FacultyResearchTable() {
     </div>
   );
 }
-
