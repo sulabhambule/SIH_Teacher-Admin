@@ -4,6 +4,13 @@ import { Eye, EyeOff } from "lucide-react";
 
 export const columnDef = [
   {
+    id: "srNo",
+    header: "Sr. No.",
+    cell: ({ row }) => row.index + 1,
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
     accessorKey: "date",
     header: "Date",
   },
@@ -13,11 +20,8 @@ export const columnDef = [
   },
   {
     accessorKey: "attendance",
-    header: "Mark Attendance",
+    header: "View Attendance",
  
   },
-  {
-    accessorKey: "actions",
-    header: "Actions",
-  },
+
 ];

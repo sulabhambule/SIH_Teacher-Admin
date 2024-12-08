@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import StudentAttendanceDialog from "@/Forms/Student/StudentAttendanceDialog";
+import { useToast } from "@/components/ui/hooks/use-toast";
 
 const LectureAttendanceDrawer = ({
   isOpen,
@@ -13,9 +14,15 @@ const LectureAttendanceDrawer = ({
   selectedLecture,
   setAttendanceDialogOpen,
 }) => {
+  console.log("selectedLecture", selectedLecture);
+
   const [topic, setTopic] = useState("");
   const [date, setDate] = useState(null);
-  const [isMarkAttendanceDialogOpen, setMarkAttendanceDialogOpen] = useState(false);
+  const [isMarkAttendanceDialogOpen, setMarkAttendanceDialogOpen] =
+    useState(false);
+  const [students, setStudents] = useState([]);
+  const [selectedStudents, setSelectedStudents] = useState([]);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!isOpen) {
@@ -30,8 +37,14 @@ const LectureAttendanceDrawer = ({
       alert("Please fill out all fields");
       return;
     }
+
     onSubmit({ topic, date });
-    setMarkAttendanceDialogOpen(true); // Open the attendance dialog after adding a lecture
+    setMarkAttendanceDialogOpen(true);
+  };
+
+  const handleCloseAll = () => {
+    setMarkAttendanceDialogOpen(false);
+    onClose();
   };
 
   return (
@@ -42,7 +55,10 @@ const LectureAttendanceDrawer = ({
             <h3 className="text-lg font-semibold mb-4">Add Lecture</h3>
             <div className="space-y-4">
               <div>
-                <label htmlFor="topic" className="block text-sm font-medium mb-1">
+                <label
+                  htmlFor="topic"
+                  className="block text-sm font-medium mb-1"
+                >
                   Topic
                 </label>
                 <Input
@@ -53,7 +69,10 @@ const LectureAttendanceDrawer = ({
                 />
               </div>
               <div>
-                <label htmlFor="date" className="block text-sm font-medium mb-1">
+                <label
+                  htmlFor="date"
+                  className="block text-sm font-medium mb-1"
+                >
                   Date
                 </label>
                 <DatePicker
@@ -80,16 +99,17 @@ const LectureAttendanceDrawer = ({
         </DrawerContent>
       </Drawer>
 
-      {/* Mark Attendance Dialog */}
-      <StudentAttendanceDialog
-        isOpen={isMarkAttendanceDialogOpen}
-        onClose={() => setMarkAttendanceDialogOpen(false)}
-        students={[]}
-        selectedStudents={[]}
-        setSelectedStudents={() => {}}
-        lectureId={selectedLecture?._id}
-        handleMarkAttendance={() => console.log("Attendance marked!")}
-      />
+      {isMarkAttendanceDialogOpen && selectedLecture?.data?._id && (
+        <StudentAttendanceDialog
+          isOpen={isMarkAttendanceDialogOpen}
+          onClose={handleCloseAll}
+          students={students}
+          selectedStudents={selectedStudents}
+          setSelectedStudents={setSelectedStudents}
+          lectureId={selectedLecture?.data?._id}
+          toast={toast}
+        />
+      )}
     </>
   );
 };

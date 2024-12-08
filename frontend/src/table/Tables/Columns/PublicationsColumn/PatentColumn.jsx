@@ -1,52 +1,22 @@
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown, ExternalLink } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-export const chapterColumnDef = [
+
+export const PatentcolumnDef = [
   {
     accessorKey: "title",
     header: "Title",
     enableSorting: true,
   },
+
   {
-    accessorKey: "authors",
-    header: "Authors",
+    accessorKey: "inventors",
+    header: "Inventors",
     enableSorting: true,
   },
   {
-    accessorKey: "book",
-    header: "Book",
-    enableSorting: true,
-  },
-  {
-    accessorKey: "publisher",
-    header: "Publisher",
-    enableSorting: true,
-  },
-  {
-    accessorKey: "publicationDate",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          publicationDate
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-      const dateValue = row.getValue("publicationDate");
-      if (dateValue) {
-        const date = new Date(dateValue);
-        return date.toLocaleDateString();
-      }
-      return "N/A";
-    },
-    enableSorting: true,
-  },
-  {
-    accessorKey: "chapterType",
+    accessorKey: "patentType",
     header: ({ column }) => {
       return (
         <div className="flex flex-col items-start">
@@ -77,22 +47,52 @@ export const chapterColumnDef = [
         </div>
       )
     },
-    cell: ({ row }) => row.getValue("chapterType"),
+    cell: ({ row }) => row.getValue("patentType"),
     enableSorting: true,
     filterFn: (row, id, value) => {
       return value === "" || row.getValue(id) === value
     },
+    dropdownOptions: ["International", "National", "Regional"], // Dropdown values
+
   },
-  {
-    accessorKey: "volume",
-    header: "Volume",
+ {
+    accessorKey: "publicationDate",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          publicationDate
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const dateValue = row.getValue("publicationDate");
+      if (dateValue) {
+        const date = new Date(dateValue);
+        return date.toLocaleDateString();
+      }
+      return "N/A";
+    },
     enableSorting: true,
   },
   {
-    accessorKey: "pages",
-    header: "Pages",
+    accessorKey: "patentOffice",
+    header: "Patent Office",
     enableSorting: true,
   },
+  {
+    accessorKey: "patentNumber",
+    header: "Patent Number",
+    enableSorting: true,
+  },
+  {
+    accessorKey: "applicationNumber",
+    header: "Application Number",
+    enableSorting: true,
+  }, 
   // {
   //   accessorKey: "report",
   //   header: "View Report",

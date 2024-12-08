@@ -1254,7 +1254,7 @@ const completeLecturePoints = asyncHandler(async (req, res) => {
   // Aggregate total lecture points for each teacher
   const aggregatedPoints = await Point.aggregate([
     {
-      $match: { domain: lectureDomain }, // Filter by lecture domain
+      $match: { domain: { $in: lectureDomain} }, // Filter by lecture domain
     },
     {
       $group: {
@@ -1277,6 +1277,7 @@ const completeLecturePoints = asyncHandler(async (req, res) => {
       $sort: { totalPoints: -1 }, // Sort by total points (descending)
     },
   ]);
+
 
   if (aggregatedPoints.length === 0) {
     throw new ApiError(404, "No lecture points found");
@@ -1302,14 +1303,6 @@ const completeLecturePoints = asyncHandler(async (req, res) => {
   const requestedTeacherName = requestedTeacher
     ? requestedTeacher.teacher.name
     : null;
-
-  if (
-    !requestedTeacherRank ||
-    !requestedTeacherPoints ||
-    !requestedTeacherName
-  ) {
-    throw new ApiError(404, "Teacher's data not found");
-  }
 
   return res.status(200).json(
     new ApiResponse(
@@ -1442,8 +1435,8 @@ const completeContributionPoints = asyncHandler(async (req, res) => {
 
 const completeStudentGuidedPoints = asyncHandler(async (req, res) => {
   const studentGuidedDomains = [
-    "PhD",
-    "Mtech"
+    "Mtech Students Guided",
+    "PhD Students Guided",
   ];
 
   const {teacherId} = req.params;
@@ -1479,6 +1472,8 @@ const completeStudentGuidedPoints = asyncHandler(async (req, res) => {
     },
   ]);
 
+  console.log({aggregatedPoints});
+
   if (aggregatedPoints.length === 0) {
     throw new ApiError(404, "No student guided points found");
   }
@@ -1492,6 +1487,7 @@ const completeStudentGuidedPoints = asyncHandler(async (req, res) => {
   const requestedTeacher = aggregatedPoints.find(
     (entry) => entry._id.toString() === teacherId.toString()
   );
+  console.log({requestedTeacher});
   const requestedTeacherRank = requestedTeacher
     ? aggregatedPoints.findIndex(
         (entry) => entry._id.toString() === teacherId.toString()
@@ -1901,7 +1897,6 @@ const calculateTeacherRanks = asyncHandler(async (req, res) => {
       performanceCategory,
     };
   });
-  
 
   // Sort teachers by total points (descending) and assign ranks
   rankedTeachers.sort((a, b) => b.totalPoints - a.totalPoints);
