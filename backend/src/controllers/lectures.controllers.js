@@ -20,14 +20,14 @@ const addNewLecture = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Subject Not Found");
   }
 
-  if (!topic || !duration || !date) {
+  if (!topic || !date) {
     throw new ApiError(400, "All fields are required");
   }
 
   const lecture = await Lecture.create({
     subject: subjectId,
     topic,
-    duration,
+    duration : 2,
     date,
     owner: teacherId,
   });
@@ -230,16 +230,19 @@ const markLectureAttendance = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Student IDs are required");
   }
 
+  console.log({ studentIds });
+
+  // (Optional) Verify if the students belong to the correct branch and year (based on your backend logic).
   const validStudents = await Student.find({
     _id: { $in: studentIds },
     branch,
     year,
   }).select("_id");
-  
-  console.log({validStudents})
+
+  console.log({ validStudents });
 
   const validStudentIds = validStudents.map((s) => s._id.toString());
-  console.log({validStudentIds});
+  console.log({ validStudentIds });
   const invalidIds = studentIds.filter((id) => !validStudentIds.includes(id));
 
   if (invalidIds.length > 0) {
@@ -263,7 +266,7 @@ const markLectureAttendance = asyncHandler(async (req, res) => {
 
   const attendance = await Attendance.create({
     subject_name,
-    subject_code,
+    subject_code, // new
     subject_credit,
     teacher,
     branch,
@@ -295,11 +298,10 @@ const viewAttendanceOfALecture = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Invalid Lecture ID");
   }
 
-  const attendance = await Attendance.findOne({ lecture: lectureId })
-    .populate({
-      path: "studentsPresent",
-      select: "name rollNumber email", // Specify the fields you want from the Student model
-    })
+  const attendance = await Attendance.findOne({ lecture: lectureId }).populate({
+    path: "studentsPresent",
+    select: "name rollNumber email", // Specify the fields you want from the Student model
+  });
 
   if (!attendance) {
     throw new ApiError(404, "Attendance not found for this lecture");

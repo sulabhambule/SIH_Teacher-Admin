@@ -39,6 +39,7 @@ import { JournalColumnDef } from "../Columns/PublicationsColumn/JournalColumn.js
 import { conferenceColumnDef } from "../Columns/PublicationsColumn/ConferenceColumn.jsx";
 import { chapterColumnDef } from "../Columns/PublicationsColumn/ChapterColumn.jsx";
 import { useParams } from "react-router-dom";
+import { ResearchInstructionMessage } from "@/components/ResearchInstructionMessage.jsx";
 
 function ExpandedRowContent({ data2 }) {
   const fieldLabels = {
@@ -641,45 +642,49 @@ export default function AdminResearchTable() {
         </div>
       )} */}
 
-      <div className="table-container">
-        <table className="w-full">
-          <thead>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers
-                  .filter((header) => header.column.id !== "actions") // Filter out the actions column
-                  .map((header) => (
-                    <th key={header.id} className="px-4 py-2">
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </th>
-                  ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {table.getRowModel().rows.map((row) => (
-              <tr key={row.id}>
-                {row
-                  .getVisibleCells()
-                  .filter((cell) => cell.column.id !== "actions") // Filter out the actions cell
-                  .map((cell) => (
-                    <td key={cell.id} className="px-4 py-2">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </td>
-                  ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {data2.length === 0 ? (
+        <ResearchInstructionMessage />
+      ) : (
+        <div className="table-container">
+          <table className="w-full">
+            <thead>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers
+                    .filter((header) => header.column.id !== "actions") // Filter out the actions column
+                    .map((header) => (
+                      <th key={header.id} className="px-4 py-2">
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </th>
+                    ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody>
+              {table.getRowModel().rows.map((row) => (
+                <tr key={row.id}>
+                  {row
+                    .getVisibleCells()
+                    .filter((cell) => cell.column.id !== "actions") // Filter out the actions cell
+                    .map((cell) => (
+                      <td key={cell.id} className="px-4 py-2">
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </td>
+                    ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       <DrawerComponent
         isOpen={isDrawerOpen}

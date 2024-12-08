@@ -22,69 +22,50 @@ import { upload } from "../middleware/multer.middleware.js";
 
 const router = express.Router();
 
-
 router.post(
   "/seminars/conducted",
   verifyTeacherJWT,
   upload.single("report"),
   uploadConductedSeminar
-); 
+);
 
-router.get(
-  "/conducted",
-  verifyTeacherJWT,
-  getConductedSeminars
-); 
+router.get("/conducted", verifyTeacherJWT, getConductedSeminars);
 
-router.put(
-  "/:seminarId/edit",
-  verifyTeacherJWT,
-  editUploadedSeminar
-); 
+router.put("/:seminarId/edit", verifyTeacherJWT, editUploadedSeminar);
 
-router.delete(
-  "/:seminarId",
-  verifyTeacherJWT,
-  deleteUploadedSeminar
-); 
+router.delete("/:seminarId", verifyTeacherJWT, deleteUploadedSeminar);
 
 router.post(
   "/:seminarId/release-feedback",
   verifyTeacherJWT,
   releaseFeedbackForm
-); 
+);
 
-router.get(
-  "/:seminarId/feedbacks",
-  verifyTeacherJWT,
-  viewFeedbacks
-); 
+router.get("/:seminarId/feedbacks", verifyTeacherJWT, viewFeedbacks);
 
 router.get(
   "/:seminarId/feedback-submitters",
   verifyTeacherJWT,
   getFeedbackSubmitters
-); 
+);
 
 router.post(
   "/:seminarId/attendance/:teacherId",
   verifyTeacherJWT,
   markAttendance
-); 
-
+);
 
 router.get(
   "/feedbacks-available",
   verifyStudentJWT,
   viewSeminarFeedbackFormsAvailable
-); 
+);
 
 router.post(
   "/:seminarId/fill-feedback",
   verifyStudentJWT,
   fillEligibleFeedbackForm
-); 
-
+);
 
 router.get("/students/:branchName", getStudentsByBranch);
 
@@ -110,6 +91,10 @@ router.put(
 
 router.get("/seminars/attended", verifyTeacherJWT, getAllSeminarsAttended);
 
-router.delete("/seminars/attended/:id", verifyTeacherJWT, deleteSeminarAttended);
+router.delete(
+  "/seminars/attended/:id",
+  verifyTeacherJWT,
+  deleteSeminarAttended
+);
 
 export default router;

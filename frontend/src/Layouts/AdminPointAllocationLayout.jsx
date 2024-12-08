@@ -13,8 +13,10 @@ import { motion } from "framer-motion";
 export default function AdminPointAllocationLayout() {
   return (
     <div className="container mx-auto p-4 space-y-6">
-      <h1 className="text-2xl font-bold text-center">Domain Points Management</h1>
-      
+      <h1 className="text-2xl font-bold text-center">
+        Domain Points Management
+      </h1>
+
       <Tabs defaultValue="publications" className="w-full">
         {/* Tab Triggers */}
         <TabsList className="grid w-full grid-cols-6">
@@ -25,7 +27,7 @@ export default function AdminPointAllocationLayout() {
           <TabsTrigger value="mentorship">Guidance & Mentorship</TabsTrigger>
           <TabsTrigger value="others">Other Activities</TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="publications">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -56,82 +58,92 @@ export default function AdminPointAllocationLayout() {
 
         {/* Events Tab Content */}
         <TabsContent value="events">
-        <motion.div
+          <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
-          <Card className="p-4">
-            <h2 className="text-xl font-semibold mb-4">Events</h2>
-            {/* Replace the following with your table or content component */}
-            <div>
-              <p>Content for managing Events (e.g., Organizing, Speaking, Judging).</p>
-              <EventsDomainTable/>
-            </div>
-          </Card>
+            <Card className="p-4">
+              <h2 className="text-xl font-semibold mb-4">Events</h2>
+              {/* Replace the following with your table or content component */}
+              <div>
+                <p>
+                  Content for managing Events (e.g., Organizing, Speaking,
+                  Judging).
+                </p>
+                <EventsDomainTable />
+              </div>
+            </Card>
           </motion.div>
-
         </TabsContent>
 
         {/* Research Projects Tab Content */}
         <TabsContent value="projects">
-        <motion.div
+          <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
-          <Card className="p-4">
-            <h2 className="text-xl font-semibold mb-4">Research Projects</h2>
-            {/* Replace the following with your table or content component */}
-            <div>
-              <p>Content for managing Research Projects (e.g., Funded, Completed).</p>
-              <ResearchProjectsDomainTable/>
-            </div>
-          </Card>
+            <Card className="p-4">
+              <h2 className="text-xl font-semibold mb-4">Research Projects</h2>
+              {/* Replace the following with your table or content component */}
+              <div>
+                <p>
+                  Content for managing Research Projects (e.g., Funded,
+                  Completed).
+                </p>
+                <ResearchProjectsDomainTable />
+              </div>
+            </Card>
           </motion.div>
-
         </TabsContent>
 
         {/* Guidance & Mentorship Tab Content */}
         <TabsContent value="mentorship">
-        <motion.div
+          <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
-          <Card className="p-4">
-            <h2 className="text-xl font-semibold mb-4">Guidance & Mentorship</h2>
-            {/* Replace the following with your table or content component */}
-            <div>
-              <p>Content for managing Mentorship (e.g., PhD, M.Tech, Undergraduate).</p>
-              <GuidanceDomainTable/>
-            </div>
-          </Card>
+            <Card className="p-4">
+              <h2 className="text-xl font-semibold mb-4">
+                Guidance & Mentorship
+              </h2>
+              {/* Replace the following with your table or content component */}
+              <div>
+                <p>
+                  Content for managing Mentorship (e.g., PhD, M.Tech,
+                  Undergraduate).
+                </p>
+                <GuidanceDomainTable />
+              </div>
+            </Card>
           </motion.div>
-
         </TabsContent>
 
         {/* Other Activities Tab Content */}
         <TabsContent value="others">
-        <motion.div
+          <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
-          <Card className="p-4">
-            <h2 className="text-xl font-semibold mb-4">Other Activities</h2>
-            {/* Replace the following with your table or content component */}
-            <div>
-              <p>Content for managing other activities (e.g., Miscellaneous, STTPs).</p>
-              <OtherDomainTable/>
-            </div>
-          </Card>
+            <Card className="p-4">
+              <h2 className="text-xl font-semibold mb-4">Other Activities</h2>
+              {/* Replace the following with your table or content component */}
+              <div>
+                <p>
+                  Content for managing other activities (e.g., Miscellaneous,
+                  STTPs).
+                </p>
+                <OtherDomainTable />
+              </div>
+            </Card>
           </motion.div>
-\
         </TabsContent>
       </Tabs>
     </div>

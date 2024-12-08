@@ -41,6 +41,7 @@ import BasicForm from "@/Forms/Student/BasicForm";
 import { Dialog } from "@/components/ui/dialog";
 import EnhancedLectureFeedback from "../AdminPortal/AdminList/LectureFeedback";
 import axios from "axios";
+import NoDataAvailable from "./NoDataAvailable";
 
 export default function LectureCards() {
   const [facultyData, setFacultyData] = useState([]);
@@ -209,4 +210,11 @@ export default function LectureCards() {
       </div>
     </>
   );
+
+  // return (
+  //   <div className="container mx-auto px-4 py-10">
+  //     <h1 className="text-center font-serif font-semibold mb-6">Fill Subject Feedback</h1>
+  //     <NoDataAvailable />
+  //   </div>
+  // )
 }

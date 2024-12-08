@@ -2,11 +2,10 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/AsyncHandler2.js";
 import { ApiError } from "../utils/ApiErrors.js";
 import { ExpertLecture } from "../models/expert-lectures.models.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
-import { v2 as cloudinary } from "cloudinary";
 import { uploadToGCS } from "../utils/googleCloud.js";
-
-// all routes done including delete and update
+import path from "path"
+import { Storage } from "@google-cloud/storage";
+const storage = new Storage();
 
 const uploadExpertLecture = asyncHandler(async (req, res) => {
   const { topic, duration, date, level, venue } = req.body;
@@ -21,7 +20,10 @@ const uploadExpertLecture = asyncHandler(async (req, res) => {
   }
 
   // const uploadExpertLectureReport = await uploadOnCloudinary(report.path);
-  const uploadExpertLectureReport = await uploadToGCS(report.path, "pdf-report"); 
+  const uploadExpertLectureReport = await uploadToGCS(
+    report.path,
+    "pdf-report"
+  );
 
   if (!uploadExpertLectureReport) {
     throw new ApiError(500, "Couldn't upload the pdf file");
@@ -80,37 +82,45 @@ const updateExpertLecture = asyncHandler(async (req, res) => {
   const { topic, duration, date } = req.body;
   const file = req.file;
 
-  const updateFields = { topic, duration, date };
-
   const expertLecture = await ExpertLecture.findById(id);
-
-  if (!expertLecture) {
-    throw new ApiError(404, "No such file found in the backend");
+  
+  if(!expertLecture){
+    throw new ApiError(400, 'No such record found in Expert Lecture');
   }
+
+  if(topic) expertLecture.topic = topic;
+  if(duration) expertLecture.duration = duration;
+  if(date) expertLecture.date = date;
+  
 
   if (file) {
-    if (expertLecture.report) {
-      const publicId = expertLecture.report.split("/").pop().split(".")[0]; // Extract the public_id from the Cloudinary URL
-      await cloudinary.uploader.destroy(publicId);
+    // Delete the previous file from GCS if it exists
+    // if (expertLecture.report) {
+    //   const publicUrlParts = expertLecture.report.split('/');
+    //   const fileName = publicUrlParts.slice(-2).join('/'); // Extract folder and filename
+    //   await storage.bucket(process.env.GCLOUD_STORAGE_BUCKET).file(fileName).delete();
+    // }
+
+    // Detect file type and set folder
+    const fileExtension = path.extname(file.originalname).toLowerCase();
+    const folder = fileExtension === '.pdf' ? 'pdf-reports' : 'images';
+
+    // Upload the new file to the appropriate folder
+    const fileUrl = await uploadToGCS(file.path, folder);
+
+    // Check if the upload was successful
+    if (!fileUrl) {
+      throw new ApiError(500, 'Error in uploading new file to Google Cloud');
     }
 
-    const uploadExpertLectureReport = await uploadOnCloudinary(file.path);
-
-    if (!uploadExpertLectureReport) {
-      throw new ApiError(500, "Couldn't upload your new file");
-    }
-
-    expertLecture.report = uploadExpertLectureReport.secure_url;
+    // Update the report field with the new public URL
+    expertLecture.report = fileUrl;
   }
 
-  const updatedExpertLecture = await ExpertLecture.findByIdAndUpdate(
-    id,
-    { $set: updateFields },
-    { new: true }
-  );
+  await expertLecture.save();
 
-  if (!updatedExpertLecture) {
-    throw new ApiError(404, "No such file found in the backend");
+  if (!expertLecture) {
+    throw new ApiError(500, "Something went wrong");
   }
 
   return res
@@ -118,7 +128,7 @@ const updateExpertLecture = asyncHandler(async (req, res) => {
     .json(
       new ApiResponse(
         200,
-        updatedExpertLecture,
+        expertLecture,
         "Updated the information successfully"
       )
     );

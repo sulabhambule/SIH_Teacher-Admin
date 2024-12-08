@@ -4,13 +4,15 @@ import { ApiError } from "../utils/ApiErrors.js";
 import { STTP } from "../models/sttp.models.js";
 import { uploadToGCS } from "../utils/googleCloud.js";
 import path from "path";
+import { Storage } from "@google-cloud/storage";
+const storage = new Storage();
 
 const uploadEvent = asyncHandler(async (req, res) => {
-  const { topic, duration, startDate, endDate, venue } = req.body;
+  const { topic, dailyDuration, startDate, endDate, venue } = req.body;
   const file = req.file;
 
   if (
-    [topic, duration, startDate, endDate, venue].some(
+    [topic, dailyDuration, startDate, endDate, venue].some(
       (field) => field.trim() === ''
     )
   ) {
@@ -34,7 +36,7 @@ const uploadEvent = asyncHandler(async (req, res) => {
 
   const sttp = await STTP.create({
     topic,
-    duration,
+    dailyDuration,
     startDate,
     endDate,
     venue,
@@ -94,12 +96,12 @@ const updateEvent = asyncHandler(async (req, res) => {
 
   // Handle file upload if a new file is provided
   if (file) {
-    // Delete the previous file from GCS if it exists
-    if (sttp.report) {
-      const publicUrlParts = sttp.report.split('/');
-      const fileName = publicUrlParts.slice(-2).join('/'); // Extract folder and filename
-      await storage.bucket(bucketName).file(fileName).delete();
-    }
+    // // Delete the previous file from GCS if it exists
+    // if (sttp.report) {
+    //   const publicUrlParts = sttp.report.split('/');
+    //   const fileName = publicUrlParts.slice(-2).join('/'); // Extract folder and filename
+    //   await storage.bucket(process.env.GCLOUD_STORAGE_BUCKET).file(fileName).delete();
+    // }
 
     // Detect file type and set folder
     const fileExtension = path.extname(file.originalname).toLowerCase();

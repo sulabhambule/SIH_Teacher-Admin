@@ -1,7 +1,7 @@
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/AsyncHandler2.js";
 import { ApiError } from "../utils/ApiErrors.js";
-import {DomainPoint} from "../models/domainpoints.models.js"
+import { DomainPoint } from "../models/domainpoints.models.js";
 
 const addPoints = asyncHandler(async (req, res) => {
   const { domain, points } = req.body;
@@ -26,8 +26,9 @@ const addPoints = asyncHandler(async (req, res) => {
 
 // Update points for an existing domain
 const updatePoints = asyncHandler(async (req, res) => {
-  const { domainId } = req.params;
+  const { id } = req.params;
   const { points } = req.body;
+  const domainId = id;
 
   // Validate the presence of `domainId` and `points`
   if (!domainId) {
@@ -120,7 +121,10 @@ const getJournalPoints = asyncHandler(async (req, res) => {
 
 // Edit journal domain points
 const editJournalPoints = asyncHandler(async (req, res) => {
-  const { journalPoints } = req.body;
+  const { points } = req.body;
+
+  // const { journalPoints } = req.body;
+  const journalPoints = points;
 
   if (!journalPoints || !Array.isArray(journalPoints)) {
     throw new ApiError(400, "Invalid journal points data");
@@ -169,14 +173,15 @@ const getBookPoints = asyncHandler(async (req, res) => {
 
 // Edit book domain points
 const editBookPoints = asyncHandler(async (req, res) => {
-  const { bookPoints } = req.body;
+  const { points } = req.body;
+  console.log(points);
 
-  if (!bookPoints || !Array.isArray(bookPoints)) {
+  if (!points || !Array.isArray(points)) {
     throw new ApiError(400, "Invalid book points data");
   }
 
   const updatedBookPoints = await Promise.all(
-    bookPoints.map(async ({ domain, points }) => {
+    points.map(async ({ domain, points }) => {
       const updatedPoint = await DomainPoint.findOneAndUpdate(
         { domain },
         { points },
@@ -228,7 +233,9 @@ const getChapterPoints = asyncHandler(async (req, res) => {
 
 // Edit chapter domain points
 const editChapterPoints = asyncHandler(async (req, res) => {
-  const { chapterPoints } = req.body;
+  
+  const { points } = req.body;
+  const chapterPoints = points;
 
   if (!chapterPoints || !Array.isArray(chapterPoints)) {
     throw new ApiError(400, "Invalid chapter points data");
@@ -287,7 +294,9 @@ const getConferencePoints = asyncHandler(async (req, res) => {
 
 // Edit conference domain points
 const editConferencePoints = asyncHandler(async (req, res) => {
-  const { conferencePoints } = req.body;
+  const { points } = req.body;
+
+  const conferencePoints = points
 
   if (!conferencePoints || !Array.isArray(conferencePoints)) {
     throw new ApiError(400, "Invalid conference points data");
@@ -342,7 +351,9 @@ const getPatentPoints = asyncHandler(async (req, res) => {
 
 // Edit patent domain points
 const editPatentPoints = asyncHandler(async (req, res) => {
-  const { patentPoints } = req.body;
+  const { points } = req.body;
+
+  const patentPoints = points
 
   if (!patentPoints || !Array.isArray(patentPoints)) {
     throw new ApiError(400, "Invalid patent points data");
@@ -1488,7 +1499,8 @@ const getAllEventPoints = asyncHandler(async (req, res) => {
 
 // Edit all event-related domain points
 const editAllEventPoints = asyncHandler(async (req, res) => {
-  const { eventPoints } = req.body;
+  const { points } = req.body;
+  const eventRouter = points;
 
   if (!eventPoints || !Array.isArray(eventPoints)) {
     throw new ApiError(400, "Invalid event points data");
@@ -1515,123 +1527,6 @@ const editAllEventPoints = asyncHandler(async (req, res) => {
         200,
         updatedEventPoints,
         "All event-related points updated successfully"
-      )
-    );
-});
-
-const getAllResearchProjectPoints = asyncHandler(async (req, res) => {
-  const researchProjectDomains = [
-    "Ongoing Funded Above ₹10 Lakh Research",
-    "Ongoing Funded Below ₹10 Lakh Research",
-    "Completed Funded Above ₹10 Lakh Research",
-    "Completed Funded Below ₹10 Lakh Research",
-  ];
-  const researchProjectPoints = await DomainPoint.find({
-    domain: { $in: researchProjectDomains },
-  });
-
-  if (!researchProjectPoints || researchProjectPoints.length === 0) {
-    throw new ApiError(404, "No research project points found");
-  }
-
-  return res
-    .status(200)
-    .json(
-      new ApiResponse(
-        200,
-        researchProjectPoints,
-        "Research project points retrieved successfully"
-      )
-    );
-});
-
-const editResearchProjectPoints = asyncHandler(async (req, res) => {
-  const { researchProjectPoints } = req.body;
-
-  if (!researchProjectPoints || !Array.isArray(researchProjectPoints)) {
-    throw new ApiError(400, "Invalid research project points data");
-  }
-
-  const updatedResearchProjectPoints = await Promise.all(
-    researchProjectPoints.map(async ({ domain, points }) => {
-      const updatedPoint = await DomainPoint.findOneAndUpdate(
-        { domain },
-        { points },
-        { new: true, runValidators: true }
-      );
-      if (!updatedPoint) {
-        throw new ApiError(404, `Domain not found: ${domain}`);
-      }
-      return updatedPoint;
-    })
-  );
-
-  return res
-    .status(200)
-    .json(
-      new ApiResponse(
-        200,
-        updatedResearchProjectPoints,
-        "Research project points updated successfully"
-      )
-    );
-});
-
-const getAllExtraContributionsPoints = asyncHandler(async (req, res) => {
-  const extraContributionsDomains = [
-    "Industrial-Visit-Other",
-    "Workshop-Conducted-Other",
-    "Extra-Course-Studied-Other",
-    "Made-Study-Materials-Other",
-    "Miscellaneous",
-  ];
-  const extraContributionsPoints = await DomainPoint.find({
-    domain: { $in: extraContributionsDomains },
-  });
-
-  if (!extraContributionsPoints || extraContributionsPoints.length === 0) {
-    throw new ApiError(404, "No extra contributions points found");
-  }
-
-  return res
-    .status(200)
-    .json(
-      new ApiResponse(
-        200,
-        extraContributionsPoints,
-        "Extra contributions points retrieved successfully"
-      )
-    );
-});
-
-const editExtraContributionsPoints = asyncHandler(async (req, res) => {
-  const { extraContributionsPoints } = req.body;
-
-  if (!extraContributionsPoints || !Array.isArray(extraContributionsPoints)) {
-    throw new ApiError(400, "Invalid extra contributions points data");
-  }
-
-  const updatedExtraContributionsPoints = await Promise.all(
-    extraContributionsPoints.map(async ({ domain, points }) => {
-      const updatedPoint = await DomainPoint.findOneAndUpdate(
-        { domain },
-        { points },
-        { new: true, runValidators: true }
-      );
-      if (!updatedPoint) {
-        throw new ApiError(404, `Domain not found: ${domain}`);
-      }
-      return updatedPoint;
-    })
-  );
-
-  return res
-    .status(200)
-    .json(
-      new ApiResponse(
-        200,
-        updatedExtraContributionsPoints,
-        "Extra contributions points updated successfully"
       )
     );
 });
@@ -1689,8 +1584,4 @@ export {
   editSeminarPoints,
   getAllEventPoints,
   editAllEventPoints,
-  getAllResearchProjectPoints,
-  editResearchProjectPoints,
-  getAllExtraContributionsPoints,
-  editExtraContributionsPoints,
 };
