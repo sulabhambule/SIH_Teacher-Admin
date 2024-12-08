@@ -14,11 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { z } from "zod";
-<<<<<<< HEAD
-import { ExternalLink } from 'lucide-react';
-=======
 import { ExternalLink } from "lucide-react";
->>>>>>> f2cccde2a4d3ee6d77897b176cb999593b52814d
 
 function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
   const generateSchema = () => {
@@ -41,17 +37,6 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
           ].includes(col.accessorKey)
         ) {
           schemaFields[col.accessorKey] = z.date().nullable();
-<<<<<<< HEAD
-        }
-        else if (col.accessorKey === "report") {
-          schemaFields[col.accessorKey] = z.union([
-            z.instanceof(File),
-            z.string().url(),
-            z.string().length(0)
-          ]).optional();
-        }
-        else if (["dailyDuration", "duration"].includes(col.accessorKey)) {
-=======
         } else if (col.accessorKey === "report") {
           schemaFields[col.accessorKey] = z
             .union([z.instanceof(File), z.string().url(), z.string().length(0)])
@@ -67,14 +52,10 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
             "daily_duration",
           ].includes(col.accessorKey)
         ) {
->>>>>>> f2cccde2a4d3ee6d77897b176cb999593b52814d
           schemaFields[col.accessorKey] = z.coerce
             .number()
             .min(1, { message: `${col.header} must be greater than 0` });
         }
-<<<<<<< HEAD
-        else {
-=======
         // Handle authors array
         else if (col.accessorKey === "authors") {
           schemaFields[col.accessorKey] = z
@@ -101,7 +82,6 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
         } else if (col.accessorKey === "projectType") {
           schemaFields[col.accessorKey] = z.enum(["Major", "Minor"]);
         } else {
->>>>>>> f2cccde2a4d3ee6d77897b176cb999593b52814d
           schemaFields[col.accessorKey] = z
             .string()
             .min(1, { message: `${col.header} is required` });
@@ -165,11 +145,8 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
   }, [isOpen, rowData, setValue, watch]);
 
   const handleFormSubmit = (data) => {
-<<<<<<< HEAD
-=======
     console.log(data);
 
->>>>>>> f2cccde2a4d3ee6d77897b176cb999593b52814d
     const formData = new FormData();
 
     Object.entries(data).forEach(([key, value]) => {
@@ -218,16 +195,10 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
                   col.accessorKey !== "actions" &&
                   col.accessorKey !== "View"
                 ) {
-<<<<<<< HEAD
-                  const headerText = typeof col.header === 'function'
-                    ? col.accessorKey
-                    : typeof col.header === 'string'
-=======
                   const headerText =
                     typeof col.header === "function"
                       ? col.accessorKey
                       : typeof col.header === "string"
->>>>>>> f2cccde2a4d3ee6d77897b176cb999593b52814d
                       ? col.header
                       : col.accessorKey;
 
@@ -239,25 +210,6 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
                       >
                         {headerText}
                       </label>
-<<<<<<< HEAD
-                      {col.dropdownOptions ? (
-                        <Select
-                          onValueChange={(value) => setValue(col.accessorKey, value)}
-                          value={watch(col.accessorKey) || ""}
-                        >
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder={`Select ${headerText}`} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {col.dropdownOptions.map((option) => (
-                              <SelectItem key={option} value={option}>
-                                {option}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      ) : ["Date", "startDate", "publishedDate", "publicationDate", "addedOn", "endDate", "date"].includes(col.accessorKey) ? (
-=======
                       {col.accessorKey === "journalType" ? (
                         <Select
                           onValueChange={(value) =>
@@ -287,7 +239,6 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
                           "endDate",
                           "date",
                         ].includes(col.accessorKey) ? (
->>>>>>> f2cccde2a4d3ee6d77897b176cb999593b52814d
                         <DatePicker
                           selected={watch(col.accessorKey)}
                           onChange={(date) => setValue(col.accessorKey, date)}
@@ -297,24 +248,6 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
                               : "border-gray-300"
                           }`}
                         />
-<<<<<<< HEAD
-                      ) : col.accessorKey === "report" ? (
-                        <div className="space-y-2">
-                          {rowData && rowData.report && (
-                            <div className="flex items-center gap-2 mb-2">
-                              <span className="text-sm text-gray-500">Current file:</span>
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                onClick={() => window.open(rowData.report, '_blank')}
-                                className="flex items-center gap-2"
-                              >
-                                View Report <ExternalLink className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          )}
-=======
                       ) : [
                           "volume",
                           "issue",
@@ -400,22 +333,15 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
                               </a>
                             </div>
                           )} */}
->>>>>>> f2cccde2a4d3ee6d77897b176cb999593b52814d
                           <input
                             type="file"
                             id={col.accessorKey}
                             onChange={(e) => {
                               const file = e.target.files?.[0];
-<<<<<<< HEAD
-                              if (file) {
-                                setValue(col.accessorKey, file);
-                              }
-=======
                               setValue(
                                 col.accessorKey,
                                 file || rowData?.report || ""
                               );
->>>>>>> f2cccde2a4d3ee6d77897b176cb999593b52814d
                             }}
                             className={`w-full p-2 border rounded ${
                               errors[col.accessorKey]
@@ -424,36 +350,18 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
                             }`}
                           />
                           <p className="text-sm text-gray-500">
-<<<<<<< HEAD
-                            {rowData?.report ? "Upload new file to replace current one" : "Choose a file"}
-                          </p>
-                        </div>
-                      ) : ["dailyDuration", "duration"].includes(col.accessorKey) ? (
-                        <Input
-                          id={col.accessorKey}
-                          type="number"
-                          min="1"
-                          {...register(col.accessorKey)}
-                          className={errors[col.accessorKey] ? "border-red-500" : ""}
-                        />
-=======
                             {rowData?.report
                               ? "Choose a file to replace the current report"
                               : "Choose a file"}
                           </p>
                         </div>
->>>>>>> f2cccde2a4d3ee6d77897b176cb999593b52814d
                       ) : (
                         <Input
                           id={col.accessorKey}
                           {...register(col.accessorKey)}
-<<<<<<< HEAD
-                          className={errors[col.accessorKey] ? "border-red-500" : ""}
-=======
                           className={
                             errors[col.accessorKey] ? "border-red-500" : ""
                           }
->>>>>>> f2cccde2a4d3ee6d77897b176cb999593b52814d
                         />
                       )}
                       {errors[col.accessorKey] && (
