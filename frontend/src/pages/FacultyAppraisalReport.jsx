@@ -21,6 +21,7 @@ import { Download } from "lucide-react";
 import axios from "axios";
 import AppraisalReportTable from "@/table/Tables/AppraisalReportTable";
 import { useParams } from "react-router-dom";
+import LoadingPage from "./LoadingPage";
 
 const FacultyAppraisalReport = ({
   facultyName,
@@ -31,6 +32,7 @@ const FacultyAppraisalReport = ({
   const [rank, setRank] = useState(null);
   const [point, setPoint] = useState(null);
   const [performance, setPerformance] = useState(null);
+  const [loading, setIsLoading] = useState(true)
 
   const reportRef = useRef(null);
   const signatureRef = useRef(null);
@@ -54,6 +56,7 @@ const FacultyAppraisalReport = ({
         const errorMessage = error.response?.data?.message || error.message;
         console.error("Error fetching teacher data:", errorMessage);
       }
+
     };
 
     fetchData();
@@ -110,6 +113,7 @@ const FacultyAppraisalReport = ({
       } catch (error) {
         console.error("Error fetching appraisal data:", error.message);
       }
+   
     };
 
     fetchAppraisalData();
@@ -152,6 +156,8 @@ const FacultyAppraisalReport = ({
 
     fetchRank();
   }, [id]);
+
+
 
   const handleDownload = () => {
     const input = reportRef.current;
@@ -209,6 +215,18 @@ const FacultyAppraisalReport = ({
       canvas.removeEventListener("mouseout", () => {});
     };
   }, []);
+
+
+//   if(loading){
+// return (
+//   <LoadingPage/>
+// )
+//   }
+
+
+//   if(appraisalData){
+//     setIsLoading(false);
+//   }
 
   return (
     <div className="container mx-auto p-4 relative">
