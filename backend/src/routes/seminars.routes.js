@@ -11,6 +11,10 @@ import {
   viewSeminarFeedbackFormsAvailable,
   fillEligibleFeedbackForm,
   getStudentsByBranch,
+  addSeminarAttended,
+  editSeminarAttended,
+  getAllSeminarsAttended,
+  deleteSeminarAttended,
 } from "../controllers/seminars.controllers.js";
 import { verifyTeacherJWT } from "../middleware/teacher.auth.middleware.js";
 import { verifyStudentJWT } from "../middleware/student.auth.middleware.js";
@@ -83,5 +87,29 @@ router.post(
 
 
 router.get("/students/:branchName", getStudentsByBranch);
+
+router.post(
+  "/seminars/attended",
+  verifyTeacherJWT,
+  upload.fields([
+    { name: "images", maxCount: 10 },
+    { name: "report", maxCount: 1 },
+  ]),
+  addSeminarAttended
+);
+
+router.put(
+  "/seminars/attended/:id",
+  verifyTeacherJWT,
+  upload.fields([
+    { name: "images", maxCount: 10 },
+    { name: "report", maxCount: 1 },
+  ]),
+  editSeminarAttended
+);
+
+router.get("/seminars/attended", verifyTeacherJWT, getAllSeminarsAttended);
+
+router.delete("/seminars/attended/:id", verifyTeacherJWT, deleteSeminarAttended);
 
 export default router;
