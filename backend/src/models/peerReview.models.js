@@ -12,43 +12,43 @@ const peerReviewSchema = new Schema(
       ref: "Teacher", // The person providing the review
       required: true,
     },
-    question1_rating: {
+    question1_rating:{
       type: Number,
       required: true,
     },
-    question2_rating: {
+    question2_rating:{
       type: Number,
       required: true,
     },
-    question3_rating: {
+    question3_rating:{
       type: Number,
       required: true,
     },
-    question4_rating: {
+    question4_rating:{
       type: Number,
       required: true,
     },
-    question5_rating: {
+    question5_rating:{
       type: Number,
       required: true,
     },
-    question6_rating: {
+    question6_rating:{
       type: Number,
       required: true,
     },
-    question7_rating: {
+    question7_rating:{
       type: Number,
       required: true,
     },
-    question8_rating: {
+    question8_rating:{
       type: Number,
       required: true,
     },
-    question9_rating: {
+    question9_rating:{
       type: Number,
       required: true,
     },
-    question10_rating: {
+    question10_rating:{
       type: Number,
       required: true,
     },
@@ -58,15 +58,8 @@ const peerReviewSchema = new Schema(
       trim: true,
     },
     submissionTime: {
-      type: Date,
+      type: Date, 
       required: true,
-    },
-    feedbackReleased: {
-      type: Boolean, // Whether the feedback has been released to the reviewee
-      default: false,
-    },
-    activeUntil: {
-      type: Date, // The deadline for the reviewee to view the feedback
     },
     owner: {
       type: Schema.Types.ObjectId,
@@ -76,19 +69,13 @@ const peerReviewSchema = new Schema(
   { timestamps: true }
 );
 
-// Static method to reset feedbackReleased for expired reviews
-peerReviewSchema.statics.resetExpiredFeedbacks = async function () {
-  const now = new Date();
-
-  const result = await this.updateMany(
-    {
-      feedbackReleased: true,
-      activeUntil: { $lte: now },
-    },
-    { $set: { feedbackReleased: false } }
-  );
-
-  return result;
-};
+// Pre-save hook to calculate the total score
+peerReviewSchema.pre("save", function (next) {
+  if (this.scores && this.scores.criteria) {
+    const totalScore = this.scores.criteria.reduce((sum, criterion) => sum + criterion.score, 0);
+    this.scores.totalScore = totalScore;
+  }
+  next();
+});
 
 export const PeerReview = mongoose.model("PeerReview", peerReviewSchema);

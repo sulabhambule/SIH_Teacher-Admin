@@ -1,5 +1,7 @@
 import mongoose, { Schema } from "mongoose";
+// import { DomainPoint } from "./domainpoints.models";
 import { Point } from "./points.models.js";
+// import { domainPoints } from "../utils/domainPoints.js";
 import { DomainPoint } from "./domainpoints.models.js";
 
 const contributionsSchema = new Schema(
@@ -27,7 +29,7 @@ const contributionsSchema = new Schema(
       required: true,
       enum: [
         "Industrial Visit",
-        "Workshop Conducted",
+        "Wookshop Conducted",
         "Extra Course Studied",
         "Made Study Materials",
         "Miscellaneous",

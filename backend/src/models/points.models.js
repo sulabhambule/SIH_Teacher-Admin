@@ -100,7 +100,7 @@ const pointSchema = new Schema(
         "Completed Funded Above ₹10 Lakh Research",
         "Completed Funded Below ₹10 Lakh Research",
         "Industrial-Visit-Other",
-        "Workshop-Conducted-Other",
+        "Wookshop-Conducted-Other",
         "Extra-Course-Studied-Other",
         "Made-Study-Materials-Other",
         "Miscellaneous",

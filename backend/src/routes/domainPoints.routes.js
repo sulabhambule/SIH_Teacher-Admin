@@ -52,10 +52,6 @@ import {
   editSeminarPoints,
   getAllEventPoints,
   editAllEventPoints,
-  getAllResearchProjectPoints,
-  editResearchProjectPoints,
-  getAllExtraContributionsPoints,
-  editExtraContributionsPoints,
 } from "../controllers/domainPoints.controllers.js";
 import { verifyAdminJWT } from "../middleware/admin.auth.middleware.js";
 import { verifyTeacherJWT } from "../middleware/teacher.auth.middleware.js";
@@ -65,7 +61,7 @@ const teacherRouter = express.Router();
 
 // Admin routes
 adminRouter.post("/points", addPoints);
-adminRouter.put("/points/:domainId", updatePoints);
+adminRouter.put("/points/:id", updatePoints);
 adminRouter.delete("/points/:domainId", deletePoints);
 adminRouter.get("/points", getAllPoints);
 
@@ -93,37 +89,60 @@ adminRouter.put("/practical-course", editPracticalCoursePoints);
 adminRouter.put("/sttp", editSttpPoints);
 adminRouter.put("/seminar", editSeminarPoints);
 adminRouter.put("/all-event-points", editAllEventPoints);
-adminRouter.put("/research-project", editResearchProjectPoints);
-adminRouter.put("/extra-contributions", editExtraContributionsPoints);
+
+adminRouter.get("/points", getAllPoints); // done
+adminRouter.get("/journal", getJournalPoints); // done
+adminRouter.get("/book", getBookPoints); // done
+adminRouter.get("/book", getBookPoints); // done
+adminRouter.get("/chapter", getChapterPoints); // done 
+adminRouter.get("/conference", getConferencePoints); // done
+adminRouter.get("/patent", getPatentPoints);  // done
+adminRouter.get("/project", getProjectPoints); // done
+adminRouter.get("/student-guidance", getStudentGuidancePoints);
+adminRouter.get("/event-organizer", getEventOrganizerPoints);
+adminRouter.get("/event-speaker", getEventSpeakerPoints);
+adminRouter.get("/event-judge", getEventJudgePoints);
+adminRouter.get("/event-coordinator", getEventCoordinatorPoints);
+adminRouter.get("/event-volunteer", getEventVolunteerPoints);
+adminRouter.get("/event-evaluator", getEventEvaluatorPoints);
+adminRouter.get("/event-panelist", getEventPanelistPoints);
+adminRouter.get("/event-mentor", getEventMentorPoints);
+adminRouter.get("/event-session-chair", getEventSessionChairPoints);
+adminRouter.get("/event-reviewer", getEventReviewerPoints);
+adminRouter.get("/expert-lecture", getExpertLecturePoints);
+adminRouter.get("/seminar-attended", getSeminarAttendedPoints);
+adminRouter.get("/theory-course", getTheoryCoursePoints);
+adminRouter.get("/practical-course", getPracticalCoursePoints);
+adminRouter.get("/sttp", getSttpPoints);
+adminRouter.get("/seminar", getSeminarPoints);
+adminRouter.get("/all-event-points", getAllEventPoints);
 
 // Teacher routes
-teacherRouter.get("/points", getAllPoints);
-teacherRouter.get("/journal", getJournalPoints);
-teacherRouter.get("/book", getBookPoints);
-teacherRouter.get("/chapter", getChapterPoints);
-teacherRouter.get("/conference", getConferencePoints);
-teacherRouter.get("/patent", getPatentPoints);
-teacherRouter.get("/project", getProjectPoints);
-teacherRouter.get("/student-guidance", getStudentGuidancePoints);
-teacherRouter.get("/event-organizer", getEventOrganizerPoints);
-teacherRouter.get("/event-speaker", getEventSpeakerPoints);
-teacherRouter.get("/event-judge", getEventJudgePoints);
-teacherRouter.get("/event-coordinator", getEventCoordinatorPoints);
-teacherRouter.get("/event-volunteer", getEventVolunteerPoints);
+teacherRouter.get("/te-points", getAllPoints);
+teacherRouter.get("/te-journal", getJournalPoints);
+teacherRouter.get("/te-book", getBookPoints);
+teacherRouter.get("/te-chapter", getChapterPoints);
+teacherRouter.get("/te-conference", getConferencePoints);
+teacherRouter.get("/te-patent", getPatentPoints);
+teacherRouter.get("/te-project", getProjectPoints);
+teacherRouter.get("/te-student-guidance", getStudentGuidancePoints);
+teacherRouter.get("/te-event-organizer", getEventOrganizerPoints);
+teacherRouter.get("/te-event-speaker", getEventSpeakerPoints);
+teacherRouter.get("/te-event-judge", getEventJudgePoints);
+teacherRouter.get("/te-event-coordinator", getEventCoordinatorPoints);
+teacherRouter.get("/te-event-volunteer", getEventVolunteerPoints);
 teacherRouter.get("/event-evaluator", getEventEvaluatorPoints);
-teacherRouter.get("/event-panelist", getEventPanelistPoints);
-teacherRouter.get("/event-mentor", getEventMentorPoints);
+teacherRouter.get("/te-event-panelist", getEventPanelistPoints);
+teacherRouter.get("/te-event-mentor", getEventMentorPoints);
 teacherRouter.get("/event-session-chair", getEventSessionChairPoints);
-teacherRouter.get("/event-reviewer", getEventReviewerPoints);
-teacherRouter.get("/expert-lecture", getExpertLecturePoints);
-teacherRouter.get("/seminar-attended", getSeminarAttendedPoints);
-teacherRouter.get("/theory-course", getTheoryCoursePoints);
-teacherRouter.get("/practical-course", getPracticalCoursePoints);
-teacherRouter.get("/sttp", getSttpPoints);
-teacherRouter.get("/seminar", getSeminarPoints);
-teacherRouter.get("/all-event-points", getAllEventPoints);
-teacherRouter.get("/research-project", getAllResearchProjectPoints);
-teacherRouter.get("/extra-contributions", getAllExtraContributionsPoints);
+teacherRouter.get("/te-event-reviewer", getEventReviewerPoints);
+teacherRouter.get("/te-expert-lecture", getExpertLecturePoints);
+teacherRouter.get("/te-seminar-attended", getSeminarAttendedPoints);
+teacherRouter.get("/te-theory-course", getTheoryCoursePoints);
+teacherRouter.get("/te-practical-course", getPracticalCoursePoints);
+teacherRouter.get("/te-sttp", getSttpPoints);
+teacherRouter.get("/te-seminar", getSeminarPoints);
+teacherRouter.get("/te-all-event-points", getAllEventPoints);
 
 // Apply middleware to routers
 const adminRoutes = express.Router();

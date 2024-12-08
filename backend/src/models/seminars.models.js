@@ -32,34 +32,25 @@ const seminarSchema = new Schema(
       default: false,
     },
     activeUntil: {
-      type: Date,
+      type: Date, // Form availability period
     },
   },
   { timestamps: true }
 );
 
-// Helper function to fetch base points for a domain
+// Helper function to retrieve points for a domain
 const getPointsForDomain = async (domain) => {
   const domainPoint = await DomainPoint.findOne({ domain });
-  return domainPoint?.points || 0;
+  return domainPoint?.points || 0; // Default to 0 if no points are defined
 };
 
-// Ensure a seminar points record exists for every teacher
+// Post-save hook: Allocate 1 point for seminar creation
 seminarSchema.post("save", async function (doc) {
   const basePoints = await getPointsForDomain("Seminar");
-  const existingPoint = await Point.findOne({ owner: doc.owner, domain: "Seminar" });
 
-  if (existingPoint) {
-    // Update existing points record with new seminar base points
-    await Point.findByIdAndUpdate(
-      existingPoint._id,
-      { $inc: { points: basePoints } },
-      { new: true }
-    );
-  } else {
-    // Create a new points record if none exists
+  if (basePoints > 0) {
     await Point.create({
-      date: new Date(), // Use the current date
+      date: doc.date, // Points allocated on seminar creation date
       points: basePoints,
       domain: "Seminar",
       owner: doc.owner,
@@ -67,33 +58,39 @@ seminarSchema.post("save", async function (doc) {
   }
 });
 
-// Before saving, ensure feedbackReleased is updated based on activeUntil
+// Middleware to handle feedbackReleased status based on activeUntil
 seminarSchema.pre("save", function (next) {
-  if (this.activeUntil && this.activeUntil < new Date()) {
+  if (this.activeUntil < new Date()) {
     this.feedbackReleased = false;
   }
   next();
 });
 
-// Method to allocate feedback points to the seminar's points record
+// Method to calculate and allocate feedback points
 seminarSchema.methods.allocateFeedbackPoints = async function () {
-  if (!this.feedbackReleased && this.activeUntil && this.activeUntil < new Date()) {
+  // Ensure feedbackReleased is false and activeUntil has passed
+  if (!this.feedbackReleased && this.activeUntil < new Date()) {
+    // Fetch all feedbacks for this seminar
     const feedbacks = await SeminarFeedback.find({ seminar: this._id });
 
     if (feedbacks.length > 0) {
+      // Calculate average feedback rating
       const averageRating =
-        feedbacks.reduce((sum, feedback) => sum + feedback.rating, 0) / feedbacks.length;
+        feedbacks.reduce((sum, feedback) => sum + feedback.rating, 0) /
+        feedbacks.length;
 
+      // Find the original seminar point document
       const seminarPoint = await Point.findOne({
         owner: this.owner,
         domain: "Seminar",
+        date: this.date, // Ensure points are updated for the original seminar date
       });
 
       if (seminarPoint) {
-        // Add feedback points to the existing seminar points record
+        // Add feedback points to the existing document
         await Point.findByIdAndUpdate(
           seminarPoint._id,
-          { $inc: { points: averageRating } },
+          { $inc: { points: averageRating } }, // Add average feedback points
           { new: true }
         );
       }
@@ -101,27 +98,18 @@ seminarSchema.methods.allocateFeedbackPoints = async function () {
   }
 };
 
-// Ensure points and feedback are cleaned up after seminar deletion
+// Post-remove hook: Handle point deletion on seminar deletion
 seminarSchema.post("findOneAndDelete", async function (doc) {
   if (!doc) return;
 
-  const basePoints = await getPointsForDomain("Seminar");
-
-  const seminarPoint = await Point.findOne({
+  // Delete seminar points
+  await Point.deleteMany({
     owner: doc.owner,
     domain: "Seminar",
+    date: doc.date, // Match seminar's creation date
   });
 
-  if (seminarPoint) {
-    // Deduct base points related to the deleted seminar
-    await Point.findByIdAndUpdate(
-      seminarPoint._id,
-      { $inc: { points: -basePoints } },
-      { new: true }
-    );
-  }
-
-  // Remove all feedback related to the seminar
+  // Optionally, handle any other cleanup like feedback deletion
   await SeminarFeedback.deleteMany({ seminar: doc._id });
 });
 

@@ -3,9 +3,13 @@ import { asyncHandler } from "../utils/AsyncHandler2.js";
 import { ApiError } from "../utils/ApiErrors.js";
 import { Seminar } from "../models/seminars.models.js";
 import { SeminarFeedback } from "../models/feedback-seminars.models.js";
-import { uploadToGCS, deleteFromGCS } from "../utils/googleCloud.js";
 import { SAttendance } from "../models/seminarAttendance.models.js";
 import { Student } from "../models/students.models.js";
+import { SeminarAttended } from "../models/seminarAttended.models.js";
+import { uploadToGCS } from "../utils/googleCloud.js";
+import path from "path";
+import { Storage } from "@google-cloud/storage";
+const storage = new Storage();
 
 const uploadConductedSeminar = asyncHandler(async (req, res) => {
   const { topic, duration, date } = req.body;
@@ -56,8 +60,8 @@ const getConductedSeminars = asyncHandler(async (req, res) => {
 
 const editUploadedSeminar = asyncHandler(async (req, res) => {
   const { seminarId } = req.params;
-  const { topic, duration, date, deleteReport } = req.body;
-
+  const { topic, duration, date } = req.body;
+  const file = req.file;
   // Find the seminar
   const seminar = await Seminar.findById(seminarId);
   if (!seminar) {
@@ -69,19 +73,35 @@ const editUploadedSeminar = asyncHandler(async (req, res) => {
   if (duration) seminar.duration = duration;
   if (date) seminar.date = new Date(date);
 
-  // Handle report updates
-  if (deleteReport && seminar.report) {
-    await deleteFromGCS(seminar.report); // Remove the report from GCS
-    seminar.report = undefined; // Clear the report field
-  }
+  if (file) {
+    // Delete the previous file from GCS if it exists
+    // if (expertLecture.report) {
+    //   const publicUrlParts = expertLecture.report.split('/');
+    //   const fileName = publicUrlParts.slice(-2).join('/'); // Extract folder and filename
+    //   await storage.bucket(process.env.GCLOUD_STORAGE_BUCKET).file(fileName).delete();
+    // }
 
-  if (req.file) {
-    const reportUrl = await uploadToGCS(req.file.path, "reports");
-    seminar.report = reportUrl; // Update with new report
+    // Detect file type and set folder
+    const fileExtension = path.extname(file.originalname).toLowerCase();
+    const folder = fileExtension === ".pdf" ? "pdf-reports" : "images";
+
+    // Upload the new file to the appropriate folder
+    const fileUrl = await uploadToGCS(file.path, folder);
+
+    // Check if the upload was successful
+    if (!fileUrl) {
+      throw new ApiError(500, "Error in uploading new file to Google Cloud");
+    }
+
+    // Update the report field with the new public URL
+    seminar.report = fileUrl;
   }
 
   await seminar.save();
 
+  if (!seminar) {
+    throw new ApiError(500, "Something went wrong");
+  }
   res
     .status(200)
     .json(new ApiResponse(200, seminar, "Seminar updated successfully"));
@@ -313,6 +333,155 @@ const fillEligibleFeedbackForm = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, feedback, "Feedback submitted successfully."));
 });
 
+const addSeminarAttended = asyncHandler(async (req, res) => {
+  const { topic, seminarType, date, venue } = req.body;
+  const files = req.files || {};
+
+  if (!topic || !seminarType || !date || !venue) {
+    throw new ApiError(400, "Topic, type, date, and venue are required.");
+  }
+
+  const images = [];
+  if (files.images) {
+    for (const file of files.images) {
+      const result = await uploadToGCS(file.path, "images");
+      if (!result) {
+        throw new ApiError(
+          500,
+          "Failed to upload one or more images. Please try again."
+        );
+      }
+      images.push(result);
+    }
+  }
+
+  let report = null;
+  if (files.report) {
+    const result = await uploadToGCS(files.report[0].path, "pdf-report");
+    if (!result) {
+      throw new ApiError(500, "Failed to upload the report. Please try again.");
+    }
+    report = result;
+  }
+
+  const seminarAttended = await SeminarAttended.create({
+    topic,
+    seminarType,
+    date,
+    venue,
+    images,
+    report,
+    owner: req.teacher._id,
+  });
+
+  res
+    .status(201)
+    .json(
+      new ApiResponse(
+        201,
+        seminarAttended,
+        "Seminar attended created successfully."
+      )
+    );
+});
+
+const editSeminarAttended = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { topic, seminarType, date, venue } = req.body;
+  const files = req.files || {};
+
+  if (!topic || !seminarType || !date || !venue) {
+    throw new ApiError(400, "All fields are required.");
+  }
+
+  const seminarAttended = await SeminarAttended.findById(id);
+  if (!seminarAttended) {
+    throw new ApiError(404, "Seminar attended not found.");
+  }
+
+  if (files.images) {
+    for (const file of files.images) {
+      const result = await uploadToGCS(file.path, "images");
+      if (!result) {
+        throw new ApiError(
+          500,
+          "Failed to upload one or more images. Please try again."
+        );
+      }
+      seminarAttended.images.push(result);
+    }
+  }
+
+  if (files.report) {
+    const result = await uploadToGCS(files.report[0].path, "pdf-report");
+    if (!result) {
+      throw new ApiError(500, "Failed to upload the report. Please try again.");
+    }
+    seminarAttended.report = result;
+  }
+
+  seminarAttended.topic = topic;
+  seminarAttended.seminarType = seminarType;
+  seminarAttended.date = date;
+  seminarAttended.venue = venue;
+
+  await seminarAttended.save();
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        seminarAttended,
+        "Seminar attended updated successfully."
+      )
+    );
+});
+
+const getAllSeminarsAttended = asyncHandler(async (req, res) => {
+  const owner = req.teacher._id;
+
+  const seminarsAttended = await SeminarAttended.find({ owner }).sort({
+    date: -1,
+  });
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        seminarsAttended,
+        "Seminars attended fetched successfully."
+      )
+    );
+});
+
+const deleteSeminarAttended = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const seminarAttended = await SeminarAttended.findOneAndDelete({
+    _id: id,
+    owner: req.teacher._id,
+  });
+
+  if (!seminarAttended) {
+    throw new ApiError(
+      404,
+      "Seminar attended not found or you're not authorized to delete it."
+    );
+  }
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        seminarAttended,
+        "Seminar attended deleted successfully."
+      )
+    );
+});
+
 export {
   uploadConductedSeminar,
   getConductedSeminars,
@@ -325,4 +494,8 @@ export {
   viewSeminarFeedbackFormsAvailable,
   fillEligibleFeedbackForm,
   getStudentsByBranch,
+  addSeminarAttended,
+  editSeminarAttended,
+  getAllSeminarsAttended,
+  deleteSeminarAttended,
 };

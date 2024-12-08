@@ -394,7 +394,7 @@ const viewAllAllocatedSubjectsOfTheTeacher = asyncHandler(async (req, res) => {
   }
 
   const allocatedSubjects = await AllocatedSubject.find({ teacher: teacherId })
-    .select("subject_name min_lectures subject_code subject_credit type branch year")
+    .select("subject_name type min_lectures subject_code subject_credit branch year")
     .lean();
 
   if (!allocatedSubjects || allocatedSubjects.length === 0) {
@@ -1287,6 +1287,7 @@ const getSubmitters = asyncHandler(async (req, res) => {
 });
 
 const loginAdmin = asyncHandler(async (req, res) => {
+  console.log("request : ", req);
   console.log("request's body : ", req.body);
   const { email, password } = req.body;
 
@@ -1795,7 +1796,7 @@ const getEventsParticipatedByTheTeacher = asyncHandler(async (req, res) => {
   }
 
   const eventsParticipated = await EventParticipation.find({ owner: teacherId })
-    .select("role event date report")
+    .select("role event_name event_type date report")
     .lean();
 
   if (!eventsParticipated || eventsParticipated.length === 0) {
@@ -1822,7 +1823,7 @@ const getExpertLecturesDeliveredByTheTeacher = asyncHandler(
     }
 
     const expertLectures = await ExpertLecture.find({ owner: teacherId })
-      .select("topic duration date report")
+      .select("topic level venue duration date report")
       .lean();
 
     if (!expertLectures || expertLectures.length === 0) {
@@ -1852,7 +1853,7 @@ const getSTTPConductedByTheTeacher = asyncHandler(async (req, res) => {
   }
 
   const sttps = await STTP.find({ owner: teacherId })
-    .select("topic duration startDate endDate venue report")
+    .select("topic dailyDuration startDate endDate venue report")
     .lean();
 
   if (!sttps || sttps.length === 0) {
@@ -1935,7 +1936,7 @@ const getProjectsHeldByTheTeacher = asyncHandler(async (req, res) => {
   }
 
   const projects = await Project.find({ owner: teacherId })
-    .select("topic branch_name daily_duration startDate endDate report")
+    .select("topic branch_name projectType daily_duration startDate endDate report")
     .lean();
 
   if (!projects || projects.length === 0) {
@@ -1956,7 +1957,7 @@ const getSeminarsConductedByTheTeacher = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Invalid teacher ID format.");
   }
 
-  const seminars = await Seminar.find({ owner: teacherId, status: "conducted" })
+  const seminars = await Seminar.find({ owner: teacherId })
     .select("topic department duration date report")
     .lean();
 

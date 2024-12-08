@@ -37,14 +37,16 @@ const generateAccessAndRefreshToken = async (userId) => {
 };
 
 const loginTeacher = asyncHandler(async (req, res) => {
-  // console.log("request : ", req);
+  console.log("request : ", req);
   console.log("request's body : ", req.body);
   const { email, password } = req.body;
 
+  //this logic is to check if the name or the email is correct, we cant write it this way : !name || !email
   if (!email) {
     throw new ApiError(400, "email is required");
   }
 
+  //this is used to find anyone from the database, by checking the name or email, whichever matches will return
   const user = await Teacher.findOne({ email });
 
   //if we didnot get anything then return that user DNE
@@ -52,6 +54,7 @@ const loginTeacher = asyncHandler(async (req, res) => {
     throw new ApiError(404, "User does not exist");
   }
 
+  // we are not using 'User' rather we will use 'user' which is returned above, because 'User' is an instance of the moongoose of mongoDB and user is the data returned from the data base which signifies a single user and user.models.js file contain all the methods which can be accessed here such as isPasswordCorrect or refreshToken or accessToken
   const isPasswordValid = await user.isPasswordCorrect(password);
 
   if (!isPasswordValid) {
@@ -64,11 +67,13 @@ const loginTeacher = asyncHandler(async (req, res) => {
     "-password -refreshToken"
   );
 
+  //now we will be adding functionality to return cookies, and for doing that securely such that the frontend could access those cookies but cannot modify them and also the cookies can only be modified using the backend server
   const options = {
     httpOnly: true,
     secure: true,
   };
 
+  // cookie("accessToken", accessToken, options) this is the way of generating
   return res
     .status(200)
     .cookie("teacherAccessToken", teacherAccessToken, options)
