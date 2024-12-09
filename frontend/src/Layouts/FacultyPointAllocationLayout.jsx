@@ -11,10 +11,11 @@ import ResearchProjectsDomainTable from "@/table/Tables/Domain/Column/ResearchPr
 import { motion } from "framer-motion";
 import FacultyResearchProjectsDomainTable from "../table/Tables/Domain/Column/FacultyResearchProjectsDomainTable";
 import FacultyGuidanceDomainTable from "../table/Tables/Domain/Column/FacultyGuidanceDomainTable";
-import FacultyOtherDomainTable from "../table/Tables/Domain/Column/FacultyOtherDomainTable";
+import FacultyOtherDomainTable from "../table/Tables/Domain/Column/FacultyDomainSttpTable";
 import FacultyEventsDomainTable from "../table/Tables/Domain/Column/FacultyEventsDomainTable";
 import FacultyConferencesDomainTable from "../table/Tables/Domain/Column/FacultyConferencesDomainTable";
 import FacultyPublicationTable from "../table/Tables/Domain/FacultyPublicationDomainTable";
+import FacultyDomainSttpTable from "../table/Tables/Domain/Column/FacultyDomainSttpTable";
 
 export default function FacultyPointAllocationLayout() {
   return (
@@ -30,6 +31,8 @@ export default function FacultyPointAllocationLayout() {
           {/* <TabsTrigger value="conferences">Conferences</TabsTrigger> */}
           <TabsTrigger value="events">Events</TabsTrigger>
           <TabsTrigger value="projects">Research Projects</TabsTrigger>
+          <TabsTrigger value="sttp">STTP</TabsTrigger>
+
           <TabsTrigger value="mentorship">Guidance & Mentorship</TabsTrigger>
           <TabsTrigger value="others">Other Activities</TabsTrigger>
         </TabsList>
@@ -101,6 +104,23 @@ export default function FacultyPointAllocationLayout() {
                   Completed).
                 </p>
                 <FacultyResearchProjectsDomainTable />
+              </div>
+            </Card>
+          </motion.div>
+        </TabsContent>
+
+        <TabsContent value="sttp">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Card className="p-4">
+              <h2 className="text-xl font-semibold mb-4">STTP</h2>
+              {/* Replace the following with your table or content component */}
+              <div>
+                <FacultyDomainSttpTable />
               </div>
             </Card>
           </motion.div>
