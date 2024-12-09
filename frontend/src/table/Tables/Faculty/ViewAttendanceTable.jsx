@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams, Outlet } from "react-router-dom";
 
-
 import {
   useReactTable,
   getCoreRowModel,
@@ -10,7 +9,7 @@ import {
   getSortedRowModel,
   flexRender,
 } from "@tanstack/react-table";
-import { columnDef } from "../Domain/Column/ViewAttendanceColumn"
+import { columnDef } from "../Domain/Column/ViewAttendanceColumn";
 import "../../table.css";
 import DownloadBtn from "../../DownloadBtn.jsx";
 import DebouncedInput from "../../DebouncedInput.jsx";
@@ -22,7 +21,8 @@ import DeleteDialog from "../../DeleteDialog.jsx";
 import axios from "axios";
 import LoadingPage from "@/pages/LoadingPage.jsx";
 
-export default function ViewAttendanceTable() {
+export default function ViewAttendanceTable({ lectureData }) {
+  console.log(lectureData);
   const { id } = useParams();
   // console.log(id);
   const [data, setData] = useState("");
@@ -39,18 +39,19 @@ export default function ViewAttendanceTable() {
   useEffect(() => {
     const fetchTeacherInfo = async () => {
       try {
+        const lectureId = lectureData._id;
         const token = sessionStorage.getItem("teacherAccessToken");
 
         const response = await axios.get(
-          `https://facultyappraisal.software/api/v1/projects/projects`,
+          `http://localhost:6005/api/v1/lecture/${lectureId}/viewattendance`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        // console.log("Tecaher Projects DATA Is", response.data.data.projects);
-        setData(response.data.data.projects);
+        console.log(response.data.studentsPresent);
+        setData(response.data.data.studentsPresent);
       } catch (error) {
         console.log("An error occurred while fetching teacher info.");
       } finally {
@@ -173,9 +174,7 @@ export default function ViewAttendanceTable() {
         <DownloadBtn data={data} fileName="Research" />
       </div>
 
-      <div className="flex justify-end mb-4">
-       
-      </div>
+      <div className="flex justify-end mb-4"></div>
 
       <div className="mb-4 flex flex-wrap gap-2">
         {table.getAllLeafColumns().map((column) => (

@@ -1,8 +1,14 @@
-import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import React, { useEffect, useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Star, X } from 'lucide-react';
+import { Star, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
 
 const feedbackCriteria = [
   "Has the Teacher covered entire Syllabus as prescribed by University/College/Board?",
@@ -18,6 +24,38 @@ const feedbackCriteria = [
 ];
 
 export function DetailedFeedbackView({ isOpen, onClose, feedback }) {
+  const [feedbackData, setFeedbackData] = useState("");
+  // console.log(feedback);
+
+  useEffect(() => {
+    if (!isOpen || !feedback?.feedbackId) return; // Ensure feedbackID and isOpen validity
+
+    const fetchLectureCriteria = async () => {
+      try {
+        const token = sessionStorage.getItem("teacherAccessToken");
+        if (!token) {
+          console.error("Access token is missing.");
+          return;
+        }
+
+        const headers = { Authorization: `Bearer ${token}` };
+        const feedbackId = feedback.feedbackId;
+
+        const response = await axios.get(
+          `http://localhost:6005/api/v1/lec-feedback/detailed/${feedbackId}`,
+          { headers }
+        );
+        // console.log(response.data.data);
+        setFeedbackData(response.data.data);
+      } catch (error) {
+        console.error("Error in getting the lecture criteria:", error);
+      }
+    };
+
+    fetchLectureCriteria();
+  }, [isOpen, feedback?.feedbackID]); // Ensure hooks always run in the same order
+
+  // Exit early if isOpen is false
   if (!isOpen) return null;
 
   return (
@@ -38,15 +76,15 @@ export function DetailedFeedbackView({ isOpen, onClose, feedback }) {
             </Button>
           </div>
           <p className="text-white/80 mt-2">
-            {feedback?.subject_name} ({feedback?.subject_code})
+            {feedbackData.subject_name} ({feedbackData.subject_code})
           </p>
         </DialogHeader>
 
         <ScrollArea className="h-[calc(90vh-180px)] px-6 py-4">
           <div className="space-y-6">
             {feedbackCriteria.map((criterion, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm transition-all duration-300 hover:shadow-md"
               >
                 <h3 className="text-lg font-medium text-black mb-3">
@@ -58,7 +96,7 @@ export function DetailedFeedbackView({ isOpen, onClose, feedback }) {
                       <Star
                         key={star}
                         className={`h-5 w-5 transition-colors ${
-                          star <= feedback[`question${index + 1}_rating`]
+                          star <= feedbackData.ratings[`question${index + 1}`]
                             ? "text-yellow-400 fill-yellow-400"
                             : "text-gray-200"
                         }`}
@@ -66,13 +104,13 @@ export function DetailedFeedbackView({ isOpen, onClose, feedback }) {
                     ))}
                   </div>
                   <span className="text-lg font-semibold text-[rgb(37,78,235)]">
-                    {feedback[`question${index + 1}_rating`]?.toFixed(1)}
+                    {feedbackData[`question${index + 1}`]}
                   </span>
                 </div>
               </div>
             ))}
-            
-            {feedback?.comments && (
+
+            {/* {feedback?.comments && (
               <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm mt-6 transition-all duration-300 hover:shadow-md">
                 <h3 className="text-lg font-medium text-[rgb(37,78,235)] mb-3">
                   Additional Comments
@@ -81,7 +119,7 @@ export function DetailedFeedbackView({ isOpen, onClose, feedback }) {
                   {feedback.comments}
                 </p>
               </div>
-            )}
+            )} */}
           </div>
         </ScrollArea>
 
@@ -97,4 +135,3 @@ export function DetailedFeedbackView({ isOpen, onClose, feedback }) {
     </Dialog>
   );
 }
-

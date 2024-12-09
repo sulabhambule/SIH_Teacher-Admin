@@ -19,14 +19,15 @@ import ViewAttendanceDialog from "@/pages/ViewAttendanceDialog";
 export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
   const { id } = useParams();
   const [data, setData] = useState([]);
-  const [isMarkAttendanceDialogOpen, setMarkAttendanceDialogOpen] = useState(false); // For "Mark Attendance"
-  const [isViewAttendanceDialogOpen, setViewAttendanceDialogOpen] = useState(false); // Placeholder for "View Attendance"
+  const [isMarkAttendanceDialogOpen, setMarkAttendanceDialogOpen] =
+    useState(false); // For "Mark Attendance"
+  const [isViewAttendanceDialogOpen, setViewAttendanceDialogOpen] =
+    useState(false); // Placeholder for "View Attendance"
   const [selectedLecture, setSelectedLecture] = useState(null);
   const [students, setStudents] = useState([]);
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [rowSelection, setRowSelection] = useState({});
-
 
   // Fetch lectures
   useEffect(() => {
@@ -35,7 +36,7 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
         const token = sessionStorage.getItem("teacherAccessToken");
 
         const response = await axios.get(
-          `https://facultyappraisal.software/api/v1/lecture/${subjectId}/${teacherId}/lectures`,
+          `http://localhost:6005/api/v1/lecture/${subjectId}/${teacherId}/lectures`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -58,7 +59,7 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
         try {
           const token = sessionStorage.getItem("teacherAccessToken");
           const response = await axios.get(
-            `https://facultyappraisal.software/api/v1/students/${selectedLecture._id}`,
+            `http://localhost:6005/api/v1/students/${selectedLecture._id}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -74,7 +75,7 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
       };
       fetchStudents();
     }
-  }, [selectedLecture, isMarkAttendanceDialogOpen, ]);
+  }, [selectedLecture, isMarkAttendanceDialogOpen]);
 
   // Memoize columns
   const columns = useMemo(() => {
@@ -114,7 +115,7 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
     try {
       const token = sessionStorage.getItem("teacherAccessToken");
       const response = await axios.post(
-        `https://facultyappraisal.software/api/v1/lecture/${subjectId}/${teacherId}/lectures`,
+        `http://localhost:6005/api/v1/lecture/${subjectId}/${teacherId}/lectures`,
         lectureData,
         {
           headers: {
@@ -212,7 +213,7 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
             table.setPageSize(Number(e.target.value));
           }}
         >
-          {[5,10, 20, 30, 40, 50].map((pageSize) => (
+          {[5, 10, 20, 30, 40, 50].map((pageSize) => (
             <option key={pageSize} value={pageSize}>
               Show {pageSize}
             </option>
