@@ -212,7 +212,7 @@ const getCurrentTeacher = asyncHandler(async (req, res) => {
 
   const teacherInfo = await Teacher.findById(teacherId)
     .select(
-      "name email employee_code experience qualification department avatar"
+      "name email employee_code designation experience qualification department avatar"
     )
     .lean();
 
@@ -365,7 +365,7 @@ const allotSubjectsToTeachers = asyncHandler(async (req, res) => {
     );
   }
 
-  // Create a new allocated subject record
+  // Create a new allocated subject record+
   const allocatedSubject = await AllocatedSubject.create({
     subject_name,
     subject_code,

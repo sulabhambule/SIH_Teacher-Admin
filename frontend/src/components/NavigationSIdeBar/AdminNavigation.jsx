@@ -16,11 +16,11 @@ import {
 
 export default function AdminNavigation() {
   const navigationItems = [
-    // {
-    //   name: "Personal Details",
-    //   path: "personal-details",
-    //   icon: <Users className="w-4 h-4" />,
-    // },
+    {
+      name: "Personal Details",
+      path: "personal-details",
+      icon: <Users className="w-4 h-4" />,
+    },
     // { name: "Teaching Process", path: "teaching-process", icon: <BookOpen className="w-4 h-4" /> },
     {
       name: "Appraisal report",

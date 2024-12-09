@@ -10,8 +10,8 @@ import LectureAndAttendaceTable from "./LectureAttendanceTable";
 
 const LectureAndAttendance = () => {
   const { id, subjectId } = useParams(); // Teacher ID and Subject ID
-  console.log("id", id);
-  console.log("subjectId", subjectId);
+  // console.log("id", id);
+  // console.log("subjectId", subjectId);
 
   const { state } = useLocation();
   const [students, setStudents] = useState([]);
@@ -87,9 +87,7 @@ const LectureAndAttendance = () => {
 
   return (
     <div className="container mx-auto p-8 bg-white rounded-lg shadow-lg mt-10">
-      <h1 className="text-3xl font-semibold text-center text-primary mb-6">
-    
-      </h1>
+      <h1 className="text-3xl font-semibold text-center text-primary mb-6"></h1>
       <LectureAndAttendaceTable teacherId={id} subjectId={subjectId} />
     </div>
   );

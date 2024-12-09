@@ -21,7 +21,5 @@ export const columnDef = [
   {
     accessorKey: "attendance",
     header: "View Attendance",
- 
   },
-
 ];

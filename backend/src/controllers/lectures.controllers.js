@@ -27,7 +27,7 @@ const addNewLecture = asyncHandler(async (req, res) => {
   const lecture = await Lecture.create({
     subject: subjectId,
     topic,
-    duration : 2,
+    duration: 2,
     date,
     owner: teacherId,
   });
