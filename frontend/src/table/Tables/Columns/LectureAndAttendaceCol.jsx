@@ -20,7 +20,18 @@ export const columnDef = [
   },
   {
     accessorKey: "attendance",
-    header: "View Attendance",
+    Header: 'View Attendance',
+    cell: ({ row }) => (
+      <Button
+        onClick={() => {
+          setViewAttendanceDialogOpen(true);
+          setSelectedLecture(row.original);
+        }}
+        className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      >
+        View Attendance
+      </Button>
+    )
  
   },
 

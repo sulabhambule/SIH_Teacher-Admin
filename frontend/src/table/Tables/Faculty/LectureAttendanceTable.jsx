@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button.jsx";
 import axios from "axios";
 import StudentAttendanceDialog from "@/Forms/Student/StudentAttendanceDialog"; // For marking attendance
 import LectureAttendanceDrawer from "@/components/Drawer/LectureAttendanceDrawer";
+import ViewAttendanceDialog from "@/pages/ViewAttendanceDialog";
 
 export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
   const { id } = useParams();
@@ -34,7 +35,7 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
         const token = sessionStorage.getItem("teacherAccessToken");
 
         const response = await axios.get(
-          `http://localhost:6005/api/v1/lecture/${subjectId}/${teacherId}/lectures`,
+          `https://facultyappraisal.software/api/v1/lecture/${subjectId}/${teacherId}/lectures`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -57,7 +58,7 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
         try {
           const token = sessionStorage.getItem("teacherAccessToken");
           const response = await axios.get(
-            `http://localhost:6005/api/v1/students/${selectedLecture._id}`,
+            `https://facultyappraisal.software/api/v1/students/${selectedLecture._id}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -113,7 +114,7 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
     try {
       const token = sessionStorage.getItem("teacherAccessToken");
       const response = await axios.post(
-        `http://localhost:6005/api/v1/lecture/${subjectId}/${teacherId}/lectures`,
+        `https://facultyappraisal.software/api/v1/lecture/${subjectId}/${teacherId}/lectures`,
         lectureData,
         {
           headers: {
@@ -166,6 +167,13 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
           </tbody>
         </table>
       </div>
+
+      <ViewAttendanceDialog
+        isOpen={isViewAttendanceDialogOpen}
+        onClose={() => setViewAttendanceDialogOpen(false)}
+        lectureData={selectedLecture}
+      />
+
       <div className="flex items-center justify-end mt-4 gap-2">
         <Button
           onClick={() => table.previousPage()}

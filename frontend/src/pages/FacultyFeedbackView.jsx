@@ -7,19 +7,25 @@ import { X } from 'lucide-react';
 import FeedbackSubmitterTable from "./UpcomingSeminars/feedbackSubmitterTable";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+
+import { DetailedFeedbackView } from "./UpcomingSeminars/DetailedFeedbackView";
 
 export default function FacultyFeedbackView({ feedback, onClose, isOpen }) {
   if (!isOpen) return null;
   const { id } = useParams();
   const [data, setData] = useState([]);
   const [averageRating, setAverageRating] = useState(4.2);
+  
+  const [selectedFeedback, setSelectedFeedback] = useState(null);
+
 
   useEffect(() => {
     const updatePost = async () => {
       try {
         const teacherAccessToken = sessionStorage.getItem("teacherAccessToken");
         const response = await axios.post(
-          `http://localhost:6005/api/v1/lec-feedback/cards`,
+          `https://facultyappraisal.software/api/v1/lec-feedback/cards`,
           {
             subject_name: feedback.subject_name,
             subject_code: feedback.subject_code,
@@ -50,6 +56,8 @@ export default function FacultyFeedbackView({ feedback, onClose, isOpen }) {
   }, [feedback]);
 
   const [isSubmittersModalOpen, setIsSubmittersModalOpen] = useState(false);
+  const [isDetailedFeedbackModalOpen, setIsDetailedFeedbackModalOpen] = useState(false);
+
 
   // Mock data - replace with actual data from the feedback prop
   const feedbackData = [
@@ -70,14 +78,15 @@ export default function FacultyFeedbackView({ feedback, onClose, isOpen }) {
   ];
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center mt-40">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-5xl h-[80vh] overflow-hidden relative">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[900px] max-h-[90vh] p-0 overflow-hidden">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors"
+          className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors"
         >
-          <X className="h-5 w-5 text-gray-700" />
+          <span className="sr-only">Close</span>
         </button>
+
         <Button
           onClick={() => setIsSubmittersModalOpen(true)}
           className="absolute top-4 right-16 bg-blue-500 hover:bg-blue-600 text-white"
@@ -152,6 +161,13 @@ export default function FacultyFeedbackView({ feedback, onClose, isOpen }) {
                       <p className="text-sm text-gray-500 mt-2">
                         {feedback.studentName}
                       </p>
+                      <Button 
+        onClick={() => setSelectedFeedback(feedback)}
+        className="bg-[rgb(37,99,235)] text-white hover:bg-[rgb(29,78,216)] transition-colors mt-2"
+      >
+        View Detailed Rating
+      </Button>
+
                     </Card>
                   ))}
                 </div>
@@ -161,7 +177,7 @@ export default function FacultyFeedbackView({ feedback, onClose, isOpen }) {
             </ScrollArea>
           </div>
         </div>
-      </div>
+      
       {isSubmittersModalOpen && (
         <div className="fixed inset-0 z-60 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl h-[70vh] overflow-hidden relative">
@@ -181,9 +197,25 @@ export default function FacultyFeedbackView({ feedback, onClose, isOpen }) {
               </p>
             </div>
           </div>
+          
         </div>
+        
       )}
-    </div>
+            <DetailedFeedbackView
+        isOpen={!!selectedFeedback}
+        onClose={() => setSelectedFeedback(null)}
+        feedback={selectedFeedback}
+      />
+              <div className="sticky bottom-0 w-full p-4 bg-white border-t border-gray-200 flex justify-end">
+          <Button
+            onClick={onClose}
+            className="bg-[rgb(37,99,235)] text-white hover:bg-[rgb(29,78,216)] transition-colors"
+          >
+            Close
+          </Button>
+        </div>
+        </DialogContent>
+        </Dialog>
   );
 }
 
