@@ -28,7 +28,7 @@ export function DetailedFeedbackView({ isOpen, onClose, feedback }) {
   // console.log(feedback);
 
   useEffect(() => {
-    if (!isOpen || !feedback?.feedbackId) return; // Ensure feedbackID and isOpen validity
+    if (!isOpen || !feedback.feedbackId) return; // Ensure feedbackID and isOpen validity
 
     const fetchLectureCriteria = async () => {
       try {
@@ -45,7 +45,7 @@ export function DetailedFeedbackView({ isOpen, onClose, feedback }) {
           `http://localhost:6005/api/v1/lec-feedback/detailed/${feedbackId}`,
           { headers }
         );
-        // console.log(response.data.data);
+        console.log(response.data);
         setFeedbackData(response.data.data);
       } catch (error) {
         console.error("Error in getting the lecture criteria:", error);
@@ -104,7 +104,7 @@ export function DetailedFeedbackView({ isOpen, onClose, feedback }) {
                     ))}
                   </div>
                   <span className="text-lg font-semibold text-[rgb(37,78,235)]">
-                    {feedbackData[`question${index + 1}`]}
+                    {feedbackData.ratings[`question${index + 1}`]}
                   </span>
                 </div>
               </div>
