@@ -21,7 +21,7 @@ const StudentAttendanceDialog = ({
   lectureId,
   toast,
 }) => {
-  console.log("lectureID", lectureId);
+  // console.log("lectureID", lectureId);
 
   const { subjectId } = useParams();
   const [data, setData] = useState([]);
@@ -145,4 +145,3 @@ const StudentAttendanceDialog = ({
 };
 
 export default StudentAttendanceDialog;
-

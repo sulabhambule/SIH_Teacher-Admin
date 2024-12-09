@@ -71,6 +71,7 @@ import FacultyCourseTable from './table/Tables/FacultyCourseTable';
 import FacultyAppraisalReport from './pages/FacultyAppraisalReport';
 import FacultyPointAllocationLayout from './Layouts/FacultyPointAllocationLayout';
 import AdminSeminarLayout from './Layouts/AdminSeminarLayouy';
+import FacultyInfoCard from './pages/FacultyPortal/FacultyList/FacultyInfoCard';
 
 
 
@@ -134,7 +135,7 @@ const router = createBrowserRouter(
         <Route path="facultyList" element={<FacultyCards/>}/>
         <Route path="admin-teacher-appraisal" index element={<RouteTransitionWrapper><AdminFacultyAppraisalReport/></RouteTransitionWrapper>} errorElement={<NotFoundPage/>} />
 
-        {/* <Route path="personal-details" element={<FacultyInfoCard />} errorElement={<NotFoundPage/>} /> */}
+        <Route path="personal-details" element={<FacultyInfoCard />} errorElement={<NotFoundPage/>} />
         <Route path="research-papers" element={<RouteTransitionWrapper><AdminResearchTable /></RouteTransitionWrapper>} errorElement={<NotFoundPage/>} />
         <Route path="students-guided" element={<RouteTransitionWrapper><AdminStudentsGuidedTable /></RouteTransitionWrapper>} errorElement={<NotFoundPage/>} />
         <Route path="expert-lecture" element={<RouteTransitionWrapper><AdminLecturesTable /></RouteTransitionWrapper>} errorElement={<NotFoundPage/>} />
