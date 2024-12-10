@@ -28,6 +28,7 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [rowSelection, setRowSelection] = useState({});
+  const [one, setOne] = useState();
 
   // Fetch lectures
   useEffect(() => {
@@ -50,7 +51,7 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
     };
 
     fetchLecture();
-  }, [subjectId, teacherId]);
+  }, [subjectId, teacherId, one]);
 
   // Fetch students when a lecture is selected (for "Mark Attendance")
   useEffect(() => {
@@ -124,12 +125,17 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
           },
         }
       );
-      // console.log("Lecture Added:", response.data);
-      setData((prev) => [...prev, response.data]); // Update table data
-      setSelectedLecture(response.data); // Store the added lecture for attendance
+
+      const newLecture = response.data;
+      setOne(newLecture);
+      setSelectedLecture(newLecture);
     } catch (error) {
       console.error("Failed to add lecture:", error);
     }
+  };
+
+  const handleAddEntry = (newData) => {
+    setData((prevData) => [...prevData, { ...newData, id: Date.now() }]);
   };
 
   return (
