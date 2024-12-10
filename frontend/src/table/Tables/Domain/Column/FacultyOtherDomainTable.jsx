@@ -20,13 +20,15 @@ export default function FacultyOtherDomainTable() {
         const token = sessionStorage.getItem("teacherAccessToken");
 
         const response = await axios.get(
-          `http://localhost:6005/api/v1/domain-points/teacher/te-sttp`,
+          `http://localhost:6005/api/v1/domain-points/teacher/te-event-organizer`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
+
+        console.log(response.data);
 
         setData(response.data.data);
       } catch (error) {

@@ -28,6 +28,7 @@ export default function FacultyDomainSttpTable() {
           }
         );
 
+        console.log(response.data.data)
         setData(response.data.data);
       } catch (error) {
         console.error("Failed to fetch publications:", error);

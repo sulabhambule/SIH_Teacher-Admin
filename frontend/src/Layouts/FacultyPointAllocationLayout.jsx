@@ -2,16 +2,10 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
-import PublicationDomainTable from "@/table/Tables/Domain/PublicationDomainTable";
-import ConferencesDomainTable from "@/table/Tables/Domain/Column/ConferencesDomainTable";
-import EventsDomainTable from "@/table/Tables/Domain/Column/EventsDomainTable";
-import GuidanceDomainTable from "@/table/Tables/Domain/Column/GuidanceDomainTable";
-import OtherDomainTable from "@/table/Tables/Domain/Column/OtherDomainTable";
-import ResearchProjectsDomainTable from "@/table/Tables/Domain/Column/ResearchProjectsDomainTable";
 import { motion } from "framer-motion";
 import FacultyResearchProjectsDomainTable from "../table/Tables/Domain/Column/FacultyResearchProjectsDomainTable";
 import FacultyGuidanceDomainTable from "../table/Tables/Domain/Column/FacultyGuidanceDomainTable";
-import FacultyOtherDomainTable from "../table/Tables/Domain/Column/FacultyDomainSttpTable";
+import FacultyOtherDomainTable from "../table/Tables/Domain/Column/FacultyOtherDomainTable";
 import FacultyEventsDomainTable from "../table/Tables/Domain/Column/FacultyEventsDomainTable";
 import FacultyConferencesDomainTable from "../table/Tables/Domain/Column/FacultyConferencesDomainTable";
 import FacultyPublicationTable from "../table/Tables/Domain/FacultyPublicationDomainTable";
