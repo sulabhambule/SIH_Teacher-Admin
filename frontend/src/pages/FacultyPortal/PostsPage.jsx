@@ -116,8 +116,11 @@ const PostsPage = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true)
+
 
   const getPosts = async () => {
+    setIsLoading(true); // Start loading
     try {
       const teacherAccessToken = sessionStorage.getItem("teacherAccessToken");
       const response = await axios.get(
@@ -142,6 +145,8 @@ const PostsPage = () => {
       setPosts(formattedPosts);
     } catch (error) {
       console.error("Error fetching posts:", error);
+    }finally {
+      setIsLoading(false);
     }
   };
 

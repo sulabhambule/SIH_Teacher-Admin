@@ -32,13 +32,14 @@ const FacultyAppraisalReport = ({
   const [rank, setRank] = useState(null);
   const [point, setPoint] = useState(null);
   const [performance, setPerformance] = useState(null);
-  const [loading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true)
 
   const reportRef = useRef(null);
   const signatureRef = useRef(null);
   const [appraisalData, setAppraisalData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true)
       try {
         const response = await axios.get(
           "http://localhost:6005/api/v1/teachers/me",
@@ -55,6 +56,8 @@ const FacultyAppraisalReport = ({
       } catch (error) {
         const errorMessage = error.response?.data?.message || error.message;
         console.error("Error fetching teacher data:", errorMessage);
+      } finally {
+        setIsLoading(false)
       }
 
     };
@@ -218,16 +221,13 @@ const FacultyAppraisalReport = ({
   }, []);
 
 
-//   if(loading){
-// return (
-//   <LoadingPage/>
-// )
-//   }
+  //   if (isLoading) {
+  //   return <LoadingPage />; // Display loading component while fetching data
+  // }
 
 
-//   if(appraisalData){
-//     setIsLoading(false);
-//   }
+
+
 
   return (
     <div className="container mx-auto p-4 relative">
