@@ -112,4 +112,4 @@ const chapterSchema = new Schema(
 //   }
 // });
 
-export const Chapter = mongoose.model("Chapter", chapterSchema);
+export const Chapter2 = mongoose.model("Chapter2", chapterSchema);

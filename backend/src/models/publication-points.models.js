@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-const publlicationpointsSchema = new Schema(
+const publicationpointsSchema = new Schema(
   {
     name: {
       type: String,
@@ -15,11 +15,7 @@ const publlicationpointsSchema = new Schema(
       type: Number,
       required: true,
     },
-  },
-  { timestamps: true }
-);
+},
+{ timestamps: true });
 
-export const PublicationPoint = mongoose.model(
-  "PublicationPoint",
-  publlicationpointsSchema
-);
+export const PublicationPoint = mongoose.model('PublicationPoint', publicationpointsSchema);

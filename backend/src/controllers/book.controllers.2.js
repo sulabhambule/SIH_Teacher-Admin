@@ -55,11 +55,16 @@ const getBooks = asyncHandler(async (req, res) => {
     throw new ApiError(404, "User not found");
   }
 
+<<<<<<< HEAD
   const books = await Book2.find({ owner: id });
 
   res
     .status(200)
     .json(new ApiResponse(200, books, "Books retrieved successfully"));
+=======
+  const books = await Book2.find({owner: id});
+  ApiResponse.success(200, books, "Books retrieved successfully");
+>>>>>>> e8f0ec01a104a4963184b3f4cf3b11d3f129f4a3
 });
 
 // Update a book
@@ -97,7 +102,11 @@ const updateBook = asyncHandler(async (req, res) => {
     throw new ApiError(400, "All required fields must be provided");
   }
 
+<<<<<<< HEAD
   const book = await BBook2ook.findById(id);
+=======
+  const book = await Book2.findById(id);
+>>>>>>> e8f0ec01a104a4963184b3f4cf3b11d3f129f4a3
 
   if (!book) {
     throw new ApiError(404, "Book not found");
@@ -123,7 +132,7 @@ const updateBook = asyncHandler(async (req, res) => {
 const deleteBook = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  const book = await Book.findById(id);
+  const book = await Book2.findById(id);
 
   if (!book) {
     throw new ApiError(404, "Book not found");

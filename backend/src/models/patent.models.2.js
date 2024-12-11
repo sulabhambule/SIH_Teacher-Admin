@@ -116,4 +116,4 @@ const patentSchema = new Schema(
 //   }
 // });
 
-export const Patent = mongoose.model("Patent", patentSchema);
+export const Patent2 = mongoose.model("Patent2", patentSchema);
