@@ -23,6 +23,10 @@ export const columnDef = [
     header: "Topic",
   },
   {
+    accessorKey: "duration",
+    header: "Duration",
+  },
+  {
     accessorKey: "attendance",
     Header: "View Attendance",
     cell: ({ row }) => (

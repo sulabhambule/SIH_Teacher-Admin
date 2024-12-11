@@ -202,6 +202,7 @@ export default function FacultyCourseTable() {
       {isFeedbackOpen && (
         <FacultyFeedbackView
           feedback={selectedFeedback}
+          subjectId = {selectedFeedback._id}
           onClose={() => setFeedbackOpen(false)}
           isOpen={isFeedbackOpen}
         />

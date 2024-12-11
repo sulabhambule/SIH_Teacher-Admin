@@ -51,6 +51,8 @@ export function DetailedFeedbackView({ isOpen, onClose, feedback }) {
           { headers }
         );
 
+        console.log(response);
+        
         setFeedbackData(response.data.data || {});
       } catch (error) {
         console.error("Error in getting the lecture criteria:", error);

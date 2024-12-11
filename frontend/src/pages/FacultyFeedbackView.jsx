@@ -11,7 +11,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 import { DetailedFeedbackView } from "./UpcomingSeminars/DetailedFeedbackView";
 
-export default function FacultyFeedbackView({ feedback, onClose, isOpen }) {
+export default function FacultyFeedbackView({ feedback, onClose, isOpen, subjectId }) {
   if (!isOpen) return null;
   const { id } = useParams();
   const [data, setData] = useState([]);
@@ -72,7 +72,7 @@ export default function FacultyFeedbackView({ feedback, onClose, isOpen }) {
           onClick={() => setIsSubmittersModalOpen(true)}
           className="absolute top-4 right-16 bg-blue-500 hover:bg-blue-600 text-white"
         >
-          View Submitters
+          Submitters Count
         </Button>
         <div className="flex h-full">
           {/* Left Side - Rating Overview */}
@@ -173,12 +173,9 @@ export default function FacultyFeedbackView({ feedback, onClose, isOpen }) {
               </button>
               <div className="p-6">
                 <h2 className="text-2xl font-bold text-blue-900 mb-4">
-                  Feedback Submitters
+                  Feexdback Submitters
                 </h2>
-                <FeedbackSubmitterTable feedback={feedback} />
-                <p className="text-gray-600">
-                  Submitters table will be displayed here.
-                </p>
+                <FeedbackSubmitterTable feedback={feedback} subjectId = {subjectId} />
               </div>
             </div>
           </div>
