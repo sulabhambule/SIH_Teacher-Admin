@@ -93,6 +93,8 @@ export default function FacultyResearchTable() {
       });
 
       console.log(response.data);
+
+      // const response2 = await axios.get(`http://localhost:6005/api/v1/publicationPoints`)
       setData2(response.data.data);
       // let c = 0;
       // const enhancedData = response.data.data.map((item) => {
