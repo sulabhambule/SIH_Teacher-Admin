@@ -1,38 +1,29 @@
 import { ApiError } from "../utils/ApiErrors.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/AsyncHandler2.js";
-import { Book2 } from "../models/books.models.2.js";
+import { Book } from "../models/books.models.2.js";
 import mongoose from "mongoose";
 import { PublicationPoint } from "../models/publication-points.models.js";
 
 // Add a new book
 const addBook = asyncHandler(async (req, res) => {
-  const {
-    title,
-    authors,
-    publicationDate,
-    volume,
-    pages,
-    publication,
-    // owner,
-    h5_index,
-    h5_median,
-  } = req.body;
+  const { title, authors, publicationDate, volume, pages, publication, owner } =
+    req.body;
 
-  // if (!mongoose.Types.ObjectId.isValid(publication)) {
-  //   throw new ApiError(404, "Publication not found");
-  // }
+  if (!mongoose.Types.ObjectId.isValid(publication)) {
+    throw new ApiError(404, "Publication not found");
+  }
 
-  // const publications = await PublicationPoint.findById(publication);
+  const publications = await PublicationPoint.findById(publication);
 
-  // if (!title || !authors || !publicationDate || !volume || !pages || !owner) {
-  //   throw new ApiError(400, "All required fields must be provided");
-  // }
+  if (!title || !authors || !publicationDate || !volume || !pages || !owner) {
+    throw new ApiError(400, "All required fields must be provided");
+  }
 
-  // const h5_index = publications.hindex;
-  // const h5_median = publications.median;
+  const h5_index = publications.hindex;
+  const h5_median = publications.median;
 
-  const book = await Book2.create({
+  const book = await Book.create({
     title,
     authors,
     publicationDate,
@@ -41,7 +32,7 @@ const addBook = asyncHandler(async (req, res) => {
     publication,
     h5_index,
     h5_median,
-    owner: req.teacher._id,
+    owner,
   });
 
   ApiResponse.success(res, 201, "Book added successfully", book);
@@ -55,7 +46,7 @@ const getBooks = asyncHandler(async (req, res) => {
     throw new ApiError(404, "User not found");
   }
 
-  const books = await Book2.find({ owner: id });
+  const books = await Book.find({ owner: id });
 
   res
     .status(200)
@@ -97,7 +88,7 @@ const updateBook = asyncHandler(async (req, res) => {
     throw new ApiError(400, "All required fields must be provided");
   }
 
-  const book = await Book2.findById(id);
+  const book = await Book.findById(id);
 
   if (!book) {
     throw new ApiError(404, "Book not found");
@@ -123,7 +114,7 @@ const updateBook = asyncHandler(async (req, res) => {
 const deleteBook = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  const book = await Book2.findById(id);
+  const book = await Book.findById(id);
 
   if (!book) {
     throw new ApiError(404, "Book not found");
