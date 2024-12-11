@@ -32,7 +32,7 @@ const FacultyAppraisalReport = ({
   const [rank, setRank] = useState(null);
   const [point, setPoint] = useState(null);
   const [performance, setPerformance] = useState(null);
-  const [loading, setIsLoading] = useState(true)
+  const [loading, setIsLoading] = useState(true);
 
   const reportRef = useRef(null);
   const signatureRef = useRef(null);
@@ -56,7 +56,6 @@ const FacultyAppraisalReport = ({
         const errorMessage = error.response?.data?.message || error.message;
         console.error("Error fetching teacher data:", errorMessage);
       }
-
     };
 
     fetchData();
@@ -106,7 +105,7 @@ const FacultyAppraisalReport = ({
             .replace(/([A-Z])/g, " $1")
             .replace(/^./, (str) => str.toUpperCase()),
           currentPoints: item.requestedTeacherPoints || 0,
-          highestPoints: item.highestPoints || 0,
+          // highestPoints: item.highestPoints || 0,
         }));
 
         // console.log("Formatted appraisal data:", formattedData);
@@ -114,7 +113,6 @@ const FacultyAppraisalReport = ({
       } catch (error) {
         console.error("Error fetching appraisal data:", error.message);
       }
-   
     };
 
     fetchAppraisalData();
@@ -157,8 +155,6 @@ const FacultyAppraisalReport = ({
 
     fetchRank();
   }, [id]);
-
-
 
   const handleDownload = () => {
     const input = reportRef.current;
@@ -217,21 +213,22 @@ const FacultyAppraisalReport = ({
     };
   }, []);
 
+  //   if(loading){
+  // return (
+  //   <LoadingPage/>
+  // )
+  //   }
 
-//   if(loading){
-// return (
-//   <LoadingPage/>
-// )
-//   }
-
-
-//   if(appraisalData){
-//     setIsLoading(false);
-//   }
+  //   if(appraisalData){
+  //     setIsLoading(false);
+  //   }
 
   return (
     <div className="container mx-auto p-4 relative">
-      <Button onClick={handleDownload} className="absolute top-4 right-4 z-10 text-white">
+      <Button
+        onClick={handleDownload}
+        className="absolute top-4 right-4 z-10 text-white"
+      >
         <Download className="mr-2 h-4 w-4 text-white" /> Download Report
       </Button>
       <div
@@ -259,10 +256,10 @@ const FacultyAppraisalReport = ({
                   label: "Current Faculty Points",
                   color: "hsl(var(--chart-1))",
                 },
-                highestPoints: {
-                  label: "Highest Points Scored",
-                  color: "hsl(var(--chart-2))",
-                },
+                // highestPoints: {
+                //   label: "Highest Points Scored",
+                //   color: "hsl(var(--chart-2))",
+                // },
               }}
               className="h-[400px]"
             >
@@ -286,11 +283,11 @@ const FacultyAppraisalReport = ({
                     fill="var(--color-currentPoints)"
                     name="Current Faculty"
                   />
-                  <Bar
+                  {/* <Bar
                     dataKey="highestPoints"
                     fill="var(--color-highestPoints)"
                     name="Highest Score"
-                  />
+                  /> */}
                 </BarChart>
               </ResponsiveContainer>
             </ChartContainer>
@@ -315,9 +312,8 @@ const FacultyAppraisalReport = ({
             <p className="text-4xl font-bold mb-2">Rank : {rank}</p>
             <p className="text-xl text-gray-600">Performance : {performance}</p>
             <p className="text-xl text-gray-700 font-semibold">
-            Points out of 100: {point != null ? point.toFixed(2) : "0"}
-
-</p>
+              Points out of 100: {point != null ? point.toFixed(2) : "0"}
+            </p>
           </CardContent>
         </Card>
         <div>

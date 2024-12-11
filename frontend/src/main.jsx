@@ -73,6 +73,7 @@ import FacultyPointAllocationLayout from './Layouts/FacultyPointAllocationLayout
 import AdminSeminarLayout from './Layouts/AdminSeminarLayouy';
 import FacultyInfoCard from './pages/FacultyPortal/FacultyList/FacultyInfoCard';
 import AdminPostsPage from './pages/AdminPortal/AdminList/AdminPostsPage';
+import AdminHodData from './pages/AdminPortal/AdminList/AdminHodData';
 
 
 
@@ -123,11 +124,13 @@ const router = createBrowserRouter(
       <Route path="student-sign-up" element={<StudentSISU/>} />
 
 
-
+      {/* AdminHodData */}
     
     <Route path="admin" element={<AdminHomeLayout/>} errorElement={<NotFoundPage/>}>
     <Route  index element={<AdminHome/>} errorElement={<NotFoundPage/>}/>
     <Route path="faculty-data" element={<AdminHome/>} errorElement={<NotFoundPage/>}/>
+    <Route path="hod-data" element={<AdminHodData/>} errorElement={<NotFoundPage/>}/>
+
     <Route path="allocate-lectures" element={<AdminLectureAllocationPage/>} errorElement={<NotFoundPage/>}/>
     <Route path="release-feedbacks" element={<ReleaseFeedbacks/>} errorElement={<NotFoundPage/>}/>
     <Route path="register-faulty" element={<FacultyRegister/>} errorElement={<NotFoundPage/>}/>
