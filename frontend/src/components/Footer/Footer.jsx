@@ -13,7 +13,7 @@ function Footer() {
           <div>
             <h3 className='font-semibold text-lg mb-4'>Quick Links</h3>
             <nav className='flex flex-col space-y-2'>
-              <Link to="#" className='hover:text-blue-300 transition-colors'>Home</Link>
+              <Link to="/" className='hover:text-blue-300 transition-colors'>Home</Link>
               <Link to="#" className='hover:text-blue-300 transition-colors'>Faculty Portal</Link>
               <Link to="#" className='hover:text-blue-300 transition-colors'>Admin Dashboard</Link>
               <Link to="#" className='hover:text-blue-300 transition-colors'>Student Feedback</Link>

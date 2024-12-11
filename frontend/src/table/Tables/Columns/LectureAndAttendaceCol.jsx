@@ -37,4 +37,9 @@ export const columnDef = [
       </Button>
     ),
   },
+  {
+    accessorKey: "actions",
+    header: "Actions",
+    enableSorting: false,
+  },
 ];
