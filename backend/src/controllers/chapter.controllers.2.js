@@ -2,6 +2,8 @@ import { asyncHandler } from "../utils/AsyncHandler2.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Chapter } from "../models/chapter.models.2.js";
 import { ApiError } from "../utils/ApiErrors.js";
+import mongoose from "mongoose";
+import { PublicationPoint } from "../models/publication-points.models.js";
 
 // Add a new chapter
 const addChapter = asyncHandler(async (req, res) => {
@@ -14,10 +16,17 @@ const addChapter = asyncHandler(async (req, res) => {
     pages,
     publisher,
     publication,
-    h5_index,
-    h5_median,
     owner,
   } = req.body;
+
+  if(!mongoose.Types.ObjectId.isValid(publication)){
+    throw new ApiError(404, "Publication not found");
+  }
+
+    const publications = await PublicationPoint.findById(publication);
+
+    const h5_index = publications.hindex;
+    const h5_median = publications.median;
 
   if (!title || !authors || !publicationDate || !publication || !owner) {
     throw new ApiError(400, "Required fields: title, authors, publicationDate, publication, owner");
@@ -46,8 +55,14 @@ const addChapter = asyncHandler(async (req, res) => {
 
 // Get all chapters
 const getChapters = asyncHandler(async (req, res) => {
-  const chapters = await Chapter.find().populate("owner", "name email");
-  res.status(200).json(new ApiResponse(200, chapters));
+    const {id} = req.params;
+
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        throw new ApiError(404, "User not found");
+    }
+
+  const chapters = await Chapter.find({owner: id}).populate("owner", "name email");
+  res.status(200).json(new ApiResponse(200, chapters, "All the chapters retrieved successfully"));
 });
 
 // Update a chapter
@@ -65,6 +80,15 @@ const updateChapter = asyncHandler(async (req, res) => {
     h5_index,
     h5_median,
   } = req.body;
+  
+  if(!mongoose.Types.ObjectId.isValid(publication)){
+    throw new ApiError(404, "Publication not found");
+  }
+
+    const publications = await PublicationPoint.findById(publication);
+
+  h5_index = publications.hindex;
+    h5_median = publications.median;
 
   const chapter = await Chapter.findById(id);
 
