@@ -37,9 +37,11 @@ export default function ViewAttendanceTable({ lectureData }) {
 
   // const [teacherProjectData, setTeacherProjectData] = useState("");
   useEffect(() => {
+    console.log({lectureData})
     const fetchTeacherInfo = async () => {
       try {
         const lectureId = lectureData._id;
+        console.log(lectureId)
         const token = sessionStorage.getItem("teacherAccessToken");
 
         const response = await axios.get(
