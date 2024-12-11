@@ -123,7 +123,7 @@ export default function GuidanceDomainTable() {
 
   return (
     <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold text-gray-800 mb-4">Publication Points Table</h2>
+      <h2 className="text-2xl font-bold text-gray-800 mb-4">Guidance & Mentorship Points Table</h2>
       <div className="overflow-x-auto rounded-lg shadow-md bg-white">
         <table className="min-w-full border border-gray-200">
           <thead className="bg-gray-100 border-b-2 border-gray-200">

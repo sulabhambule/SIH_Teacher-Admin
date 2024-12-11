@@ -151,7 +151,7 @@ export default function EventsDomainTable() {
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold text-gray-800 mb-4">
-        Publication Points Table
+        Events Points Table
       </h2>
       <div className="overflow-x-auto rounded-lg shadow-md bg-white">
         <table className="min-w-full border border-gray-200">
