@@ -32,7 +32,7 @@ router.post("/:lectureId/attendance", verifyTeacherJWT, markLectureAttendance);
 
 // Route to get the attendace of the Lecture
 router.get(
-  "/:lectureId/viewattendavce",
+  "/:lectureId/viewattendance",
   verifyTeacherJWT,
   viewAttendanceOfALecture
 );

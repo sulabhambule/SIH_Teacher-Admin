@@ -187,14 +187,13 @@ router.get(
   "/teachers/:teacherId/seminars/attended",
   verifyAdminJWT,
   getAllseminarAttended
-)
+);
 
 router.get(
   "/teachers/:teacherId/seminars/conducted",
   verifyAdminJWT,
   getSeminarsConductedByTheTeacher
 );
-
 
 router.get(
   "/teachers/:teacherId/seminars/upcoming",

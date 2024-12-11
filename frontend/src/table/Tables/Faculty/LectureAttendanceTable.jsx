@@ -20,8 +20,10 @@ import DeleteDialog from "@/table/DeleteDialog";
 export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
   const { id } = useParams();
   const [data, setData] = useState([]);
-  const [isMarkAttendanceDialogOpen, setMarkAttendanceDialogOpen] = useState(false); // For "Mark Attendance"
-  const [isViewAttendanceDialogOpen, setViewAttendanceDialogOpen] = useState(false); // Placeholder for "View Attendance"
+  const [isMarkAttendanceDialogOpen, setMarkAttendanceDialogOpen] =
+    useState(false); // For "Mark Attendance"
+  const [isViewAttendanceDialogOpen, setViewAttendanceDialogOpen] =
+    useState(false); // Placeholder for "View Attendance"
   const [selectedLecture, setSelectedLecture] = useState(null);
   const [students, setStudents] = useState([]);
   const [selectedStudents, setSelectedStudents] = useState([]);
@@ -30,6 +32,7 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
   const [rowToEdit, setRowToEdit] = useState(null);
   const [rowToDelete, setRowToDelete] = useState(null);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [one, setOne] = useState();
 
   // Fetch lectures
   useEffect(() => {
@@ -38,7 +41,7 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
         const token = sessionStorage.getItem("teacherAccessToken");
 
         const response = await axios.get(
-          `https://facultyappraisal.software/api/v1/lecture/${subjectId}/${teacherId}/lectures`,
+          `http://localhost:6005/api/v1/lecture/${subjectId}/${teacherId}/lectures`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -52,7 +55,7 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
     };
 
     fetchLecture();
-  }, [subjectId, teacherId]);
+  }, [subjectId, teacherId, one]);
 
   // Fetch students when a lecture is selected (for "Mark Attendance")
   useEffect(() => {
@@ -61,7 +64,7 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
         try {
           const token = sessionStorage.getItem("teacherAccessToken");
           const response = await axios.get(
-            `https://facultyappraisal.software/api/v1/students/${selectedLecture._id}`,
+            `http://localhost:6005/api/v1/students/${selectedLecture._id}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -79,6 +82,7 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
     }
   }, [selectedLecture, isMarkAttendanceDialogOpen]);
 
+
   const handleEdit = (row) => {
     setRowToEdit(row);
     setDrawerOpen(true);
@@ -88,6 +92,7 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
     setRowToDelete(row);
     setDeleteDialogOpen(true);
   };
+
 
   // Memoize columns
   const columns = useMemo(() => {
@@ -199,7 +204,7 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
     try {
       const token = sessionStorage.getItem("teacherAccessToken");
       const response = await axios.post(
-        `https://facultyappraisal.software/api/v1/lecture/${subjectId}/${teacherId}/lectures`,
+        `http://localhost:6005/api/v1/lecture/${subjectId}/${teacherId}/lectures`,
         lectureData,
         {
           headers: {
@@ -208,12 +213,17 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
           },
         }
       );
-      // console.log("Lecture Added:", response.data);
-      setData((prev) => [...prev, response.data]); // Update table data
-      setSelectedLecture(response.data); // Store the added lecture for attendance
+
+      const newLecture = response.data;
+      setOne(newLecture);
+      setSelectedLecture(newLecture);
     } catch (error) {
       console.error("Failed to add lecture:", error);
     }
+  };
+
+  const handleAddEntry = (newData) => {
+    setData((prevData) => [...prevData, { ...newData, id: Date.now() }]);
   };
 
   return (

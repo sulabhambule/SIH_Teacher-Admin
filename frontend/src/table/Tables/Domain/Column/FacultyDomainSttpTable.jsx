@@ -10,17 +10,17 @@ import "../../../table.css";
 import { Button } from "@/components/ui/button.jsx";
 import axios from "axios";
 
-export default function ResearchProjectsDomainTable() {
+export default function FacultyDomainSttpTable() {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchPublicationData = async () => {
       try {
-        const token = sessionStorage.getItem("adminAccessToken");
+        const token = sessionStorage.getItem("teacherAccessToken");
 
         const response = await axios.get(
-          `http://localhost:6005/api/v1/domain-points/admin/project`,
+          `http://localhost:6005/api/v1/domain-points/teacher/te-sttp`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -28,8 +28,7 @@ export default function ResearchProjectsDomainTable() {
           }
         );
 
-        // console.log(response);
-
+        console.log(response.data.data)
         setData(response.data.data);
       } catch (error) {
         console.error("Failed to fetch publications:", error);
@@ -41,18 +40,13 @@ export default function ResearchProjectsDomainTable() {
     fetchPublicationData();
   }, []);
 
-  const updatePoints = async (row, newPoints) => {
-    const id = row._id;
-    const points = Number(newPoints);
-    console.log(points);
-    console.log(id);
-
+  const updatePoints = async (id, newPoints) => {
     try {
       const token = sessionStorage.getItem("adminAccessToken");
 
       const response = await axios.put(
         `http://localhost:6005/api/v1/domain-points/admin/points/${id}`,
-        { points: points },
+        { points: newPoints },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -61,7 +55,6 @@ export default function ResearchProjectsDomainTable() {
       );
 
       if (response.status === 200) {
-        // Update the state with the new points
         setData((prevData) =>
           prevData.map((item) =>
             item._id === id ? { ...item, points: newPoints } : item
@@ -85,49 +78,49 @@ export default function ResearchProjectsDomainTable() {
       {
         accessorKey: "points",
         header: "Points",
-        cell: ({ row, getValue }) => {
-          const [isEditing, setIsEditing] = useState(false);
-          const [newPoints, setNewPoints] = useState(getValue());
+        // cell: ({ row, getValue }) => {
+        //   const [isEditing, setIsEditing] = useState(false);
+        //   const [newPoints, setNewPoints] = useState(getValue());
 
-          const handleSave = () => {
-            updatePoints(row.original._id, newPoints);
-            setIsEditing(false);
-          };
+        //   const handleSave = () => {
+        //     updatePoints(row.original._id, newPoints);
+        //     setIsEditing(false);
+        //   };
 
-          return isEditing ? (
-            <div className="flex gap-2 items-center">
-              <input
-                type="number"
-                className="border rounded px-2 py-1 w-20 text-center"
-                value={newPoints}
-                onChange={(e) => setNewPoints(Number(e.target.value))}
-                min={0}
-              />
-              <Button
-                onClick={handleSave}
-                className="bg-green-500 text-white hover:bg-green-600"
-              >
-                Save
-              </Button>
-              <Button
-                onClick={() => setIsEditing(false)}
-                className="bg-red-500 text-white hover:bg-red-600"
-              >
-                Cancel
-              </Button>
-            </div>
-          ) : (
-            <div className="flex justify-between items-center">
-              <span className="text-gray-700">{getValue()}</span>
-              <Button
-                onClick={() => setIsEditing(true)}
-                className="bg-blue-500 text-white hover:bg-blue-600"
-              >
-                Edit
-              </Button>
-            </div>
-          );
-        },
+        //   return isEditing ? (
+        //     <div className="flex gap-2 items-center">
+        //       <input
+        //         type="number"
+        //         className="border rounded px-2 py-1 w-20 text-center"
+        //         value={newPoints}
+        //         onChange={(e) => setNewPoints(Number(e.target.value))}
+        //         min={0}
+        //       />
+        //       <Button
+        //         onClick={handleSave}
+        //         className="bg-green-500 text-white hover:bg-green-600"
+        //       >
+        //         Save
+        //       </Button>
+        //       <Button
+        //         onClick={() => setIsEditing(false)}
+        //         className="bg-red-500 text-white hover:bg-red-600"
+        //       >
+        //         Cancel
+        //       </Button>
+        //     </div>
+        //   ) : (
+        //     <div className="flex justify-between items-center">
+        //       <span className="text-gray-700">{getValue()}</span>
+        //       <Button
+        //         onClick={() => setIsEditing(true)}
+        //         className="bg-blue-500 text-white hover:bg-blue-600"
+        //       >
+        //         Edit
+        //       </Button>
+        //     </div>
+        //   );
+        // },
       },
     ],
     [data]
@@ -151,7 +144,7 @@ export default function ResearchProjectsDomainTable() {
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold text-gray-800 mb-4">
-        Reasearch Points Table
+        STTP Points Table
       </h2>
       <div className="overflow-x-auto rounded-lg shadow-md bg-white">
         <table className="min-w-full border border-gray-200">

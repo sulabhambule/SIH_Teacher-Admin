@@ -300,7 +300,7 @@ const viewAttendanceOfALecture = asyncHandler(async (req, res) => {
 
   const attendance = await Attendance.findOne({ lecture: lectureId }).populate({
     path: "studentsPresent",
-    select: "name rollNumber email", // Specify the fields you want from the Student model
+    select: "name roll_no email", 
   });
 
   if (!attendance) {

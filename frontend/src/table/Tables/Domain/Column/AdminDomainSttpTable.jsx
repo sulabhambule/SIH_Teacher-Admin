@@ -10,7 +10,7 @@ import "../../../table.css";
 import { Button } from "@/components/ui/button.jsx";
 import axios from "axios";
 
-export default function ResearchProjectsDomainTable() {
+export default function AdminDomainSttpTable() {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -20,15 +20,13 @@ export default function ResearchProjectsDomainTable() {
         const token = sessionStorage.getItem("adminAccessToken");
 
         const response = await axios.get(
-          `http://localhost:6005/api/v1/domain-points/admin/project`,
+          `http://localhost:6005/api/v1/domain-points/admin/sttp`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-
-        // console.log(response);
 
         setData(response.data.data);
       } catch (error) {
@@ -41,18 +39,13 @@ export default function ResearchProjectsDomainTable() {
     fetchPublicationData();
   }, []);
 
-  const updatePoints = async (row, newPoints) => {
-    const id = row._id;
-    const points = Number(newPoints);
-    console.log(points);
-    console.log(id);
-
+  const updatePoints = async (id, newPoints) => {
     try {
       const token = sessionStorage.getItem("adminAccessToken");
 
       const response = await axios.put(
         `http://localhost:6005/api/v1/domain-points/admin/points/${id}`,
-        { points: points },
+        { points: newPoints },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -61,7 +54,6 @@ export default function ResearchProjectsDomainTable() {
       );
 
       if (response.status === 200) {
-        // Update the state with the new points
         setData((prevData) =>
           prevData.map((item) =>
             item._id === id ? { ...item, points: newPoints } : item
@@ -151,7 +143,7 @@ export default function ResearchProjectsDomainTable() {
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold text-gray-800 mb-4">
-        Reasearch Points Table
+        STTPs Points Table
       </h2>
       <div className="overflow-x-auto rounded-lg shadow-md bg-white">
         <table className="min-w-full border border-gray-200">

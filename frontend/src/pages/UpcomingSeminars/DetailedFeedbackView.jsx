@@ -1,8 +1,14 @@
-import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import React, { useEffect, useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Star, X } from 'lucide-react';
+import { Star, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
 
 const feedbackCriteria = [
   "Has the Teacher covered entire Syllabus as prescribed by University/College/Board?",
@@ -18,6 +24,44 @@ const feedbackCriteria = [
 ];
 
 export function DetailedFeedbackView({ isOpen, onClose, feedback }) {
+  const [feedbackData, setFeedbackData] = useState({
+    subject_name: "",
+    subject_code: "",
+    ratings: {},
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchLectureCriteria = async () => {
+      if (!isOpen || !feedback.feedbackId) return;
+
+      setLoading(true);
+      try {
+        const token = sessionStorage.getItem("teacherAccessToken");
+        if (!token) {
+          console.error("Access token is missing.");
+          return;
+        }
+
+        const headers = { Authorization: `Bearer ${token}` };
+        const feedbackId = feedback.feedbackId;
+
+        const response = await axios.get(
+          `http://localhost:6005/api/v1/lec-feedback/detailed/${feedbackId}`,
+          { headers }
+        );
+
+        setFeedbackData(response.data.data || {});
+      } catch (error) {
+        console.error("Error in getting the lecture criteria:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLectureCriteria();
+  }, [isOpen, feedback]);
+
   if (!isOpen) return null;
 
   return (
@@ -38,52 +82,49 @@ export function DetailedFeedbackView({ isOpen, onClose, feedback }) {
             </Button>
           </div>
           <p className="text-white/80 mt-2">
-            {feedback?.subject_name} ({feedback?.subject_code})
+            {loading
+              ? "Loading..."
+              : `${feedbackData.subject_name} (${feedbackData.subject_code})`}
           </p>
         </DialogHeader>
 
-        <ScrollArea className="h-[calc(90vh-180px)] px-6 py-4">
-          <div className="space-y-6">
-            {feedbackCriteria.map((criterion, index) => (
-              <div 
-                key={index} 
-                className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm transition-all duration-300 hover:shadow-md"
-              >
-                <h3 className="text-lg font-medium text-black mb-3">
-                  {criterion}
-                </h3>
-                <div className="flex items-center gap-2">
-                  <div className="flex gap-1">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star
-                        key={star}
-                        className={`h-5 w-5 transition-colors ${
-                          star <= feedback[`question${index + 1}_rating`]
-                            ? "text-yellow-400 fill-yellow-400"
-                            : "text-gray-200"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <span className="text-lg font-semibold text-[rgb(37,78,235)]">
-                    {feedback[`question${index + 1}_rating`]?.toFixed(1)}
-                  </span>
-                </div>
-              </div>
-            ))}
-            
-            {feedback?.comments && (
-              <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm mt-6 transition-all duration-300 hover:shadow-md">
-                <h3 className="text-lg font-medium text-[rgb(37,78,235)] mb-3">
-                  Additional Comments
-                </h3>
-                <p className="text-gray-700 whitespace-pre-wrap">
-                  {feedback.comments}
-                </p>
-              </div>
-            )}
+        {loading ? (
+          <div className="flex justify-center items-center h-[calc(90vh-180px)]">
+            <p className="text-gray-500">Loading detailed feedback...</p>
           </div>
-        </ScrollArea>
+        ) : (
+          <ScrollArea className="h-[calc(90vh-180px)] px-6 py-4">
+            <div className="space-y-6">
+              {feedbackCriteria.map((criterion, index) => (
+                <div
+                  key={index}
+                  className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm transition-all duration-300 hover:shadow-md"
+                >
+                  <h3 className="text-lg font-medium text-black mb-3">
+                    {criterion}
+                  </h3>
+                  <div className="flex items-center gap-2">
+                    <div className="flex gap-1">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star
+                          key={star}
+                          className={`h-5 w-5 transition-colors ${
+                            star <= feedbackData.ratings[`question${index + 1}`]
+                              ? "text-yellow-400 fill-yellow-400"
+                              : "text-gray-200"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <span className="text-lg font-semibold text-[rgb(37,78,235)]">
+                      {feedbackData.ratings[`question${index + 1}`] || 0}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
+        )}
 
         <div className="sticky bottom-0 w-full p-4 bg-white border-t border-gray-200 mt-auto flex justify-end">
           <Button
@@ -97,4 +138,3 @@ export function DetailedFeedbackView({ isOpen, onClose, feedback }) {
     </Dialog>
   );
 }
-
