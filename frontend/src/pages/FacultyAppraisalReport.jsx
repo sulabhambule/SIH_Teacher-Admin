@@ -39,7 +39,7 @@ const FacultyAppraisalReport = ({
   const [appraisalData, setAppraisalData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true)
+      setIsLoading(true);
       try {
         const response = await axios.get(
           "http://localhost:6005/api/v1/teachers/me",
@@ -57,7 +57,7 @@ const FacultyAppraisalReport = ({
         const errorMessage = error.response?.data?.message || error.message;
         console.error("Error fetching teacher data:", errorMessage);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
     };
 

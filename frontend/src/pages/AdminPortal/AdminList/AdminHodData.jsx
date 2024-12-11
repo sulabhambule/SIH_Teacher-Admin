@@ -120,11 +120,10 @@ function HODAppraisal() {
         return null;
     }
   };
-  useEffect(() => {
-    if (selectedHOD) {
-      renderAppraisalReport();
-    }
-  }, [selectedHOD]);
+
+  if (selectedHOD) {
+    renderAppraisalReport();
+  }
 
   const table = useReactTable({
     data: sampleHodData,
