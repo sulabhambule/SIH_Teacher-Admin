@@ -2,6 +2,8 @@ import { ApiError } from "../utils/ApiErrors.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/AsyncHandler2.js";
 import { Book } from "../models/books.models.2.js";
+import mongoose from "mongoose";
+import { PublicationPoint } from "../models/publication-points.models.js";
 
 // Add a new book
 const addBook = asyncHandler(async (req, res) => {
@@ -12,14 +14,21 @@ const addBook = asyncHandler(async (req, res) => {
     volume,
     pages,
     publication,
-    h5_index,
-    h5_median,
     owner,
   } = req.body;
 
-  if (!title || !authors || !publicationDate || !volume || !pages || !publication || !owner) {
+  if(!mongoose.Types.ObjectId.isValid(publication)){
+    throw new ApiError(404, "Publication not found");
+  }
+
+  const publications = await PublicationPoint.findById(publication);
+
+  if (!title || !authors || !publicationDate || !volume || !pages || !owner) {
     throw new ApiError(400, "All required fields must be provided");
   }
+
+  const h5_index = publications.hindex;
+  const h5_median = publications.median;
 
   const book = await Book.create({
     title,
@@ -38,8 +47,14 @@ const addBook = asyncHandler(async (req, res) => {
 
 // Get all books
 const getBooks = asyncHandler(async (req, res) => {
-  const books = await Book.find().populate("owner", "name email");
-  ApiResponse.success(res, 200, "Books retrieved successfully", books);
+  const {id} = req.params;
+
+  if(!mongoose.Types.ObjectId.isValid(id)){
+    throw new ApiError(404, "User not found");
+    }
+
+  const books = await Book.find({owner: id});
+  ApiResponse.success(200, books, "Books retrieved successfully");
 });
 
 // Update a book
@@ -55,6 +70,19 @@ const updateBook = asyncHandler(async (req, res) => {
     h5_index,
     h5_median,
   } = req.body;
+
+  if(!mongoose.Types.ObjectId.isValid(publication)){
+    throw new ApiError(404, "Publication not found");
+  }
+
+  const publications = await PublicationPoint.findById(publication);
+
+  h5_index = publications.hindex;
+  h5_median = publications.median;
+
+  if(!title || !authors || !publicationDate || !volume || !pages || !h5_index || !h5_median){
+    throw new ApiError(400, "All required fields must be provided");
+  }
 
   const book = await Book.findById(id);
 
