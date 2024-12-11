@@ -202,11 +202,11 @@ const PostsPage = () => {
   // Function to handle the post update
   const handleEditPost = async (e, p) => {
     e.preventDefault();
-    console.log(p)
+    console.log(p);
 
     try {
       console.log(newPost);
-      
+
       const formData = new FormData();
       formData.append("title", newPost.title);
       formData.append("description", newPost.description);
@@ -463,7 +463,10 @@ const PostsPage = () => {
                       <div className="space-y-4 p-4">
                         {/* Edit Form (To be implemented) */}
                         <p>Edit form content goes here...</p>
-                        <form onSubmit={(e) => (handleEditPost(e, post))} className="space-y-4">
+                        <form
+                          onSubmit={(e) => handleEditPost(e, post)}
+                          className="space-y-4"
+                        >
                           {/* Title Input */}
                           <Input
                             placeholder="Title"
