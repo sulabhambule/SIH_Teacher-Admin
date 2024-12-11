@@ -39,8 +39,10 @@ import { conferenceColumnDef } from "../Columns/PublicationsColumn/ConferenceCol
 import { chapterColumnDef } from "../Columns/PublicationsColumn/ChapterColumn.jsx";
 import { ResearchInstructionMessage } from "@/components/ResearchInstructionMessage.jsx";
 import FacultyPublicationsChart from "./FacultyPublicationsChart.jsx";
+import { useParams } from "react-router-dom";
 
 export default function FacultyResearchTable() {
+  const { id } = useParams();
   const [data, setData] = useState([]);
   const [data2, setData2] = useState([]);
   const [expanded, setExpanded] = useState({});
@@ -71,8 +73,8 @@ export default function FacultyResearchTable() {
     }
 
     const endpointMap = {
-      Book: "/api/v1/book/book/",
-      BOOK: "/api/v1/book/book/",
+      Book: `/api/v1/book2/book/${id}`,
+      BOOK: `/api/v1/book2/book/${id}`,
       "Book Chapter": "/api/v1/chapter/chapter/",
       "Journal Article": "/api/v1/journals/journal/",
       Patent: "/api/v1/patents/patent/get",
@@ -90,41 +92,41 @@ export default function FacultyResearchTable() {
         },
       });
 
-      console.log(response.data.data);
-      // setData2(response.data.data);
-      let c = 0;
-      const enhancedData = response.data.data.map((item) => {
-        let h5_median;
-        let h5_index;
+      console.log(response.data);
+      setData2(response.data.data);
+      // let c = 0;
+      // const enhancedData = response.data.data.map((item) => {
+      //   let h5_median;
+      //   let h5_index;
 
-        if (c === 0) {
-          h5_index = 440;
-          h5_median = 337;
-        } else if (c === 1) {
-          h5_index = 240;
-          h5_median = 340;
-        } else if (c === 2) {
-          h5_index = 259;
-          h5_median = 400;
-        } else if (c == 3) {
-          h5_index = 330;
-          h5_median = 300;
-        } else {
-          h5_index = 240;
-          h5_median = 300;
-        }
-        c++;
-        // setCount(count + 1);
-        return {
-          ...item,
-          publication: "Sample Publication", // Replace with actual logic or value
-          h5_median: h5_median ?? 0, // Default to 0 if not set
-          h5_index: h5_index ?? 0, // Default to 0 if not set
-        };
-      });
+      //   if (c === 0) {
+      //     h5_index = 440;
+      //     h5_median = 337;
+      //   } else if (c === 1) {
+      //     h5_index = 240;
+      //     h5_median = 340;
+      //   } else if (c === 2) {
+      //     h5_index = 259;
+      //     h5_median = 400;
+      //   } else if (c == 3) {
+      //     h5_index = 330;
+      //     h5_median = 300;
+      //   } else {
+      //     h5_index = 240;
+      //     h5_median = 300;
+      //   }
+      //   c++;
+      //   // setCount(count + 1);
+      //   return {
+      //     ...item,
+      //     publication: "Sample Publication", // Replace with actual logic or value
+      //     h5_median: h5_median ?? 0, // Default to 0 if not set
+      //     h5_index: h5_index ?? 0, // Default to 0 if not set
+      //   };
+      // });
 
-      console.log(enhancedData);
-      setData2(enhancedData);
+      // console.log(enhancedData);
+      // setData2(enhancedData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -209,8 +211,8 @@ export default function FacultyResearchTable() {
       const type = typeFilter;
       const publicationType = mapPublicationType(type);
       const endpointMap = {
-        Book: "/api/v1/book/book/add",
-        BOOK: "/api/v1/book/book/add",
+        Book: "/api/v1/book2/book/add",
+        BOOK: "/api/v1/book2/book/add",
         "Book Chapter": "/api/v1/chapter/chapter/add",
         "Journal Article": "/api/v1/journals/journal/add",
         Patent: "/api/v1/patents/patent/add",
@@ -459,9 +461,6 @@ export default function FacultyResearchTable() {
         columns={columns}
         rowData={rowToEdit}
       />
-      
-
-      
 
       <DeleteDialog
         isOpen={isDeleteDialogOpen}

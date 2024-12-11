@@ -75,33 +75,33 @@ const allocatePoints = async (teacherId, domain, publicationDate) => {
   }
 };
 
-// Post-save hook to allocate points
-bookSchema.post("save", async function (doc) {
-  const domain = `${doc.segregation} Book`; // Generate the domain key (e.g., "International Journal")
-  await allocatePoints(doc.owner, domain, doc.publicationDate);
-});
+// // Post-save hook to allocate points
+// bookSchema.post("save", async function (doc) {
+//   const domain = `${doc.segregation} Book`; // Generate the domain key (e.g., "International Journal")
+//   await allocatePoints(doc.owner, domain, doc.publicationDate);
+// });
 
 // Post-remove hook to deduct points
-bookSchema.post("findOneAndDelete", async function (doc) {
-  if (doc) {
-    const domain = `${doc.segregation} Book`; // Generate the domain key (e.g., "International Journal")
-    const points = await getPointsForDomain(domain); // Fetch points for the domain
+// bookSchema.post("findOneAndDelete", async function (doc) {
+//   if (doc) {
+//     const domain = `${doc.segregation} Book`; // Generate the domain key (e.g., "International Journal")
+//     const points = await getPointsForDomain(domain); // Fetch points for the domain
 
-    // Search for an existing domain for the teacher
-    const existingPoint = await Point.findOne({ owner: doc.owner, domain });
+//     // Search for an existing domain for the teacher
+//     const existingPoint = await Point.findOne({ owner: doc.owner, domain });
 
-    if (existingPoint) {
-      // Deduct points
-      await Point.findByIdAndUpdate(existingPoint._id, {
-        $inc: { points: -points },
-      });
+//     if (existingPoint) {
+//       // Deduct points
+//       await Point.findByIdAndUpdate(existingPoint._id, {
+//         $inc: { points: -points },
+//       });
 
-      // Optionally, remove the document if points drop to 0
-      if (existingPoint.points - points <= 0) {
-        await Point.findByIdAndDelete(existingPoint._id);
-      }
-    }
-  }
-});
+//       // Optionally, remove the document if points drop to 0
+//       if (existingPoint.points - points <= 0) {
+//         await Point.findByIdAndDelete(existingPoint._id);
+//       }
+//     }
+//   }
+// });
 
-export const Book = mongoose.model("Book2", bookSchema);
+export const Book2 = mongoose.model("Book2", bookSchema);
