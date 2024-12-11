@@ -16,33 +16,129 @@ import "react-datepicker/dist/react-datepicker.css";
 import { z } from "zod";
 
 const publicationData = [
-  { name: "Nature", h5Index: 488, h5Median: 745 },
   {
-    name: "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
-    h5Index: 440,
-    h5Median: 689,
+    "name": "Nature",
+    "h5Index": 488,
+    "h5Median": 745
   },
-  { name: "The New England Journal of Medicine", h5Index: 434, h5Median: 897 },
-  { name: "Science", h5Index: 409, h5Median: 633 },
-  { name: "Nature Communications", h5Index: 375, h5Median: 492 },
-  { name: "The Lancet", h5Index: 368, h5Median: 678 },
   {
-    name: "Neural Information Processing Systems",
-    h5Index: 337,
-    h5Median: 614,
+    "name": "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+    "h5Index": 440,
+    "h5Median": 689
   },
-  { name: "Advanced Materials", h5Index: 327, h5Median: 420 },
-  { name: "Cell", h5Index: 320, h5Median: 482 },
   {
-    name: "International Conference on Learning Representations",
-    h5Index: 304,
-    h5Median: 584,
+    "name": "The New England Journal of Medicine",
+    "h5Index": 434,
+    "h5Median": 897
   },
+  {
+    "name": "Science",
+    "h5Index": 409,
+    "h5Median": 633
+  },
+  {
+    "name": "Nature Communications",
+    "h5Index": 375,
+    "h5Median": 492
+  },
+  {
+    "name": "The Lancet",
+    "h5Index": 368,
+    "h5Median": 678
+  },
+  {
+    "name": "Neural Information Processing Systems",
+    "h5Index": 337,
+    "h5Median": 614
+  },
+  {
+    "name": "Advanced Materials",
+    "h5Index": 327,
+    "h5Median": 420
+  },
+  {
+    "name": "Cell",
+    "h5Index": 320,
+    "h5Median": 482
+  },
+  {
+    "name": "International Conference on Learning Representations",
+    "h5Index": 304,
+    "h5Median": 584
+  },
+  {
+    "name": "JAMA",
+    "h5Index": 298,
+    "h5Median": 498
+  },
+  {
+    "name": "Science of The Total Environment",
+    "h5Index": 297,
+    "h5Median": 436
+  },
+  {
+    "name": "IEEE/CVF International Conference on Computer Vision",
+    "h5Index": 291,
+    "h5Median": 484
+  },
+  {
+    "name": "Angewandte Chemie International Edition",
+    "h5Index": 281,
+    "h5Median": 361
+  },
+  {
+    "name": "Nature Medicine",
+    "h5Index": 274,
+    "h5Median": 474
+  },
+  {
+    "name": "Journal of Cleaner Production",
+    "h5Index": 272,
+    "h5Median": 359
+  },
+  {
+    "name": "International Conference on Machine Learning",
+    "h5Index": 268,
+    "h5Median": 424
+  },
+  {
+    "name": "Chemical Reviews",
+    "h5Index": 267,
+    "h5Median": 461
+  },
+  {
+    "name": "Proceedings of the National Academy of Sciences",
+    "h5Index": 267,
+    "h5Median": 405
+  },
+  {
+    "name": "IEEE Access",
+    "h5Index": 266,
+    "h5Median": 364
+  }
 ];
+
+
+
 
 function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const [selectedPublication, setSelectedPublication] = useState(null);
+  const [publicationData, setPublicationData] = useState([]);
+
+  useEffect(() => {
+    async function fetchPublicationData() {
+      try {
+        const response = await fetch('/publicationData.json');
+        const data = await response.json();
+        setPublicationData(data);
+      } catch (error) {
+        console.error('Error fetching publication data:', error);
+      }
+    }
+  
+    fetchPublicationData();
+  }, []);
 
   const generateSchema = () => {
     const schemaFields = {};
