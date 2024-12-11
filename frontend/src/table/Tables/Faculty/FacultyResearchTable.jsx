@@ -459,6 +459,9 @@ export default function FacultyResearchTable() {
         columns={columns}
         rowData={rowToEdit}
       />
+      
+
+      
 
       <DeleteDialog
         isOpen={isDeleteDialogOpen}
