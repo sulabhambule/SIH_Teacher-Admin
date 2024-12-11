@@ -1,6 +1,5 @@
 import mongoose, { Schema } from "mongoose";
 import { Point } from "./points.models.js";
-import { DomainPoint } from "./domainpoints.models.js";
 import { PublicationPoint } from "./publication-points.models.js";
 
 const bookSchema = new Schema(
@@ -75,29 +74,9 @@ const allocatePublicationPoints = async (teacherId, publicationId) => {
   };
   
   // Function to deduct points in the `Point` model based on publication hindex
-  const deductPublicationPoints = async (teacherId, publicationId) => {
-    const publication = await PublicationPoint.findById(publicationId);
-    if (!publication) {
-      throw new Error("Publication not found");
-    }
-  
-    const points = publication.hindex; // Use hindex as the points value
-  
-    // Search for an existing point entry for the teacher
-    const existingPoint = await Point.findOne({ owner: teacherId, domain: publication.name });
-  
-    if (existingPoint) {
-      // Deduct points
-      await Point.findByIdAndUpdate(existingPoint._id, {
-        $inc: { points: -points },
-      });
-  
-      // Optionally, remove the document if points drop to 0
-      if (existingPoint.points - points <= 0) {
-        await Point.findByIdAndDelete(existingPoint._id);
-      }
-    }
-  };
+//   const deductPublicationPoints = async (teacherId, publicationId) => {
+    
+//   };
   
   // Post-save hook to allocate points based on publication hindex
   bookSchema.post("save", async function (doc) {
@@ -107,7 +86,30 @@ const allocatePublicationPoints = async (teacherId, publicationId) => {
   // Post-remove hook to deduct points based on publication hindex
   bookSchema.post("findOneAndDelete", async function (doc) {
     if (doc) {
-      await deductPublicationPoints(doc.owner, doc.publication);
+        const publication = await PublicationPoint.findById(doc.publication);
+        console.log(publication);
+        if (!publication) {
+          throw new Error("Publication not found");
+        }
+      
+        const points = publication.hindex; // Use hindex as the points value
+      
+        // Search for an existing point entry for the teacher
+        const existingPoint = await Point.findOne({ owner: doc.owner, domain: publication.name });
+
+        console.log(existingPoint);
+      
+        if (existingPoint) {
+          // Deduct points
+          await Point.findByIdAndUpdate(existingPoint._id, {
+            $inc: { points: -points },
+          });
+      
+          // Optionally, remove the document if points drop to 0
+          if (existingPoint.points - points <= 0) {
+            await Point.findByIdAndDelete(existingPoint._id);
+          }
+        }
     }
   });
 
