@@ -1,6 +1,4 @@
-import { useMemo } from "react";
-import { Button } from "@/components/ui/button.jsx";
-import { Eye, EyeOff } from "lucide-react";
+import { Button } from "@/components/ui/button"
 
 export const columnDef = [
   {
@@ -23,8 +21,28 @@ export const columnDef = [
     header: "Total Points",
   },
   {
-    accessorKey: "actions",
-    header: "Actions",
-    enableSorting: false,
+    accessorKey: "lastUpdated",
+    header: "Last Updated",
   },
-];
+  {
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }) => (
+      <div className="flex space-x-2">
+        <Button 
+          onClick={() => row.toggleExpanded()} 
+          variant="outline"
+        >
+          {row.getIsExpanded() ? 'Hide Details' : 'View Details'}
+        </Button>
+        <Button 
+          onClick={() => row.original.onSetTargets(row.original)}
+          variant="secondary"
+        >
+          Set Targets
+        </Button>
+      </div>
+    ),
+  },
+]
+

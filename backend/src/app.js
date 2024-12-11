@@ -34,6 +34,8 @@ import lecture from "./routes/lecture.routes.js";
 import research from "./routes/research-papers.routes.js";
 import domainPoints from "./routes/domainPoints.routes.js";
 import bookRouter from "./routes/books.routes.js";
+import book2Router from "./routes/books2.routes.js";
+
 import journalRouter from "./routes/journal.routes.js";
 import patentRouter from "./routes/patent.routes.js";
 import conferenceRouter from "./routes/conference.routes.js";
@@ -41,6 +43,7 @@ import pointRouter from "./routes/points.routes.js";
 import postRouter from "./routes/extracontribution.routes.js";
 import chapterRouter from "./routes/chapter.routes.js";
 import lecfeedback from "./routes/lecture-feedbacks.routes.js";
+import publicationRouter from "./routes/publicationPoints.routes.js";
 
 
 app.use("/api/v1/teachers", teacherRouter);
@@ -60,11 +63,15 @@ app.use("/api/v1/lec-feedback", lecfeedback);
 app.use("/api/v1/research-paper", research);
 app.use("/api/v1/domain-points", domainPoints);
 app.use("/api/v1/book", bookRouter);
+app.use("/api/v1/book2", book2Router);
 app.use("/api/v1/chapter", chapterRouter);
 app.use("/api/v1/journals", journalRouter);
 app.use("/api/v1/patents", patentRouter);
 app.use("/api/v1/conferences", conferenceRouter);
 app.use("/api/v1/points", pointRouter);
 app.use("/api/v1/posts", postRouter);
+app.use("/api/v1/publication", publicationRouter);
+
+
 
 export { app };

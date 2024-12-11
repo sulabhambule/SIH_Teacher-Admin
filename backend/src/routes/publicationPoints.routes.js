@@ -21,6 +21,6 @@ router.put("/:id", updatePublicationPoint);
 // Route to delete a publication point by ID
 router.delete("/:id", deletePublicationPoint);
 
-router.get("/all", fetchAllTypes)
+router.get("/all", fetchAllTypes);
 
 export default router;

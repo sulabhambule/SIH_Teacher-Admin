@@ -15,5 +15,4 @@ router.get("/book/", verifyTeacherJWT, getAllBooks);
 router.patch("/book/edit/:id", verifyTeacherJWT, updateBook);
 router.delete("/book/delete/:id", verifyTeacherJWT, deleteBook);
 
-
 export default router;

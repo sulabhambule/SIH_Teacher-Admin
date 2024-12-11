@@ -14,35 +14,116 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { z } from "zod";
+import axios from "axios";
 
-const publicationData = [
-  { name: "Nature", h5Index: 488, h5Median: 745 },
-  {
-    name: "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
-    h5Index: 440,
-    h5Median: 689,
-  },
-  { name: "The New England Journal of Medicine", h5Index: 434, h5Median: 897 },
-  { name: "Science", h5Index: 409, h5Median: 633 },
-  { name: "Nature Communications", h5Index: 375, h5Median: 492 },
-  { name: "The Lancet", h5Index: 368, h5Median: 678 },
-  {
-    name: "Neural Information Processing Systems",
-    h5Index: 337,
-    h5Median: 614,
-  },
-  { name: "Advanced Materials", h5Index: 327, h5Median: 420 },
-  { name: "Cell", h5Index: 320, h5Median: 482 },
-  {
-    name: "International Conference on Learning Representations",
-    h5Index: 304,
-    h5Median: 584,
-  },
-];
+// const publicationData = [
+//   {
+//     name: "Nature",
+//     h5Index: 488,
+//     h5Median: 745,
+//   },
+//   {
+//     name: "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+//     h5Index: 440,
+//     h5Median: 689,
+//   },
+//   {
+//     name: "The New England Journal of Medicine",
+//     h5Index: 434,
+//     h5Median: 897,
+//   },
+//   {
+//     name: "Science",
+//     h5Index: 409,
+//     h5Median: 633,
+//   },
+//   {
+//     name: "Nature Communications",
+//     h5Index: 375,
+//     h5Median: 492,
+//   },
+//   {
+//     name: "The Lancet",
+//     h5Index: 368,
+//     h5Median: 678,
+//   },
+//   {
+//     name: "Neural Information Processing Systems",
+//     h5Index: 337,
+//     h5Median: 614,
+//   },
+//   {
+//     name: "Advanced Materials",
+//     h5Index: 327,
+//     h5Median: 420,
+//   },
+//   {
+//     name: "Cell",
+//     h5Index: 320,
+//     h5Median: 482,
+//   },
+//   {
+//     name: "International Conference on Learning Representations",
+//     h5Index: 304,
+//     h5Median: 584,
+//   },
+//   {
+//     name: "JAMA",
+//     h5Index: 298,
+//     h5Median: 498,
+//   },
+//   {
+//     name: "Science of The Total Environment",
+//     h5Index: 297,
+//     h5Median: 436,
+//   },
+//   {
+//     name: "IEEE/CVF International Conference on Computer Vision",
+//     h5Index: 291,
+//     h5Median: 484,
+//   },
+//   {
+//     name: "Angewandte Chemie International Edition",
+//     h5Index: 281,
+//     h5Median: 361,
+//   },
+//   {
+//     name: "Nature Medicine",
+//     h5Index: 274,
+//     h5Median: 474,
+//   },
+//   {
+//     name: "Journal of Cleaner Production",
+//     h5Index: 272,
+//     h5Median: 359,
+//   },
+//   {
+//     name: "International Conference on Machine Learning",
+//     h5Index: 268,
+//     h5Median: 424,
+//   },
+//   {
+//     name: "Chemical Reviews",
+//     h5Index: 267,
+//     h5Median: 461,
+//   },
+//   {
+//     name: "Proceedings of the National Academy of Sciences",
+//     h5Index: 267,
+//     h5Median: 405,
+//   },
+//   {
+//     name: "IEEE Access",
+//     h5Index: 266,
+//     h5Median: 364,
+//   },
+// ];
 
 function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const [selectedPublication, setSelectedPublication] = useState(null);
+  const [publicationData, setPublicationData] = useState([]);
+  const [pdata, setPdata] = useState([]);
 
   const generateSchema = () => {
     const schemaFields = {};
@@ -162,6 +243,28 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
   }, [isOpen, rowData, setValue]);
 
   useEffect(() => {
+    const fetchTeacherInfo = async () => {
+      try {
+        const token = sessionStorage.getItem("teacherAccessToken");
+        const response = await axios.get(
+          `http://localhost:6005/api/v1/publication/`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Ensure you send the token as an Authorization header
+            },
+          }
+        );
+        console.log(response.data.data); // Log the response data
+        setPublicationData(response.data.data);
+      } catch (error) {
+        console.error("An error occurred while fetching teacher info:", error);
+      }
+    };
+
+    fetchTeacherInfo();
+  }, [isOpen]); // Dependency array ensures re-execution when isOpen changes
+
+  useEffect(() => {
     if (isOpen && !rowData) {
       Object.keys(watch()).forEach((key) => setValue(key, ""));
     }
@@ -207,8 +310,8 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
 
   const handleSuggestionSelect = (suggestion) => {
     setValue("publication", suggestion.name);
-    setValue("h5_index", suggestion.h5Index);
-    setValue("h5_median", suggestion.h5Median);
+    setValue("h5_index", suggestion.hindex);
+    setValue("h5_median", suggestion.median);
     setFilteredSuggestions([]);
     setSelectedPublication(suggestion);
   };
@@ -248,15 +351,21 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
                           <Input
                             id={col.accessorKey}
                             {...register(col.accessorKey)}
-                            onChange={(e) => handlePublicationChange(e.target.value)}
-                            className={errors[col.accessorKey] ? "border-red-500" : ""}
+                            onChange={(e) =>
+                              handlePublicationChange(e.target.value)
+                            }
+                            className={
+                              errors[col.accessorKey] ? "border-red-500" : ""
+                            }
                           />
                           {filteredSuggestions.length > 0 && (
                             <ul className="absolute z-10 bg-white border border-gray-300 rounded shadow-md mt-1 max-h-40 overflow-y-auto w-full">
                               {filteredSuggestions.map((suggestion) => (
                                 <li
                                   key={suggestion.name}
-                                  onClick={() => handleSuggestionSelect(suggestion)}
+                                  onClick={() =>
+                                    handleSuggestionSelect(suggestion)
+                                  }
                                   className="px-4 py-2 cursor-pointer hover:bg-gray-100"
                                 >
                                   {suggestion.name}
@@ -265,12 +374,15 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
                             </ul>
                           )}
                         </div>
-                      ) : col.accessorKey === "h5_index" || col.accessorKey === "h5_median" ? (
+                      ) : col.accessorKey === "h5_index" ||
+                        col.accessorKey === "h5_median" ? (
                         <Input
                           id={col.accessorKey}
                           {...register(col.accessorKey)}
                           readOnly
-                          className={errors[col.accessorKey] ? "border-red-500" : ""}
+                          className={
+                            errors[col.accessorKey] ? "border-red-500" : ""
+                          }
                         />
                       ) : col.accessorKey === "journalType" ? (
                         <Select
@@ -438,4 +550,3 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
 }
 
 export default DrawerComponent;
-
