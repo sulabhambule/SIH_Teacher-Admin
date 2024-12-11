@@ -72,6 +72,7 @@ import FacultyAppraisalReport from './pages/FacultyAppraisalReport';
 import FacultyPointAllocationLayout from './Layouts/FacultyPointAllocationLayout';
 import AdminSeminarLayout from './Layouts/AdminSeminarLayouy';
 import FacultyInfoCard from './pages/FacultyPortal/FacultyList/FacultyInfoCard';
+import AdminPostsPage from './pages/AdminPortal/AdminList/AdminPostsPage';
 
 
 
@@ -140,6 +141,7 @@ const router = createBrowserRouter(
         <Route path="students-guided" element={<RouteTransitionWrapper><AdminStudentsGuidedTable /></RouteTransitionWrapper>} errorElement={<NotFoundPage/>} />
         <Route path="expert-lecture" element={<RouteTransitionWrapper><AdminLecturesTable /></RouteTransitionWrapper>} errorElement={<NotFoundPage/>} />
         <Route path="event-participation" element={<RouteTransitionWrapper><AdminEventTable /></RouteTransitionWrapper>} errorElement={<NotFoundPage/>} />
+        <Route path="contribution-achievement" element={<RouteTransitionWrapper><AdminPostsPage /></RouteTransitionWrapper>} errorElement={<NotFoundPage/>} />
         <Route path="seminars" element={<RouteTransitionWrapper><AdminSeminarLayout/></RouteTransitionWrapper>} errorElement={<NotFoundPage/>} />
         <Route path="sttp-conducted" element={<RouteTransitionWrapper><AdminSTTPTable/></RouteTransitionWrapper>} errorElement={<NotFoundPage/>} />
         <Route path="projects" element={<RouteTransitionWrapper><AdminProjectTable /></RouteTransitionWrapper>} errorElement={<NotFoundPage/>} />

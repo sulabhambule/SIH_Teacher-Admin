@@ -394,7 +394,9 @@ const viewAllAllocatedSubjectsOfTheTeacher = asyncHandler(async (req, res) => {
   }
 
   const allocatedSubjects = await AllocatedSubject.find({ teacher: teacherId })
-    .select("subject_name type min_lectures subject_code subject_credit branch year")
+    .select(
+      "subject_name type min_lectures subject_code subject_credit branch year"
+    )
     .lean();
 
   if (!allocatedSubjects || allocatedSubjects.length === 0) {
@@ -1936,7 +1938,9 @@ const getProjectsHeldByTheTeacher = asyncHandler(async (req, res) => {
   }
 
   const projects = await Project.find({ owner: teacherId })
-    .select("topic branch_name projectType daily_duration startDate endDate report")
+    .select(
+      "topic branch_name projectType daily_duration startDate endDate report"
+    )
     .lean();
 
   if (!projects || projects.length === 0) {
@@ -2158,6 +2162,8 @@ const getAllResearchWork = asyncHandler(async (req, res) => {
 
 const getAllContributions = asyncHandler(async (req, res) => {
   const { teacherId } = req.params;
+  console.log(teacherId);
+
   const contributions = await Contribution.find({ owner: teacherId });
 
   if (!contributions || contributions.length === 0) {

@@ -53,6 +53,11 @@ export default function AdminNavigation() {
       icon: <Calendar className="w-4 h-4" />,
     },
     {
+      name: "Contributions/Achievements",
+      path: "contribution-achievement",
+      icon: <Briefcase className="w-4 h-4" />,
+    },
+    {
       name: "Seminars",
       path: "seminars",
       icon: <PresentationChart className="w-4 h-4" />,
@@ -66,7 +71,11 @@ export default function AdminNavigation() {
     // { name: "Posts", path: "posts", icon: <BarChart2 className="w-4 h-4" /> },
 
     // { name: "Add Lecture", path: "teacheraddecture", icon: <BarChart2 className="w-4 h-4" /> },
-    { name: "Allocate Subject To Teacher", path: "adminallocate-lectures", icon: <FileText className="w-4 h-4" />, },
+    {
+      name: "Allocate Subject To Teacher",
+      path: "adminallocate-lectures",
+      icon: <FileText className="w-4 h-4" />,
+    },
 
     // { name: "Add Lecture", path: "lecAttend", icon: <BarChart2 className="w-4 h-4" /> },
 

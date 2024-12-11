@@ -13,6 +13,10 @@ export const columnDef = [
   {
     accessorKey: "date",
     header: "Date",
+    cell: ({ getValue }) => {
+      const rawDate = getValue();
+      return rawDate ? rawDate.split("T")[0] : "N/A";
+    },
   },
   {
     accessorKey: "topic",
@@ -20,7 +24,7 @@ export const columnDef = [
   },
   {
     accessorKey: "attendance",
-    Header: 'View Attendance',
+    Header: "View Attendance",
     cell: ({ row }) => (
       <Button
         onClick={() => {
@@ -31,7 +35,6 @@ export const columnDef = [
       >
         View Attendance
       </Button>
-    )
- 
+    ),
   },
 ];

@@ -44,6 +44,7 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
             },
           }
         );
+        console.log(response.data)
         setData(response.data.data);
       } catch (error) {
         console.error("An error occurred while fetching lectures.");
@@ -69,7 +70,7 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
           );
           // console.log(response.data)
           setStudents(response.data.data);
-          setSelectedStudents([]); // Reset selected students
+          setSelectedStudents([]);
         } catch (error) {
           console.error("Failed to fetch students:", error);
         }
@@ -132,10 +133,6 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
     } catch (error) {
       console.error("Failed to add lecture:", error);
     }
-  };
-
-  const handleAddEntry = (newData) => {
-    setData((prevData) => [...prevData, { ...newData, id: Date.now() }]);
   };
 
   return (

@@ -82,9 +82,7 @@ export function DetailedFeedbackView({ isOpen, onClose, feedback }) {
             </Button>
           </div>
           <p className="text-white/80 mt-2">
-            {loading
-              ? "Loading..."
-              : `${feedbackData.subject_name} (${feedbackData.subject_code})`}
+            {loading ? "Loading..." : `${feedbackData.subject_name} (${feedbackData.subject_code})`}
           </p>
         </DialogHeader>
 
