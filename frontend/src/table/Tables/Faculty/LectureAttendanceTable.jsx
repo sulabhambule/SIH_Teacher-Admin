@@ -48,6 +48,7 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
             },
           }
         );
+        console.log(response.data);
         setData(response.data.data);
       } catch (error) {
         console.error("An error occurred while fetching lectures.");
@@ -57,7 +58,6 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
     fetchLecture();
   }, [subjectId, teacherId, one]);
 
-  // Fetch students when a lecture is selected (for "Mark Attendance")
   useEffect(() => {
     if (selectedLecture && isMarkAttendanceDialogOpen) {
       const fetchStudents = async () => {
@@ -71,9 +71,9 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
               },
             }
           );
-          // console.log(response.data)
+          console.log(response.data);
           setStudents(response.data.data);
-          setSelectedStudents([]); // Reset selected students
+          setSelectedStudents([]);
         } catch (error) {
           console.error("Failed to fetch students:", error);
         }
@@ -81,7 +81,6 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
       fetchStudents();
     }
   }, [selectedLecture, isMarkAttendanceDialogOpen]);
-
 
   const handleEdit = (row) => {
     setRowToEdit(row);
@@ -92,7 +91,6 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
     setRowToDelete(row);
     setDeleteDialogOpen(true);
   };
-
 
   // Memoize columns
   const columns = useMemo(() => {
@@ -156,7 +154,7 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
     try {
       const token = sessionStorage.getItem("teacherAccessToken");
       const response = await axios.patch(
-        `https://facultyappraisal.software/api/v1/lecture/${subjectId}/${teacherId}/lectures/${updatedData._id}`,
+        `https://facultyappraisal.software/api/v1/lecture/${lectureId}/${teacherId}/lectures`,
         updatedData,
         {
           headers: {
@@ -165,6 +163,8 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
           },
         }
       );
+
+      console.log(response.data);
       setData((prevData) =>
         prevData.map((row) =>
           row._id === updatedData._id ? response.data.data : row
@@ -220,10 +220,6 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
     } catch (error) {
       console.error("Failed to add lecture:", error);
     }
-  };
-
-  const handleAddEntry = (newData) => {
-    setData((prevData) => [...prevData, { ...newData, id: Date.now() }]);
   };
 
   return (
@@ -318,19 +314,19 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
       {/* Drawer for Adding or Editing Lectures */}
       <LectureAttendanceDrawer
         onClose={() => {
-          setDrawerOpen(false); // Close the drawer
-          setRowToEdit(null);   // Reset the row being edited
+          setDrawerOpen(false);
+          setRowToEdit(null);
         }}
         onSubmit={(formData) => {
           if (rowToEdit) {
-            handleEditEntry(formData); // Handle editing if rowToEdit exists
+            handleEditEntry(formData);
           } else {
-            handleAddLecture(formData); // Handle adding new lecture
+            handleAddLecture(formData);
           }
         }}
-        isOpen={isDrawerOpen} // Drawer open state
-        selectedLecture={rowToEdit || selectedLecture} // Pass selected lecture for editing/viewing
-        setAttendanceDialogOpen={setMarkAttendanceDialogOpen} // Pass dialog state handler
+        isOpen={isDrawerOpen}
+        selectedLecture={rowToEdit || selectedLecture}
+        setAttendanceDialogOpen={setMarkAttendanceDialogOpen}
       />
 
       {/* Mark Attendance Dialog */}
@@ -360,4 +356,3 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
     </div>
   );
 }
-
