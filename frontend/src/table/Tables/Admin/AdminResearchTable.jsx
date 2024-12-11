@@ -40,6 +40,7 @@ import { conferenceColumnDef } from "../Columns/PublicationsColumn/ConferenceCol
 import { chapterColumnDef } from "../Columns/PublicationsColumn/ChapterColumn.jsx";
 import { useParams } from "react-router-dom";
 import { ResearchInstructionMessage } from "@/components/ResearchInstructionMessage.jsx";
+import TeacherPublicationsChart from "./TeacherPublicationsChart.jsx";
 
 function ExpandedRowContent({ data2 }) {
   const fieldLabels = {
@@ -124,75 +125,13 @@ export default function AdminResearchTable() {
           Authorization: `Bearer ${token}`,
         },
       });
-      // console.log(response);
+      console.log(response);
       setData2(response.data.data);
       // console.log(data2);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
-
-  // const handleRefManUpload = (event) => {
-  //   const file = event.target.files?.[0];
-  //   if (file) {
-  //     setUploadedFileName(file.name);
-  //     const reader = new FileReader();
-  //     reader.onload = (e) => {
-  //       try {
-  //         const content = e.target.result;
-  //         const parsedData = parseRefMan(content);
-  //         console.log("Parsed Data:", parsedData); // For debugging
-  //         setData(parsedData);
-  //       } catch (error) {
-  //         console.error("Error parsing RefMan file:", error);
-  //         alert("Error parsing the RefMan file. Please check the file format.");
-  //       }
-  //     };
-  //     reader.readAsText(file);
-  //   }
-  // };
-
-  // const parseRefMan = (content) => {
-  //   const entries = content.split("ER  - ").filter((entry) => entry.trim());
-
-  //   return entries
-  //     .map((entry) => {
-  //       const fields = {};
-  //       const lines = entry.split("\n");
-
-  //       lines.forEach((line) => {
-  //         const [key, ...valueParts] = line.split("  - ");
-  //         if (key && valueParts.length > 0) {
-  //           const value = valueParts.join("  - ").trim();
-  //           if (value) {
-  //             if (fields[key.trim()]) {
-  //               if (Array.isArray(fields[key.trim()])) {
-  //                 fields[key.trim()].push(value);
-  //               } else {
-  //                 fields[key.trim()] = [fields[key.trim()], value];
-  //               }
-  //             } else {
-  //               fields[key.trim()] = value;
-  //             }
-  //           }
-  //         }
-  //       });
-
-  //       const authors = fields.A1
-  //         ? (Array.isArray(fields.A1) ? fields.A1 : [fields.A1]).join(", ")
-  //         : "N/A";
-
-  //       return {
-  //         title: fields.T1 || "N/A",
-  //         authors: authors,
-  //         year: fields.Y1 || "N/A",
-  //         type: mapPublicationType(fields.TY || ""),
-  //         viewUrl: fields.UR || "",
-  //         allFields: fields,
-  //       };
-  //     })
-  //     .filter((entry) => entry.title !== "N/A" || entry.authors !== "N/A");
-  // };
 
   const mapPublicationType = (type) => {
     const typeMap = {
@@ -643,7 +582,8 @@ export default function AdminResearchTable() {
       )} */}
 
       {data2.length === 0 ? (
-        <ResearchInstructionMessage />
+        // <ResearchInstructionMessage />
+        <TeacherPublicationsChart id = {id} />
       ) : (
         <div className="table-container">
           <table className="w-full">
