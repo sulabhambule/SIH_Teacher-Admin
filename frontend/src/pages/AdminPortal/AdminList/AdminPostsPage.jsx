@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
 const POSTS_PER_PAGE = 6;
 
@@ -100,9 +101,9 @@ const AttachmentCarousel = ({ attachments }) => {
   );
 };
 
-// Rest of your code with fixes applied for error handling, pagination, and missing keys.
-
-const PostsPage = () => {
+const AdminPostsPage = () => {
+  const { id } = useParams();
+  console.log(id);
   const [posts, setPosts] = useState([]);
   const [newPost, setNewPost] = useState({
     title: "",
@@ -116,37 +117,33 @@ const PostsPage = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true)
-
 
   const getPosts = async () => {
-    setIsLoading(true); // Start loading
     try {
-      const teacherAccessToken = sessionStorage.getItem("teacherAccessToken");
+      console.log(id);
+      const teacherAccessToken = sessionStorage.getItem("adminAccessToken");
       const response = await axios.get(
-        "http://localhost:6005/api/v1/posts/post/get",
+        `http://localhost:6005/api/v1/admins/post/${id}`,
         {
           headers: {
             Authorization: `Bearer ${teacherAccessToken}`,
           },
         }
       );
-      console.log(response.data.data.contributions);
-      const formattedPosts = response.data.data.contributions.map((post) => ({
-        id: post._id, // Use a unique identifier (e.g., `_id`) or fallback to generated ID
-        title: post.title,
-        description: post.description,
-        contributionType: post.contributionType,
-        attachments: Array.isArray(post.images) ? post.images : [], // Ensure `images` is an array
-        createdAt: new Date(post.createdAt), // Ensure proper date conversion
-        report: post.report,
-      }));
+      console.log(response.data);
+      // const formattedPosts = response.data.data.contributions.map((post) => ({
+      //   id: post._id, // Use a unique identifier (e.g., `_id`) or fallback to generated ID
+      //   title: post.title,
+      //   description: post.description,
+      //   contributionType: post.contributionType,
+      //   attachments: Array.isArray(post.images) ? post.images : [], // Ensure `images` is an array
+      //   createdAt: new Date(post.createdAt), // Ensure proper date conversion
+      //   report: post.report,
+      // }));
 
-      setPosts(formattedPosts);
+      // setPosts(formattedPosts);
     } catch (error) {
       console.error("Error fetching posts:", error);
-    }finally {
-      setIsLoading(false);
     }
   };
 
@@ -290,12 +287,6 @@ const PostsPage = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Faculty Achievements</h1>
         <Dialog open={isCreatePostOpen} onOpenChange={setIsCreatePostOpen}>
-          <DialogTrigger asChild>
-            <Button className="text-white">
-              <PlusIcon className="mr-2 h-4 w-4" />
-              Create Post
-            </Button>
-          </DialogTrigger>
           <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Create a New Post</DialogTitle>
@@ -595,4 +586,4 @@ const PostsPage = () => {
   );
 };
 
-export default PostsPage;
+export default AdminPostsPage;

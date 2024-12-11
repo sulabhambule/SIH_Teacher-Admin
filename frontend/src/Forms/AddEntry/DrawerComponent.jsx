@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -14,9 +14,36 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { z } from "zod";
-import { ExternalLink } from "lucide-react";
+
+const publicationData = [
+  { name: "Nature", h5Index: 488, h5Median: 745 },
+  {
+    name: "IEEE/CVF Conference on Computer Vision and Pattern Recognition",
+    h5Index: 440,
+    h5Median: 689,
+  },
+  { name: "The New England Journal of Medicine", h5Index: 434, h5Median: 897 },
+  { name: "Science", h5Index: 409, h5Median: 633 },
+  { name: "Nature Communications", h5Index: 375, h5Median: 492 },
+  { name: "The Lancet", h5Index: 368, h5Median: 678 },
+  {
+    name: "Neural Information Processing Systems",
+    h5Index: 337,
+    h5Median: 614,
+  },
+  { name: "Advanced Materials", h5Index: 327, h5Median: 420 },
+  { name: "Cell", h5Index: 320, h5Median: 482 },
+  {
+    name: "International Conference on Learning Representations",
+    h5Index: 304,
+    h5Median: 584,
+  },
+];
 
 function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
+  const [filteredSuggestions, setFilteredSuggestions] = useState([]);
+  const [selectedPublication, setSelectedPublication] = useState(null);
+
   const generateSchema = () => {
     const schemaFields = {};
     columns.forEach((col) => {
@@ -41,30 +68,26 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
           schemaFields[col.accessorKey] = z
             .union([z.instanceof(File), z.string().url(), z.string().length(0)])
             .optional();
-        }
-        // Handle numeric fields
-        else if (
+        } else if (
           [
             "volume",
             "issue",
             "dailyDuration",
             "duration",
             "daily_duration",
+            "h5_index",
+            "h5_median",
           ].includes(col.accessorKey)
         ) {
           schemaFields[col.accessorKey] = z.coerce
             .number()
             .min(1, { message: `${col.header} must be greater than 0` });
-        }
-        // Handle authors array
-        else if (col.accessorKey === "authors") {
+        } else if (col.accessorKey === "authors") {
           schemaFields[col.accessorKey] = z
             .string()
             .transform((str) => str.split(",").map((s) => s.trim()))
             .pipe(z.array(z.string().min(1)));
-        }
-        // Handle journal type enum
-        else if (col.accessorKey === "journalType") {
+        } else if (col.accessorKey === "journalType") {
           schemaFields[col.accessorKey] = z.enum([
             "International",
             "National",
@@ -145,8 +168,6 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
   }, [isOpen, rowData, setValue, watch]);
 
   const handleFormSubmit = (data) => {
-    console.log(data);
-
     const formData = new FormData();
 
     Object.entries(data).forEach(([key, value]) => {
@@ -163,21 +184,33 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
       }
     });
 
-    console.log("Editing the data:");
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}:`, value);
-    }
-
     try {
-      // Pass the updated report URL back to the parent component
       const updatedData = Object.fromEntries(formData);
-      // console.log(updatedData);
-
       onSubmit(formData);
       onClose();
     } catch (error) {
       console.error("Error submitting the form:", error);
     }
+  };
+
+  const handlePublicationChange = (value) => {
+    setValue("publication", value);
+    if (value) {
+      const matches = publicationData.filter((pub) =>
+        pub.name.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredSuggestions(matches);
+    } else {
+      setFilteredSuggestions([]);
+    }
+  };
+
+  const handleSuggestionSelect = (suggestion) => {
+    setValue("publication", suggestion.name);
+    setValue("h5_index", suggestion.h5Index);
+    setValue("h5_median", suggestion.h5Median);
+    setFilteredSuggestions([]);
+    setSelectedPublication(suggestion);
   };
 
   return (
@@ -210,7 +243,36 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
                       >
                         {headerText}
                       </label>
-                      {col.accessorKey === "journalType" ? (
+                      {col.accessorKey === "publication" ? (
+                        <div className="relative">
+                          <Input
+                            id={col.accessorKey}
+                            {...register(col.accessorKey)}
+                            onChange={(e) => handlePublicationChange(e.target.value)}
+                            className={errors[col.accessorKey] ? "border-red-500" : ""}
+                          />
+                          {filteredSuggestions.length > 0 && (
+                            <ul className="absolute z-10 bg-white border border-gray-300 rounded shadow-md mt-1 max-h-40 overflow-y-auto w-full">
+                              {filteredSuggestions.map((suggestion) => (
+                                <li
+                                  key={suggestion.name}
+                                  onClick={() => handleSuggestionSelect(suggestion)}
+                                  className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                >
+                                  {suggestion.name}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      ) : col.accessorKey === "h5_index" || col.accessorKey === "h5_median" ? (
+                        <Input
+                          id={col.accessorKey}
+                          {...register(col.accessorKey)}
+                          readOnly
+                          className={errors[col.accessorKey] ? "border-red-500" : ""}
+                        />
+                      ) : col.accessorKey === "journalType" ? (
                         <Select
                           onValueChange={(value) =>
                             setValue(col.accessorKey, value)
@@ -318,21 +380,6 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
                         </Select>
                       ) : col.accessorKey === "report" ? (
                         <div className="space-y-2">
-                          {/* {rowData && rowData.report && (
-                            <div className="mb-2">
-                              <span className="text-sm font-medium">
-                                Current file:
-                              </span>
-                              <a
-                                href={rowData.report}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-500 hover:underline ml-2"
-                              >
-                                {rowData.report}
-                              </a>
-                            </div>
-                          )} */}
                           <input
                             type="file"
                             id={col.accessorKey}

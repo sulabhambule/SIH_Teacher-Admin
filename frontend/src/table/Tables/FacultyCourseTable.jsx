@@ -15,6 +15,7 @@ import { ExternalLink, SearchIcon } from 'lucide-react';
 import axios from "axios";
 import FacultyFeedbackView from "@/pages/FacultyFeedbackView";
 import { columnDef } from "./Columns/FacultyCourseColumn";
+import LoadingPage from "@/pages/LoadingPage";
 
 export default function FacultyCourseTable() {
   const { id } = useParams();
@@ -24,9 +25,12 @@ export default function FacultyCourseTable() {
   const [columnVisibility, setColumnVisibility] = useState({});
   const [selectedFeedback, setSelectedFeedback] = useState(null);
   const [isFeedbackOpen, setFeedbackOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Loading state
+
 
   useEffect(() => {
     const fetchSubjects = async () => {
+      setIsLoading(true); // Start loading
       try {
         const token = sessionStorage.getItem("teacherAccessToken");
         const response = await axios.get(
@@ -38,6 +42,8 @@ export default function FacultyCourseTable() {
         setCourseData(response.data.data.subjects || []);
       } catch (error) {
         console.error("Error fetching subjects:", error);
+      }finally {
+        setIsLoading(false); // End loading
       }
     };
     fetchSubjects();
@@ -81,6 +87,10 @@ export default function FacultyCourseTable() {
     onGlobalFilterChange: setGlobalFilter,
     onColumnVisibilityChange: setColumnVisibility,
   });
+
+  if (isLoading) {
+    return <LoadingPage />; // Display loading component while fetching data
+  }
 
   return (
     <div className="container mx-auto p-4 border rounded-md shadow-lg">
@@ -192,6 +202,7 @@ export default function FacultyCourseTable() {
       {isFeedbackOpen && (
         <FacultyFeedbackView
           feedback={selectedFeedback}
+          subjectId = {selectedFeedback._id}
           onClose={() => setFeedbackOpen(false)}
           isOpen={isFeedbackOpen}
         />

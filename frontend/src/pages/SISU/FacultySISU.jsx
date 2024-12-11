@@ -104,7 +104,7 @@ export default function FacultySISU() {
       );
       const { teacherAccessToken } = response?.data?.data;
       sessionStorage.setItem("teacherAccessToken", teacherAccessToken);
-      navigate(`/faculty/${response.data.data.user._id}/appraisal-report`, {
+      navigate(`/faculty/${response.data.data.user._id}/`, {
         state: { justLoggedIn: true },
       });
     } catch (error) {

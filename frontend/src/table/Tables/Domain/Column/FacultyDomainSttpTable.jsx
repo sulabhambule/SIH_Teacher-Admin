@@ -28,6 +28,7 @@ export default function FacultyDomainSttpTable() {
           }
         );
 
+        console.log(response.data.data)
         setData(response.data.data);
       } catch (error) {
         console.error("Failed to fetch publications:", error);
@@ -143,7 +144,7 @@ export default function FacultyDomainSttpTable() {
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold text-gray-800 mb-4">
-        Publication Points Table
+        STTP Points Table
       </h2>
       <div className="overflow-x-auto rounded-lg shadow-md bg-white">
         <table className="min-w-full border border-gray-200">

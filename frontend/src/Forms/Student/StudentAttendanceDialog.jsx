@@ -110,21 +110,23 @@ const StudentAttendanceDialog = ({
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="max-w-4xl max-h-screen m-6">
+        <DialogContent className="max-w-4xl max-h-screen m-6 overflow-hidden">
           <DialogHeader>
             <DialogTitle>Mark Attendance</DialogTitle>
             <DialogDescription>
               Select the students who were present for the lecture.
             </DialogDescription>
           </DialogHeader>
-          <div className="mt-4">
+          {/* Content Wrapper with scroll */}
+          <div className="overflow-y-auto max-h-[70vh] mt-4">
             <StudentAttendanceTable
               students={attendanceData}
               data={data}
               setData={setData}
             />
           </div>
-          <div className="mt-2">
+          {/* Sticky footer with the button */}
+          <div className="sticky bottom-0 bg-white p-4 border-t mt-2">
             <Button
               onClick={handleMarkAttendance}
               className="w-full bg-primary text-white rounded hover:bg-primary-dark"
