@@ -24,9 +24,12 @@ export default function FacultyCourseTable() {
   const [columnVisibility, setColumnVisibility] = useState({});
   const [selectedFeedback, setSelectedFeedback] = useState(null);
   const [isFeedbackOpen, setFeedbackOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Loading state
+
 
   useEffect(() => {
     const fetchSubjects = async () => {
+      setIsLoading(true); // Start loading
       try {
         const token = sessionStorage.getItem("teacherAccessToken");
         const response = await axios.get(

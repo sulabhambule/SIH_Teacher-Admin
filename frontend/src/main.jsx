@@ -81,6 +81,10 @@ const router = createBrowserRouter(
     <Route path="/" element={<Layout />}>
       <Route index element={<Home />} /> {/* Render Home on the root path */}
       <Route path="font-size-handler" element={<FontSizeHandler />} />
+
+
+
+
       <Route path="/faculty/:id" element={<FacultyLayout />}>
        <Route  index element={<RouteTransitionWrapper><FacultyAppraisalReport/></RouteTransitionWrapper>} errorElement={<NotFoundPage/>} />
     
@@ -109,17 +113,19 @@ const router = createBrowserRouter(
 
       <Route path="faculty/edit-profile" element={<EditFacultyProfile/>} /> {/* Add Edit Profile route */}
       <Route path="admin/edit-profile" element={<AdminEditProfile/>} /> {/* Add Edit Profile route */}
-
       <Route path="student/edit-profile" element={<StudentEditProfile/>} /> {/* Add Edit Profile route */}
+
 
       {/* Sign-Up and Login Pages */}
       <Route path="faculty-sign-up" element={<FacultySISU/>} />
       <Route path="admin-sign-up" element={<AdminSISU/>} />
       <Route path="student-sign-up" element={<StudentSISU/>} />
+
+
+
     
     <Route path="admin" element={<AdminHomeLayout/>} errorElement={<NotFoundPage/>}>
     <Route  index element={<AdminHome/>} errorElement={<NotFoundPage/>}/>
-
     <Route path="faculty-data" element={<AdminHome/>} errorElement={<NotFoundPage/>}/>
     <Route path="allocate-lectures" element={<AdminLectureAllocationPage/>} errorElement={<NotFoundPage/>}/>
     <Route path="release-feedbacks" element={<ReleaseFeedbacks/>} errorElement={<NotFoundPage/>}/>
@@ -153,7 +159,6 @@ const router = createBrowserRouter(
        
       
       <Route path="student-home" element={<StudentHome />} /> {/* Route for student portal */}
-    
       <Route path="student" element={<StudentLayout/>}>
       <Route path="lecture" element={<LectureCards/>} errorElement={<NotFoundPage/>} />
       {/* <Route path="upcoming-rsvp" element={< UpcomingRsvp/>} errorElement={<NotFoundPage/>} /> */}

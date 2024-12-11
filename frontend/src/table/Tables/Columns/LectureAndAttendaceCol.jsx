@@ -34,4 +34,9 @@ export const columnDef = [
     )
  
   },
+  {
+    accessorKey: "actions",
+    header: "Actions",
+    enableSorting: false,
+  },
 ];

@@ -15,6 +15,7 @@ import axios from "axios";
 import StudentAttendanceDialog from "@/Forms/Student/StudentAttendanceDialog"; // For marking attendance
 import LectureAttendanceDrawer from "@/components/Drawer/LectureAttendanceDrawer";
 import ViewAttendanceDialog from "@/pages/ViewAttendanceDialog";
+import DeleteDialog from "@/table/DeleteDialog";
 
 export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
   const { id } = useParams();
@@ -26,7 +27,9 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [rowSelection, setRowSelection] = useState({});
-
+  const [rowToEdit, setRowToEdit] = useState(null);
+  const [rowToDelete, setRowToDelete] = useState(null);
+  const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   // Fetch lectures
   useEffect(() => {
@@ -74,12 +77,23 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
       };
       fetchStudents();
     }
-  }, [selectedLecture, isMarkAttendanceDialogOpen, ]);
+  }, [selectedLecture, isMarkAttendanceDialogOpen]);
+
+  const handleEdit = (row) => {
+    setRowToEdit(row);
+    setDrawerOpen(true);
+  };
+
+  const handleDelete = (row) => {
+    setRowToDelete(row);
+    setDeleteDialogOpen(true);
+  };
 
   // Memoize columns
   const columns = useMemo(() => {
     return columnDef.map((col) => {
       if (col.accessorKey === "attendance") {
+        // Modify the "attendance" column
         return {
           ...col,
           cell: ({ row }) => (
@@ -95,9 +109,33 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
           ),
         };
       }
+
+      if (col.accessorKey === "actions") {
+        // Add "Edit" and "Delete" buttons to the existing "actions" column
+        return {
+          ...col,
+          cell: ({ row }) => (
+            <div className="flex space-x-2">
+              <Button
+                onClick={() => handleEdit(row.original)}
+                className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors duration-200"
+              >
+                Edit
+              </Button>
+              <Button
+                onClick={() => handleDelete(row.original)}
+                className="p-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors duration-200"
+              >
+                Delete
+              </Button>
+            </div>
+          ),
+        };
+      }
+
       return col;
     });
-  }, [columnDef]);
+  }, [columnDef, setSelectedLecture, setViewAttendanceDialogOpen]);
 
   // Initialize the table object
   const table = useReactTable({
@@ -108,6 +146,53 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   });
+
+  const handleEditEntry = async (updatedData) => {
+    try {
+      const token = sessionStorage.getItem("teacherAccessToken");
+      const response = await axios.patch(
+        `https://facultyappraisal.software/api/v1/lecture/${subjectId}/${teacherId}/lectures/${updatedData._id}`,
+        updatedData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setData((prevData) =>
+        prevData.map((row) =>
+          row._id === updatedData._id ? response.data.data : row
+        )
+      );
+      setDrawerOpen(false);
+      setRowToEdit(null);
+    } catch (error) {
+      console.error("Failed to edit lecture:", error);
+    }
+  };
+
+  const handleDeleteRow = async () => {
+    try {
+      const token = sessionStorage.getItem("teacherAccessToken");
+      await axios.delete(
+        `https://facultyappraisal.software/api/v1/lecture/${subjectId}/${teacherId}/lectures/${rowToDelete._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setData((prevData) =>
+        prevData.filter((row) => row._id !== rowToDelete._id)
+      );
+      setDeleteDialogOpen(false);
+      setRowToDelete(null);
+    } catch (error) {
+      console.error("Failed to delete lecture:", error);
+    }
+  };
 
   // Add new lecture
   const handleAddLecture = async (lectureData) => {
@@ -212,7 +297,7 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
             table.setPageSize(Number(e.target.value));
           }}
         >
-          {[5,10, 20, 30, 40, 50].map((pageSize) => (
+          {[5, 10, 20, 30, 40, 50].map((pageSize) => (
             <option key={pageSize} value={pageSize}>
               Show {pageSize}
             </option>
@@ -220,12 +305,21 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
         </select>
       </div>
 
-      {/* Drawer for Adding Lectures */}
+      {/* Drawer for Adding or Editing Lectures */}
       <LectureAttendanceDrawer
-        isOpen={isDrawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        onSubmit={handleAddLecture}
-        selectedLecture={selectedLecture} // Pass the selected lecture
+        onClose={() => {
+          setDrawerOpen(false); // Close the drawer
+          setRowToEdit(null);   // Reset the row being edited
+        }}
+        onSubmit={(formData) => {
+          if (rowToEdit) {
+            handleEditEntry(formData); // Handle editing if rowToEdit exists
+          } else {
+            handleAddLecture(formData); // Handle adding new lecture
+          }
+        }}
+        isOpen={isDrawerOpen} // Drawer open state
+        selectedLecture={rowToEdit || selectedLecture} // Pass selected lecture for editing/viewing
         setAttendanceDialogOpen={setMarkAttendanceDialogOpen} // Pass dialog state handler
       />
 
@@ -240,6 +334,12 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
         handleMarkAttendance={() => console.log("Attendance marked!")} // Handle attendance submission
       />
 
+      <DeleteDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        onConfirm={handleDeleteRow}
+      />
+
       {/* View Attendance Dialog (Placeholder) */}
       {isViewAttendanceDialogOpen && (
         <div>
@@ -250,3 +350,4 @@ export default function LectureAndAttendanceTable({ teacherId, subjectId }) {
     </div>
   );
 }
+
