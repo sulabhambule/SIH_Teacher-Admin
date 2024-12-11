@@ -44,6 +44,8 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const [selectedPublication, setSelectedPublication] = useState(null);
 
+
+
   const generateSchema = () => {
     const schemaFields = {};
     columns.forEach((col) => {
@@ -162,6 +164,24 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
   }, [isOpen, rowData, setValue]);
 
   useEffect(() => {
+    console.log("hellow");
+    const fetchTeacherInfo = async () => {
+      try {
+        // const token = sessionStorage.getItem("teacherAccessToken");
+        const response = await axios.get(
+          `http://localhost:6005/api/v1/publication/`
+        );
+        console.log(response);
+        // setData(response.data.data);
+      } catch (error) {
+        console.log("An error occurred while fetching teacher info.");
+      }
+    };
+
+    fetchTeacherInfo();
+  }, [isOpen]);
+
+  useEffect(() => {
     if (isOpen && !rowData) {
       Object.keys(watch()).forEach((key) => setValue(key, ""));
     }
@@ -248,15 +268,21 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
                           <Input
                             id={col.accessorKey}
                             {...register(col.accessorKey)}
-                            onChange={(e) => handlePublicationChange(e.target.value)}
-                            className={errors[col.accessorKey] ? "border-red-500" : ""}
+                            onChange={(e) =>
+                              handlePublicationChange(e.target.value)
+                            }
+                            className={
+                              errors[col.accessorKey] ? "border-red-500" : ""
+                            }
                           />
                           {filteredSuggestions.length > 0 && (
                             <ul className="absolute z-10 bg-white border border-gray-300 rounded shadow-md mt-1 max-h-40 overflow-y-auto w-full">
                               {filteredSuggestions.map((suggestion) => (
                                 <li
                                   key={suggestion.name}
-                                  onClick={() => handleSuggestionSelect(suggestion)}
+                                  onClick={() =>
+                                    handleSuggestionSelect(suggestion)
+                                  }
                                   className="px-4 py-2 cursor-pointer hover:bg-gray-100"
                                 >
                                   {suggestion.name}
@@ -265,12 +291,15 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
                             </ul>
                           )}
                         </div>
-                      ) : col.accessorKey === "h5_index" || col.accessorKey === "h5_median" ? (
+                      ) : col.accessorKey === "h5_index" ||
+                        col.accessorKey === "h5_median" ? (
                         <Input
                           id={col.accessorKey}
                           {...register(col.accessorKey)}
                           readOnly
-                          className={errors[col.accessorKey] ? "border-red-500" : ""}
+                          className={
+                            errors[col.accessorKey] ? "border-red-500" : ""
+                          }
                         />
                       ) : col.accessorKey === "journalType" ? (
                         <Select
@@ -438,4 +467,3 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
 }
 
 export default DrawerComponent;
-

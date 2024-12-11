@@ -38,6 +38,7 @@ import { JournalColumnDef } from "../Columns/PublicationsColumn/JournalColumn.js
 import { conferenceColumnDef } from "../Columns/PublicationsColumn/ConferenceColumn.jsx";
 import { chapterColumnDef } from "../Columns/PublicationsColumn/ChapterColumn.jsx";
 import { ResearchInstructionMessage } from "@/components/ResearchInstructionMessage.jsx";
+import FacultyPublicationsChart from "./FacultyPublicationsChart.jsx";
 
 export default function FacultyResearchTable() {
   const [data, setData] = useState([]);
@@ -364,7 +365,8 @@ export default function FacultyResearchTable() {
       </div>
 
       {data2.length === 0 ? (
-        <ResearchInstructionMessage />
+        // <ResearchInstructionMessage />
+        <FacultyPublicationsChart />
       ) : (
         <div className="table-container">
           <table className="w-full">

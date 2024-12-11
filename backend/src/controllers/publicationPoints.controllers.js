@@ -5,12 +5,16 @@ import { ApiError } from "../utils/ApiErrors.js";
 
 const fetchAllTypes = asyncHandler(async (req, res) => {
   const types = await PublicationPoint.find({}, "_id name"); // Project only name and ID
-  
+
   if (!types || types.length === 0) {
     throw new ApiError(404, "No publication types found");
   }
-  
-  res.status(200).json(new ApiResponse(200, types, "Publication types retrieved successfully"));
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(200, types, "Publication types retrieved successfully")
+    );
 });
 
 // Add a new publication point
@@ -29,7 +33,11 @@ const addPublicationPoint = asyncHandler(async (req, res) => {
   const publication = await PublicationPoint.create({ name, hindex, median });
 
   if (publication) {
-    res.status(201).json(new ApiResponse(201, publication, "Publication added successfully"));
+    res
+      .status(201)
+      .json(
+        new ApiResponse(201, publication, "Publication added successfully")
+      );
   } else {
     throw new ApiError(500, "Failed to add publication");
   }
@@ -58,7 +66,15 @@ const updatePublicationPoint = asyncHandler(async (req, res) => {
 
   const updatedPublication = await publication.save();
 
-  res.status(200).json(new ApiResponse(200, updatedPublication, "Publication updated successfully"));
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        updatedPublication,
+        "Publication updated successfully"
+      )
+    );
 });
 
 // Delete a publication point
@@ -73,7 +89,15 @@ const deletePublicationPoint = asyncHandler(async (req, res) => {
 
   await publication.deleteOne();
 
-  res.status(200).json(new ApiResponse(200, null, "Publication deleted successfully"));
+  res
+    .status(200)
+    .json(new ApiResponse(200, null, "Publication deleted successfully"));
 });
 
-export { addPublicationPoint, getPublicationPoints, updatePublicationPoint, deletePublicationPoint, fetchAllTypes };
+export {
+  addPublicationPoint,
+  getPublicationPoints,
+  updatePublicationPoint,
+  deletePublicationPoint,
+  fetchAllTypes,
+};

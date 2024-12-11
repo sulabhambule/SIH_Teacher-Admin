@@ -43,7 +43,7 @@ export default function AdminAppraisalReportTable() {
     "Student-Guide": `http://localhost:6005/api/v1/points/ad-student-guided/${id}`,
     lecture: `http://localhost:6005/api/v1/points/ad-lecture/${id}`,
     // Contribution: `http://localhost:6005/api/v1/points/ad-contribution/${id}`,
-      // "Seminar-attented": `http://localhost:6005/api/v1/points/ad-seminar-attended/${id}`,
+    // "Seminar-attented": `http://localhost:6005/api/v1/points/ad-seminar-attended/${id}`,
   };
 
   const [seminarData, setSeminarData] = useState("");

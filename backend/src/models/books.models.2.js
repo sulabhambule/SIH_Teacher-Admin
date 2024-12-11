@@ -26,16 +26,16 @@ const bookSchema = new Schema(
       required: true,
     },
     publication: {
-        type: Schema.Types.ObjectId,
-        ref: 'PublicationPoint',
+      type: Schema.Types.ObjectId,
+      ref: "PublicationPoint",
     },
-    h5_index:{
-        type: Number,
-        required: false,
+    h5_index: {
+      type: Number,
+      required: false,
     },
-    h5_median:{
-        type: Number,
-        required: false,
+    h5_median: {
+      type: Number,
+      required: false,
     },
     owner: {
       type: Schema.Types.ObjectId,
@@ -104,4 +104,4 @@ bookSchema.post("findOneAndDelete", async function (doc) {
   }
 });
 
-export const Book = mongoose.model("Book", bookSchema);
+export const Book = mongoose.model("Book2", bookSchema);
