@@ -112,4 +112,4 @@ const journalSchema = new Schema(
 //     }
 // });
 
-export const Journal = mongoose.model('Journal', journalSchema);
+export const Journal2 = mongoose.model('Journal2', journalSchema);

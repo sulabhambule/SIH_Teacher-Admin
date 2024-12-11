@@ -1,7 +1,7 @@
 import { ApiError } from "../utils/ApiErrors.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/AsyncHandler2.js";
-import { Book } from "../models/books.models.2.js";
+import { Book2 } from "../models/books.models.2.js";
 import mongoose from "mongoose";
 import { PublicationPoint } from "../models/publication-points.models.js";
 
@@ -30,7 +30,7 @@ const addBook = asyncHandler(async (req, res) => {
   const h5_index = publications.hindex;
   const h5_median = publications.median;
 
-  const book = await Book.create({
+  const book = await Book2.create({
     title,
     authors,
     publicationDate,
@@ -53,7 +53,7 @@ const getBooks = asyncHandler(async (req, res) => {
     throw new ApiError(404, "User not found");
     }
 
-  const books = await Book.find({owner: id});
+  const books = await Book2.find({owner: id});
   ApiResponse.success(200, books, "Books retrieved successfully");
 });
 
@@ -84,7 +84,7 @@ const updateBook = asyncHandler(async (req, res) => {
     throw new ApiError(400, "All required fields must be provided");
   }
 
-  const book = await Book.findById(id);
+  const book = await Book2.findById(id);
 
   if (!book) {
     throw new ApiError(404, "Book not found");
@@ -108,7 +108,7 @@ const updateBook = asyncHandler(async (req, res) => {
 const deleteBook = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  const book = await Book.findById(id);
+  const book = await Book2.findById(id);
 
   if (!book) {
     throw new ApiError(404, "Book not found");

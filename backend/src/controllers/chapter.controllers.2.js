@@ -1,6 +1,6 @@
 import { asyncHandler } from "../utils/AsyncHandler2.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { Chapter } from "../models/chapter.models.2.js";
+import { Chapter2 } from "../models/chapter.models.2.js";
 import { ApiError } from "../utils/ApiErrors.js";
 import mongoose from "mongoose";
 import { PublicationPoint } from "../models/publication-points.models.js";
@@ -32,7 +32,7 @@ const addChapter = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Required fields: title, authors, publicationDate, publication, owner");
   }
 
-  const chapter = await Chapter.create({
+  const chapter = await Chapter2.create({
     title,
     authors,
     publicationDate,
@@ -61,7 +61,7 @@ const getChapters = asyncHandler(async (req, res) => {
         throw new ApiError(404, "User not found");
     }
 
-  const chapters = await Chapter.find({owner: id}).populate("owner", "name email");
+  const chapters = await Chapter2.find({owner: id}).populate("owner", "name email");
   res.status(200).json(new ApiResponse(200, chapters, "All the chapters retrieved successfully"));
 });
 
@@ -90,7 +90,7 @@ const updateChapter = asyncHandler(async (req, res) => {
   h5_index = publications.hindex;
     h5_median = publications.median;
 
-  const chapter = await Chapter.findById(id);
+  const chapter = await Chapter2.findById(id);
 
   if (!chapter) {
     throw new ApiError(404, "Chapter not found");
@@ -116,7 +116,7 @@ const updateChapter = asyncHandler(async (req, res) => {
 const deleteChapter = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  const chapter = await Chapter.findById(id);
+  const chapter = await Chapter2.findById(id);
 
   if (!chapter) {
     throw new ApiError(400, "Chapter not found");

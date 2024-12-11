@@ -111,4 +111,4 @@ const allocatePublicationPoints = async (teacherId, publicationId) => {
     }
   });
 
-export const Book = mongoose.model("Book2", bookSchema);
+export const Book2 = mongoose.model("Book2", bookSchema);

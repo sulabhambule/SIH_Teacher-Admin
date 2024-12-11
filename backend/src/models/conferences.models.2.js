@@ -111,4 +111,4 @@ const conferenceSchema = new Schema(
 //   }
 // });
 
-export const Conference = mongoose.model("Conference", conferenceSchema);
+export const Conference2 = mongoose.model("Conference2", conferenceSchema);
