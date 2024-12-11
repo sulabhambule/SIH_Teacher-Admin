@@ -45,7 +45,6 @@ import chapterRouter from "./routes/chapter.routes.js";
 import lecfeedback from "./routes/lecture-feedbacks.routes.js";
 import publicationRouter from "./routes/publicationPoints.routes.js";
 
-
 app.use("/api/v1/teachers", teacherRouter);
 app.use("/api/v1/admins", adminRouter);
 app.use("/api/v1/students", studentRouter);
@@ -71,7 +70,5 @@ app.use("/api/v1/conferences", conferenceRouter);
 app.use("/api/v1/points", pointRouter);
 app.use("/api/v1/posts", postRouter);
 app.use("/api/v1/publication", publicationRouter);
-
-
 
 export { app };

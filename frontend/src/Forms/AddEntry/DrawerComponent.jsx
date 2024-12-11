@@ -484,13 +484,11 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
                             <SelectValue placeholder="Select mOp" />
                           </SelectTrigger>
                           <SelectContent>
-                            {['Mtech', 'PhD'].map(
-                              (type) => (
-                                <SelectItem key={type} value={type}>
-                                  {type}
-                                </SelectItem>
-                              )
-                            )}
+                            {["Mtech", "PhD"].map((type) => (
+                              <SelectItem key={type} value={type}>
+                                {type}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                       ) : col.accessorKey === "projectType" ? (
