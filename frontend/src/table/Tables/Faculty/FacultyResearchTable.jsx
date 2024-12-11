@@ -92,43 +92,21 @@ export default function FacultyResearchTable() {
         },
       });
 
-      console.log(response.data);
+      console.log(response.data.data);
 
-      // const response2 = await axios.get(`http://localhost:6005/api/v1/publicationPoints`)
+      const response2 = await axios.get(
+        `http://localhost:6005/api/v1/publication/all`
+      );
+      console.log(response2.data.data);
+
+      response.data.data.forEach((item) => {
+        const publication = response2.data.data.find(
+          (pub) => pub._id === item.publication
+        );
+        item.publication = publication;
+      });
       setData2(response.data.data);
-      // let c = 0;
-      // const enhancedData = response.data.data.map((item) => {
-      //   let h5_median;
-      //   let h5_index;
-
-      //   if (c === 0) {
-      //     h5_index = 440;
-      //     h5_median = 337;
-      //   } else if (c === 1) {
-      //     h5_index = 240;
-      //     h5_median = 340;
-      //   } else if (c === 2) {
-      //     h5_index = 259;
-      //     h5_median = 400;
-      //   } else if (c == 3) {
-      //     h5_index = 330;
-      //     h5_median = 300;
-      //   } else {
-      //     h5_index = 240;
-      //     h5_median = 300;
-      //   }
-      //   c++;
-      //   // setCount(count + 1);
-      //   return {
-      //     ...item,
-      //     publication: "Sample Publication", // Replace with actual logic or value
-      //     h5_median: h5_median ?? 0, // Default to 0 if not set
-      //     h5_index: h5_index ?? 0, // Default to 0 if not set
-      //   };
-      // });
-
-      // console.log(enhancedData);
-      // setData2(enhancedData);
+      console.log(data2);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -185,6 +163,11 @@ export default function FacultyResearchTable() {
             </div>
           ),
         };
+      } else if (col.accessorKey === "publication" && typeFilter === "Book") {
+        return {
+          ...col,
+          cell: ({ row }) => <span>{row.original.publication.name}</span>,
+        };
       }
       return col;
     });
@@ -221,6 +204,20 @@ export default function FacultyResearchTable() {
         Patent: "/api/v1/patents/patent/add",
         "Conference Paper": "/api/v1/conferences/conference/add",
       };
+      const response2 = await axios.get(
+        `http://localhost:6005/api/v1/publication/all`
+      );
+      console.log(response2.data.data);
+      const publication = response2.data.data.find(
+        (pub) => pub.name === formData.get("publication")
+      );
+      // console.log(formData.get("publication"));
+
+      // console.log(publication);
+
+      formData.delete("publication");
+
+      formData.append("publication", publication._id);
       const endpoint = endpointMap[publicationType];
       const response = await axios.post(
         `http://localhost:6005${endpoint}`,
@@ -232,6 +229,7 @@ export default function FacultyResearchTable() {
           },
         }
       );
+
       setData2((prevData) => [...prevData, response.data.data]);
       setDrawerOpen(false);
     } catch (error) {
