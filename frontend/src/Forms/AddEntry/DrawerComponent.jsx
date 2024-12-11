@@ -271,6 +271,7 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
   }, [isOpen, rowData, setValue, watch]);
 
   const handleFormSubmit = (data) => {
+    console.log(data);
     const formData = new FormData();
 
     Object.entries(data).forEach(([key, value]) => {
@@ -470,6 +471,24 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
                                 </SelectItem>
                               )
                             )}
+                          </SelectContent>
+                        </Select>
+                      ) : col.accessorKey === "mOp" ? (
+                        <Select
+                          onValueChange={(value) =>
+                            setValue(col.accessorKey, value)
+                          }
+                          value={watch(col.accessorKey) || ""}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select mOp" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {["Mtech", "PhD"].map((type) => (
+                              <SelectItem key={type} value={type}>
+                                {type}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                       ) : col.accessorKey === "projectType" ? (

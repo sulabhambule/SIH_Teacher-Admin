@@ -116,8 +116,7 @@ const PostsPage = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true)
-
+  const [isLoading, setIsLoading] = useState(true);
 
   const getPosts = async () => {
     setIsLoading(true); // Start loading
@@ -145,7 +144,7 @@ const PostsPage = () => {
       setPosts(formattedPosts);
     } catch (error) {
       console.error("Error fetching posts:", error);
-    }finally {
+    } finally {
       setIsLoading(false);
     }
   };

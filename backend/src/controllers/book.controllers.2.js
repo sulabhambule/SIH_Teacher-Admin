@@ -7,17 +7,10 @@ import { PublicationPoint } from "../models/publication-points.models.js";
 
 // Add a new book
 const addBook = asyncHandler(async (req, res) => {
-  const {
-    title,
-    authors,
-    publicationDate,
-    volume,
-    pages,
-    publication,
-    owner,
-  } = req.body;
+  const { title, authors, publicationDate, volume, pages, publication, owner } =
+    req.body;
 
-  if(!mongoose.Types.ObjectId.isValid(publication)){
+  if (!mongoose.Types.ObjectId.isValid(publication)) {
     throw new ApiError(404, "Publication not found");
   }
 
@@ -47,11 +40,11 @@ const addBook = asyncHandler(async (req, res) => {
 
 // Get all books
 const getBooks = asyncHandler(async (req, res) => {
-  const {id} = req.params;
+  const { id } = req.params;
 
-  if(!mongoose.Types.ObjectId.isValid(id)){
+  if (!mongoose.Types.ObjectId.isValid(id)) {
     throw new ApiError(404, "User not found");
-    }
+  }
 
   const books = await Book2.find({owner: id});
   res.status(200).json(new ApiResponse(200, books, "Books retrieved successfully"));
@@ -71,7 +64,7 @@ const updateBook = asyncHandler(async (req, res) => {
     h5_median,
   } = req.body;
 
-  if(!mongoose.Types.ObjectId.isValid(publication)){
+  if (!mongoose.Types.ObjectId.isValid(publication)) {
     throw new ApiError(404, "Publication not found");
   }
 
@@ -80,11 +73,19 @@ const updateBook = asyncHandler(async (req, res) => {
   h5_index = publications.hindex;
   h5_median = publications.median;
 
-  if(!title || !authors || !publicationDate || !volume || !pages || !h5_index || !h5_median){
+  if (
+    !title ||
+    !authors ||
+    !publicationDate ||
+    !volume ||
+    !pages ||
+    !h5_index ||
+    !h5_median
+  ) {
     throw new ApiError(400, "All required fields must be provided");
   }
 
-  const book = await Book2.findById(id);
+  const book = await Book.findById(id);
 
   if (!book) {
     throw new ApiError(404, "Book not found");
@@ -101,7 +102,9 @@ const updateBook = asyncHandler(async (req, res) => {
 
   const updatedBook = await book.save();
 
-  res.status(200).json(new ApiResponse(200, updatedBook, "Book updated successfully"));
+  res
+    .status(200)
+    .json(new ApiResponse(200, updatedBook, "Book updated successfully"));
 });
 
 // Delete a book
