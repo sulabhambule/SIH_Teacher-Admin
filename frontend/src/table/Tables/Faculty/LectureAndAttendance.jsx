@@ -35,7 +35,7 @@ const LectureAndAttendance = () => {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        console.log(response.data);
+        // console.log("get lecture", response.data);
         setStudents(response.data.data.students || []);
       } catch (error) {
         console.error("Error fetching students:", error);
@@ -55,6 +55,7 @@ const LectureAndAttendance = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+      console.log({response});
       setLectureId(response.data.data._id);
       alert("Lecture added successfully!");
     } catch (error) {

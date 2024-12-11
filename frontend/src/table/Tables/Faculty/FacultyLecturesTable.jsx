@@ -173,7 +173,7 @@ export default function FacultyLecturesTable() {
             placeholder="Search all columns..."
           />
         </div>
-        <DownloadBtn data={data} fileName="Research" />
+        {/* <DownloadBtn data={data} fileName="Research" /> */}
       </div>
 
       <div className="flex justify-end mb-4">

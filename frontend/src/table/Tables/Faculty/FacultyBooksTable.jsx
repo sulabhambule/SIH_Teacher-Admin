@@ -33,7 +33,6 @@ export default function FacultyBookTable() {
   const [columnVisibility, setColumnVisibility] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
-
   // const [eventData, setEventData] = useState("");
   useEffect(() => {
     const fetchTeacherInfo = async () => {
@@ -52,8 +51,7 @@ export default function FacultyBookTable() {
         setData(response.data.data.events);
       } catch (error) {
         console.log("An error occurred while fetching teacher info.");
-      }
-      finally {
+      } finally {
         setIsLoading(false);
       }
     };
@@ -154,12 +152,10 @@ export default function FacultyBookTable() {
     }
   };
 
-  
-
   if (isLoading) {
-    return <LoadingPage/>;
+    return <LoadingPage />;
   }
-  
+
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between mb-4">
@@ -172,7 +168,7 @@ export default function FacultyBookTable() {
             placeholder="Search all columns..."
           />
         </div>
-        <DownloadBtn data={data} fileName="Research" />
+        {/* <DownloadBtn data={data} fileName="Research" /> */}
       </div>
 
       <div className="flex justify-end mb-4">
@@ -203,9 +199,6 @@ export default function FacultyBookTable() {
           Reset Filters
         </Button>
       </div>
-
-
-
 
       <div className="table-container">
         <table className="w-full">

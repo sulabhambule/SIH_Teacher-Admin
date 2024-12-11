@@ -12,7 +12,7 @@ import { columnDef } from "../../../table/Tables/Columns/AdminHodColumn.jsx"
 import "../../../table/table.css"
 import DownloadBtn from "../../../table/DownloadBtn.jsx"
 import DebouncedInput from "../../../table/DebouncedInput.jsx"
-import { SearchIcon } from 'lucide-react'
+import { SearchIcon, ChevronDown } from 'lucide-react'
 import { Button } from "@/components/ui/button.jsx"
 import { Checkbox } from "@/components/ui/checkbox.jsx"
 import DrawerComponent from "../../../Forms/AddEntry/DrawerComponent.jsx"
@@ -21,6 +21,15 @@ import LoadingPage from "@/pages/LoadingPage.jsx"
 import axios from "axios"
 import AdminHOD1Appraisal from "../../../table/Tables/Admin/AdminHOD1Appraisal.jsx"
 import { TargetSettingModal } from "./TargetSettingModal.jsx"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { toast } from "@/components/ui/hooks/use-toast.js"
 
 function HODAppraisal() {
   const { id } = useParams()
@@ -58,7 +67,7 @@ function HODAppraisal() {
   const [selectedHOD, setSelectedHOD] = useState(null)
   const [isTargetModalOpen, setIsTargetModalOpen] = useState(false)
   const [selectedDepartment, setSelectedDepartment] = useState("")
-
+  const [selectedHODName, setSelectedHODName] = useState("")
 
   const columns = useMemo(() => {
     return columnDef.map((col) => {
@@ -66,25 +75,33 @@ function HODAppraisal() {
         return {
           ...col,
           cell: ({ row }) => (
-            <div className="flex space-x-2">
-              <Button
-                onClick={() => {
-                  setSelectedHOD(row.original.id)
-                }}
-                className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors duration-200"
-              >
-                View Appraisal Report
-              </Button>
-              <Button
-                onClick={() => {
-                  setSelectedDepartment(row.original.department)
-                  setIsTargetModalOpen(true)
-                }}
-                className="p-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors duration-200"
-              >
-                Set Targets
-              </Button>
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <span className="sr-only">Open menu</span>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuItem
+                  onClick={() => {
+                    setSelectedHOD(row.original.id)
+                  }}
+                >
+                  View Appraisal Report
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    setSelectedDepartment(row.original.department)
+                    setSelectedHODName(row.original.name)
+                    setIsTargetModalOpen(true)
+                  }}
+                >
+                  Set Targets
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ),
         }
       }
@@ -109,11 +126,17 @@ function HODAppraisal() {
     onColumnVisibilityChange: setColumnVisibility,
   })
 
-  const handleSaveTargets = (targets) => {
+  const handleSaveTargets = (targets, year) => {
     console.log("Saving targets for department:", selectedDepartment);
+    console.log("HOD:", selectedHODName);
+    console.log("Year:", year);
     console.log("Targets:", targets);
     // Here you would typically update the state or make an API call
-    // For now, we'll just log the data
+    // For now, we'll just log the data and show a toast notification
+    toast({
+      title: "Targets Saved",
+      description: `Targets for ${selectedDepartment} department have been saved for the year ${year}.`,
+    })
   };
 
   if (isLoading) {
@@ -133,7 +156,7 @@ function HODAppraisal() {
             placeholder="Search all columns..."
           />
         </div>
-        <DownloadBtn data={data} fileName="HOD_Appraisals" />
+        {/* <DownloadBtn data={data} fileName="HOD_Appraisals" /> */}
       </div>
 
       <div className="overflow-x-auto">
@@ -211,6 +234,7 @@ function HODAppraisal() {
         isOpen={isTargetModalOpen}
         onClose={() => setIsTargetModalOpen(false)}
         department={selectedDepartment}
+        hodName={selectedHODName}
         onSaveTargets={handleSaveTargets}
       />
 

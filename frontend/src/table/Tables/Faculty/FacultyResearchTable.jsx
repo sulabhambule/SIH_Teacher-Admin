@@ -55,6 +55,7 @@ export default function FacultyResearchTable() {
   const [rowToDelete, setRowToDelete] = useState(null);
   const [typeFilter, setTypeFilter] = useState("");
   const [columnVisibility, setColumnVisibility] = useState({});
+  const [count, setCount] = useState(0);
 
   const [colu, setColu] = useState(PatentcolumnDef);
 
@@ -89,7 +90,40 @@ export default function FacultyResearchTable() {
       });
 
       console.log(response.data.data);
-      setData2(response.data.data);
+      // setData2(response.data.data);
+      let c = 0;
+      const enhancedData = response.data.data.map((item) => {
+        let h5_median;
+        let h5_index;
+
+        if (c === 0) {
+          h5_index = 440;
+          h5_median = 337;
+        } else if (c === 1) {
+          h5_index = 240;
+          h5_median = 340;
+        } else if (c === 2) {
+          h5_index = 259;
+          h5_median = 400;
+        } else if (c == 3) {
+          h5_index = 330;
+          h5_median = 300;
+        } else {
+          h5_index = 240;
+          h5_median = 300;
+        }
+        c++;
+        // setCount(count + 1);
+        return {
+          ...item,
+          publication: "Sample Publication", // Replace with actual logic or value
+          h5_median: h5_median ?? 0, // Default to 0 if not set
+          h5_index: h5_index ?? 0, // Default to 0 if not set
+        };
+      });
+
+      console.log(enhancedData);
+      setData2(enhancedData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -319,13 +353,13 @@ export default function FacultyResearchTable() {
           >
             <Plus className="h-4 w-4 mr-2" /> Add Entry
           </Button>
-          <CSVLink
+          {/* <CSVLink
             data={csvData}
             filename={"research_papers.csv"}
             className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded inline-flex items-center"
           >
             <Download className="h-4 w-4 mr-2" /> Export CSV
-          </CSVLink>
+          </CSVLink> */}
         </div>
       </div>
 
@@ -366,9 +400,8 @@ export default function FacultyResearchTable() {
             </tbody>
           </table>
         </div>
-        
       )}
-            <div className="flex items-center justify-end mt-4 gap-2">
+      <div className="flex items-center justify-end mt-4 gap-2">
         <Button
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
@@ -406,14 +439,13 @@ export default function FacultyResearchTable() {
             table.setPageSize(Number(e.target.value));
           }}
         >
-          {[5,10, 20, 30, 40, 50].map((pageSize) => (
+          {[5, 10, 20, 30, 40, 50].map((pageSize) => (
             <option key={pageSize} value={pageSize}>
               Show {pageSize}
             </option>
           ))}
         </select>
       </div>
-
 
       <DrawerComponent
         isOpen={isDrawerOpen}
