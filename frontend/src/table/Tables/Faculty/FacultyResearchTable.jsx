@@ -206,6 +206,7 @@ export default function FacultyResearchTable() {
   });
 
   const handleAddEntry = async (formData) => {
+    formData.append("owner", id);
     try {
       const token = sessionStorage.getItem("teacherAccessToken");
       const type = typeFilter;

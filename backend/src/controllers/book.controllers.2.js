@@ -1,7 +1,7 @@
 import { ApiError } from "../utils/ApiErrors.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/AsyncHandler2.js";
-import { Book } from "../models/books.models.2.js";
+import { Book2 } from "../models/books.models.2.js";
 import mongoose from "mongoose";
 import { PublicationPoint } from "../models/publication-points.models.js";
 
@@ -10,9 +10,9 @@ const addBook = asyncHandler(async (req, res) => {
   const { title, authors, publicationDate, volume, pages, publication, owner } =
     req.body;
 
-  if (!mongoose.Types.ObjectId.isValid(publication)) {
-    throw new ApiError(404, "Publication not found");
-  }
+  // if (!mongoose.Types.ObjectId.isValid(publication)) {
+  //   throw new ApiError(404, "Publication not found");
+  // }
 
   const publications = await PublicationPoint.findById(publication);
 
@@ -23,7 +23,7 @@ const addBook = asyncHandler(async (req, res) => {
   const h5_index = publications.hindex;
   const h5_median = publications.median;
 
-  const book = await Book.create({
+  const book = await Book2.create({
     title,
     authors,
     publicationDate,
@@ -35,7 +35,7 @@ const addBook = asyncHandler(async (req, res) => {
     owner,
   });
 
-  ApiResponse.success(res, 201, "Book added successfully", book);
+  res.status(201).json(new ApiResponse(201, book, "Book added successfully"));
 });
 
 // Get all books
@@ -46,7 +46,7 @@ const getBooks = asyncHandler(async (req, res) => {
     throw new ApiError(404, "User not found");
   }
 
-  const books = await Book.find({ owner: id });
+  const books = await Book2.find({ owner: id });
 
   res
     .status(200)
