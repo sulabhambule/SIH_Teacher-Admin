@@ -38,17 +38,17 @@ const AdminFacultyAppraisalReport = ({
   const [point, setPoint] = useState(null);
 
   const endpoints = {
-    journals: `http://localhost:6005/api/v1/points/ad-journals/${id}`,
-    books: `http://localhost:6005/api/v1/points/ad-books/${id}`,
-    chapter: `http://localhost:6005/api/v1/points/ad-chapter/${id}`,
-    patents: `http://localhost:6005/api/v1/points/ad-patents/${id}`,
-    conferences: `http://localhost:6005/api/v1/points/ad-conferences/${id}`,
-    projects: `http://localhost:6005/api/v1/points/ad-projects/${id}`,
-    events: `http://localhost:6005/api/v1/points/ad-events/${id}`,
-    sttp: `http://localhost:6005/api/v1/points/ad-sttp/${id}`,
-    "expert-lectures": `http://localhost:6005/api/v1/points/ad-expert-lectures/${id}`,
-    "Student-Guide": `http://localhost:6005/api/v1/points/ad-student-guided/${id}`,
-    lecture: `http://localhost:6005/api/v1/points/ad-lecture/${id}`,
+    journals: `http://localhost:6005/api/v1/points2/ad-journals/${id}`,
+    books: `http://localhost:6005/api/v1/points2/ad-books/${id}`,
+    chapter: `http://localhost:6005/api/v1/points2/ad-chapter/${id}`,
+    patents: `http://localhost:6005/api/v1/points2/ad-patents/${id}`,
+    conferences: `http://localhost:6005/api/v1/points2/ad-conferences/${id}`,
+    projects: `http://localhost:6005/api/v1/points2/ad-projects/${id}`,
+    events: `http://localhost:6005/api/v1/points2/ad-events/${id}`,
+    sttp: `http://localhost:6005/api/v1/points2/ad-sttp/${id}`,
+    "expert-lectures": `http://localhost:6005/api/v1/points2/ad-expert-lectures/${id}`,
+    "Student-Guide": `http://localhost:6005/api/v1/points2/ad-student-guided/${id}`,
+    lecture: `http://localhost:6005/api/v1/points2/ad-lecture/${id}`,
     // Contribution: `http://localhost:6005/api/v1/points/ad-contribution/${id}`,
   };
 
