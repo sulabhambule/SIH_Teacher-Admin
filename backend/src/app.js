@@ -45,6 +45,8 @@ import conferenceRouter from "./routes/conference.routes.js";
 import conference2Router from "./routes/conference.2.routes.js";
 
 import pointRouter from "./routes/points.routes.js";
+import point2Router from "./routes/points2.routes.js";
+
 import postRouter from "./routes/extracontribution.routes.js";
 import chapterRouter from "./routes/chapter.routes.js";
 import chapter2Router from "./routes/chapters.2.routes.js";
@@ -81,6 +83,8 @@ app.use("/api/v1/conferences", conferenceRouter);
 app.use("/api/v1/conferences2", conference2Router);
 
 app.use("/api/v1/points", pointRouter);
+app.use("/api/v1/points2", point2Router);
+
 app.use("/api/v1/posts", postRouter);
 app.use("/api/v1/publication", publicationRouter);
 
