@@ -106,13 +106,18 @@ export default function AdminResearchTable() {
   }, [typeFilter]);
 
   const fetchData = async () => {
+    if (typeFilter === "") {
+      setData2([]);
+      return;
+    }
+
     const endpointMap = {
-      Book: `/api/v1/admins/book/${id}`,
-      // BOOK: "/api/v1/book/book/",
-      "Book Chapter": `/api/v1/admins/chapter/${id}`,
-      "Journal Article": `/api/v1/admins/journal/${id}`,
-      Patent: `/api/v1/admins/patent/${id}`,
-      "Conference Paper": `/api/v1/admins/conference/${id}`,
+      Book: `/api/v1/book2/book/${id}`,
+      BOOK: `/api/v1/book2/book/${id}`,
+      "Book Chapter": `/api/v1/chapter2/chapter/${id}`,
+      "Journal Article": "/api/v1/journals2/journal/",
+      Patent: "/api/v1/patents2/patent/get",
+      "Conference Paper": "/api/v1/conferences2/conference/get",
     };
 
     const publicationType = mapPublicationType(typeFilter);
@@ -125,9 +130,27 @@ export default function AdminResearchTable() {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(response);
+
+      console.log(response.data.data);
+
+      const response2 = await axios.get(
+        `http://localhost:6005/api/v1/publication/all`
+      );
+      console.log(response2.data.data);
+
+      response.data.data.forEach((item) => {
+        const publication = response2.data.data.find(
+          (pub) => pub._id === item.publication
+        );
+        item.publication = publication;
+      });
+      // if (typeFilter === "Book Chapter") {
+      //   response.data.data.forEach((item) => {
+      //     item.publication = item.publication.name;
+      //   });
+      // }
       setData2(response.data.data);
-      // console.log(data2);
+      console.log(data2);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -246,7 +269,6 @@ export default function AdminResearchTable() {
     fetchData();
   }, [typeFilter]); // Re-fetch data whenever typeFilter changes
 
-  // Dynamic table rendering
   const columns = useMemo(() => {
     return colu.map((col) => {
       if (col.accessorKey === "actions") {
@@ -275,10 +297,22 @@ export default function AdminResearchTable() {
             </div>
           ),
         };
+      } else if (
+        col.accessorKey === "publication" &&
+        (typeFilter === "Book" ||
+          typeFilter === "Patent" ||
+          typeFilter === "Conference Paper" ||
+          typeFilter === "Journal Article" ||
+          typeFilter === "Book Chapter")
+      ) {
+        return {
+          ...col,
+          cell: ({ row }) => <span>{row.original.publication.name}</span>,
+        };
       }
       return col;
     });
-  }, [colu]); // Recompute columns whenever colu changes
+  }, [colu]);
 
   // Table configuration
   const table = useReactTable({
@@ -307,7 +341,7 @@ export default function AdminResearchTable() {
 
   const handleAddEntry = async (formData) => {
     try {
-      const token = sessionStorage.getItem("teacherAccessToken");
+      const token = sessionStorage.getItem("adminAccessToken");
 
       const type = typeFilter;
       // console.log(type);
@@ -346,7 +380,7 @@ export default function AdminResearchTable() {
 
   const handleEditEntry = async (formData) => {
     try {
-      const token = sessionStorage.getItem("teacherAccessToken");
+      const token = sessionStorage.getItem("adminAccessToken");
       const response = await axios.patch(
         `http://localhost:6005/api/v1/research-paper/update/${rowToEdit._id}`,
         formData,
@@ -371,7 +405,7 @@ export default function AdminResearchTable() {
 
   const handleDeleteEntry = async () => {
     try {
-      const token = sessionStorage.getItem("teacherAccessToken");
+      const token = sessionStorage.getItem("adminAccessToken");
       await axios.delete(
         `http://localhost:6005/api/v1/research-paper/delete/${rowToDelete._id}`,
         {
@@ -424,9 +458,9 @@ export default function AdminResearchTable() {
               <SelectItem value="all">All Types</SelectItem>
               <SelectItem value="Book">Book</SelectItem>
               <SelectItem value="Book Chapter">Book Chapter</SelectItem>
-              <SelectItem value="Journal Article">Journal Article</SelectItem>
+              {/* <SelectItem value="Journal Article">Journal Article</SelectItem> */}
               <SelectItem value="Patent">Patent</SelectItem>
-              <SelectItem value="Conference Paper">Conference Paper</SelectItem>
+              {/* <SelectItem value="Conference Paper">Conference Paper</SelectItem> */}
             </SelectContent>
           </Select>
         </div>
@@ -583,7 +617,7 @@ export default function AdminResearchTable() {
 
       {data2.length === 0 ? (
         // <ResearchInstructionMessage />
-        <TeacherPublicationsChart id = {id} />
+        <TeacherPublicationsChart id={id} />
       ) : (
         <div className="table-container">
           <table className="w-full">

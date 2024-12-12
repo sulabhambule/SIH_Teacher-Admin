@@ -74,6 +74,7 @@ import AdminSeminarLayout from './Layouts/AdminSeminarLayouy';
 import FacultyInfoCard from './pages/FacultyPortal/FacultyList/FacultyInfoCard';
 import AdminPostsPage from './pages/AdminPortal/AdminList/AdminPostsPage';
 import AdminHodData from './pages/AdminPortal/AdminList/AdminHodData';
+import FacultyResearchTable2 from './table/Tables/Admin/FacultyResearchTable2';
 
 
 

@@ -5,8 +5,8 @@ import { addBook, getBooks, deleteBook, updateBook } from "../controllers/book.c
 
 const router = Router();
 
-router.post("/book/add", verifyTeacherJWT, addBook);
-router.get("/book/:id", verifyTeacherJWT, getBooks);
+router.post("/book/add", addBook);
+router.get("/book/:id", getBooks);
 router.patch("/book/:id", verifyTeacherJWT, updateBook);
 router.delete("/book/delete/:id", verifyTeacherJWT, deleteBook);
 

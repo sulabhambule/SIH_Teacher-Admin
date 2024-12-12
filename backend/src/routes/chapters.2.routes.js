@@ -10,8 +10,8 @@ import {
 
 const router = Router();
 
-router.post("/chapter/add", verifyTeacherJWT, addChapter);
-router.get("/chapter/:id", verifyTeacherJWT, getChapters);
+router.post("/chapter/add", addChapter);
+router.get("/chapter/:id", getChapters);
 router.patch("/chapter/:id", verifyTeacherJWT, updateChapter);
 router.delete("/chapter/delete/:id", verifyTeacherJWT, deleteChapter);
 

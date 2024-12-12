@@ -5,8 +5,8 @@ import { addPatent, deletePatent, getAllPatents, updatePatent } from "../control
 
 const router = Router();
 
-router.post("/patent/add", verifyTeacherJWT, addPatent);
-router.get("/patent/get", verifyTeacherJWT, getAllPatents);
+router.post("/patent/add", addPatent);
+router.get("/patent/get", getAllPatents);
 router.patch("/patent/:id", verifyTeacherJWT, updatePatent);
 router.delete("/patent/:id", verifyTeacherJWT, deletePatent);  
 
