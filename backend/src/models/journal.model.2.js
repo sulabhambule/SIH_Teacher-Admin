@@ -1,57 +1,57 @@
-import mongoose, { Schema } from 'mongoose';
-import { Point } from './points.models.js';
-import { DomainPoint } from './domainpoints.models.js';
-import { PublicationPoint } from './publication-points.models.js';
+import mongoose, { Schema } from "mongoose";
+import { Point } from "./points.models.js";
+import { DomainPoint } from "./domainpoints.models.js";
+import { PublicationPoint } from "./publication-points.models.js";
 
 const journalSchema = new Schema(
-    {
-        title: {
-            type: String,
-            required: true,
-        },
-        authors: {
-            type: [String],
-            required: true,
-        },
-        publicationDate: {
-            type: Date,
-            required: true,
-        },
-        publication: {
-            type: Schema.Types.ObjectId,
-            ref: 'PublicationPoint',
-        },
-        h5_index:{
-            type: Number,
-            required: false,
-        },
-        h5_median:{
-            type: Number,
-            required: false,
-        },
-        volume: {
-            type: Number,
-            required: true, 
-        },
-        issue: {
-            type: Number,
-            required: true,
-        },
-        pages: {
-            type: String,
-            required: true,
-        },
-        publisher: {
-            type: String,
-            required: true,
-        },
-        owner: {
-            type: Schema.Types.ObjectId,
-            ref: 'Teacher',
-            required: true,
-        },
+  {
+    title: {
+      type: String,
+      required: true,
     },
-    { timestamps: true }
+    authors: {
+      type: [String],
+      required: true,
+    },
+    publicationDate: {
+      type: Date,
+      required: true,
+    },
+    publication: {
+      type: Schema.Types.ObjectId,
+      ref: "PublicationPoint",
+    },
+    h5_index: {
+      type: Number,
+      required: false,
+    },
+    h5_median: {
+      type: Number,
+      required: false,
+    },
+    volume: {
+      type: Number,
+      required: true,
+    },
+    issue: {
+      type: Number,
+      required: true,
+    },
+    pages: {
+      type: String,
+      required: true,
+    },
+    publisher: {
+      type: String,
+      required: true,
+    },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "Teacher",
+      required: true,
+    },
+  },
+  { timestamps: true }
 );
 
 const allocatePublicationPoints = async (teacherId, publicationId) => {
@@ -65,7 +65,7 @@ const allocatePublicationPoints = async (teacherId, publicationId) => {
   // Search for an existing point entry for the teacher
   const existingPoint = await Point.findOne({
     owner: teacherId,
-    domain: publication.name,
+    domain: `${publication.name} (book)`,
   });
 
   if (existingPoint) {
@@ -103,7 +103,8 @@ journalSchema.post("findOneAndDelete", async function (doc) {
     // Search for an existing point entry for the teacher
     const existingPoint = await Point.findOne({
       owner: doc.owner,
-      domain: publication.name,
+      domain: `${publication.name} (book)`,
+
     });
 
     console.log(existingPoint);
@@ -121,4 +122,4 @@ journalSchema.post("findOneAndDelete", async function (doc) {
     }
   }
 });
-export const Journal2 = mongoose.model('Journal2', journalSchema);
+export const Journal2 = mongoose.model("Journal2", journalSchema);

@@ -1,8 +1,9 @@
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/AsyncHandler2.js";
 import { ApiError } from "../utils/ApiErrors.js";
-import { Journal } from "../models/journal.models.js";
+import { Journal2 } from "../models/journal.model.2.js";
 import { PublicationPoint } from "../models/publication-points.models.js";
+import mongoose from "mongoose";  
 
 const addJournal = asyncHandler(async (req, res) => {
   const {
@@ -10,23 +11,19 @@ const addJournal = asyncHandler(async (req, res) => {
     authors,
     publication,
     publicationDate,
-    journal,
     volume,
     issue,
-    pages,
-    publisher,
+    pages
   } = req.body;
-  const owner = req.teacher._id;
 
+  const owner = req.teacher._id;
   if (
     !title ||
     !authors ||
     !publicationDate ||
-    !journal ||
     !volume ||
     !issue ||
-    !pages ||
-    !publisher
+    !pages 
   ) {
     throw new ApiError(400, "Please provide all mandatory fields");
   }
@@ -40,16 +37,14 @@ const addJournal = asyncHandler(async (req, res) => {
   const h5_index = publications.hindex;
   const h5_median = publications.median;
 
-
-  const journalEntry = await Journal.create({
+  const journalEntry = await Journal2.create({
     title,
     authors,
     publicationDate,
-    journal,
     volume,
     issue,
     pages,
-    publisher,
+    publisher : "Cengage Learning",
     h5_index,
     h5_median,
     owner,
@@ -66,7 +61,6 @@ const updateJournal = asyncHandler(async (req, res) => {
     title,
     authors,
     publicationDate,
-    journal,
     volume,
     issue,
     pages,
@@ -79,7 +73,6 @@ const updateJournal = asyncHandler(async (req, res) => {
     !authors ||
     !journalType ||
     !publicationDate ||
-    !journal ||
     !volume ||
     !issue ||
     !pages ||
@@ -88,14 +81,13 @@ const updateJournal = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Please provide all mandatory fields");
   }
 
-  const updatedJournal = await Journal.findByIdAndUpdate(
+  const updatedJournal = await Journal2.findByIdAndUpdate(
     id,
     {
       $set: {
         title,
         authors,
         publicationDate,
-        journal,
         volume,
         issue,
         pages,
@@ -133,7 +125,7 @@ const deleteJournal = asyncHandler(async (req, res) => {
 
 const getAllJournals = asyncHandler(async (req, res) => {
   const owner = req.teacher._id;
-  const journals = await Journal.find({ owner }).sort({ createdAt: -1 });
+  const journals = await Journal2.find({ owner }).sort({ createdAt: -1 });
 
   return res
     .status(200)

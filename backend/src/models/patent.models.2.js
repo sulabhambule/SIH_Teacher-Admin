@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import { Point } from "./points.models.js";
 import { DomainPoint } from "./domainpoints.models.js";
-import { PublicationPoint } from "./publicationpoints.models.js";
+import { PublicationPoint } from "./publication-points.models.js";
 
 const patentSchema = new Schema(
   {
