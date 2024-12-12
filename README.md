@@ -2,7 +2,10 @@
 # Faculty Appraisal and Career Advancement Portal
 
 ## Overview
-This is a MERN stack-based web application designed to simplify faculty appraisal and career advancement processes. The portal includes three distinct portals:
+Team:-BlazeBrains
+Problem Statement:- 1613
+
+This is a MERN stack-based web application designed to simplify faculty appraisal and career advancement processes focused on promoting not just healthy competition but also collaboration to achieve collective goals of the department and the institute. The portal includes three distinct portals:
 1. **Admin Portal**: For managing faculty profiles and appraisals.
 2. **Faculty Portal**: For viewing feedback and appraisal details.
 3. **Student Portal**: For submitting anonymous feedback.
@@ -40,38 +43,12 @@ The project is deployed on Google Cloud using NGINX.
 
 ## Installation
 
-### Prerequisites
+### Prerequisites to run on Local Host
 1. Node.js and npm installed.
 2. MongoDB set up locally or on the cloud.
 3. Google Cloud project configured (optional for local setup).
 
-### Steps
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/your-repo.git
-   ```
-2. Navigate to the project directory:
-   ```bash
-   cd your-repo
-   ```
-3. Install dependencies:
-   ```bash
-   npm install
-   ```
-4. Set up environment variables:
-   - Create a `.env` file in the root directory.
-   - Add the following:
-     ```
-     MONGO_URI=your-mongo-uri
-     PORT=5000
-     JWT_SECRET=your-secret
-     ```
-5. Run the application:
-   ```bash
-   npm start
-   ```
 
----
 
 ## Usage
 
