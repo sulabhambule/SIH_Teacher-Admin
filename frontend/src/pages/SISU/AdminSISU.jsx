@@ -9,7 +9,7 @@ export default function AdminSISU() {
   const [signupData, setSignupData] = useState({
     name: "",
     email: "",
-    designation: "",
+    designation: "Admin",
     password: "",
   });
   const [loginData, setLoginData] = useState({
@@ -44,8 +44,9 @@ export default function AdminSISU() {
 
   const handleSignupChange = (e) => {
     const { id, value } = e.target;
-    setSignupData({ ...signupData, [id]: value });
-  };
+    if (id !== "designation") {
+      setSignupData({ ...signupData, [id]: value });
+    }  };
 
   const handleLoginChange = (e) => {
     const { id, value } = e.target;
@@ -138,15 +139,14 @@ export default function AdminSISU() {
                 required
                 className="fs-input"
               />
-              <input
-                type="text"
-                id="designation"
-                placeholder="Designation"
-                value={signupData.designation}
-                onChange={handleSignupChange}
-                required
-                className="fs-input"
-              />
+             <input
+  type="text"
+  id="designation"
+  placeholder="Designation"
+  value={signupData.designation}
+  readOnly
+  className="fs-input bg-gray-100 cursor-not-allowed"
+/>
               <input
                 type="password"
                 id="password"

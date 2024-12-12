@@ -77,6 +77,7 @@ import AdminHodData from './pages/AdminPortal/AdminList/AdminHodData';
 import HODAppraisalLayout from './Layouts/HODAppraisalLayout';
 import HODTaskDistributionLayout from './Layouts/HODTaskDistributionLayout';
 import WeightageDistributionLayout from './Layouts/WeightageDistributionLayout';
+import FacultyAppraisalRankingTable from './table/Tables/FacultyAppraisalRankingTable';
 
 
 
@@ -143,6 +144,7 @@ const router = createBrowserRouter(
     <Route path="assign-tasks" element={<RouteTransitionWrapper><HODTaskDistributionLayout/></RouteTransitionWrapper>} errorElement={<NotFoundPage/>}/>
 <Route path="weightage-distribution" element={<RouteTransitionWrapper><WeightageDistributionLayout/></RouteTransitionWrapper>} errorElement={<NotFoundPage/>} />
 
+<Route path="appraisal-ranking" element={<RouteTransitionWrapper><FacultyAppraisalRankingTable/></RouteTransitionWrapper>} errorElement={<NotFoundPage/>} />
 
     </Route>
  
