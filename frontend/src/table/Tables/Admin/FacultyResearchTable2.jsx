@@ -38,10 +38,10 @@ import { JournalColumnDef } from "../Columns/PublicationsColumn/JournalColumn.js
 import { conferenceColumnDef } from "../Columns/PublicationsColumn/ConferenceColumn.jsx";
 import { chapterColumnDef } from "../Columns/PublicationsColumn/ChapterColumn.jsx";
 import { ResearchInstructionMessage } from "@/components/ResearchInstructionMessage.jsx";
-import FacultyPublicationsChart from "./FacultyPublicationsChart.jsx";
+import FacultyPublicationsChart from "../Faculty/FacultyPublicationsChart.jsx";
 import { useParams } from "react-router-dom";
 
-export default function FacultyResearchTable() {
+export default function FacultyResearchTable2() {
   const { id } = useParams();
   const [data, setData] = useState([]);
   const [data2, setData2] = useState([]);
@@ -85,7 +85,7 @@ export default function FacultyResearchTable() {
 
     const endpoint = endpointMap[publicationType];
     try {
-      const token = sessionStorage.getItem("teacherAccessToken");
+      const token = sessionStorage.getItem("adminAccessToken");
       const response = await axios.get(`http://localhost:6005${endpoint}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -205,7 +205,7 @@ export default function FacultyResearchTable() {
   const handleAddEntry = async (formData) => {
     formData.append("owner", id);
     try {
-      const token = sessionStorage.getItem("teacherAccessToken");
+      const token = sessionStorage.getItem("adminAccessToken");
       const type = typeFilter;
       const publicationType = mapPublicationType(type);
       const endpointMap = {
@@ -252,7 +252,7 @@ export default function FacultyResearchTable() {
 
   const handleEditEntry = async (formData) => {
     try {
-      const token = sessionStorage.getItem("teacherAccessToken");
+      const token = sessionStorage.getItem("adminAccessToken");
       const type = typeFilter;
       const publicationType = mapPublicationType(type);
       const endpointMap = {
@@ -303,7 +303,7 @@ export default function FacultyResearchTable() {
 
   const handleDeleteEntry = async () => {
     try {
-      const token = sessionStorage.getItem("teacherAccessToken");
+      const token = sessionStorage.getItem("adminAccessToken");
       const endpointMap = {
         Book: "/api/v1/book2/book/delete",
         "Book Chapter": "/api/v1/chapter2/chapter",
@@ -391,8 +391,8 @@ export default function FacultyResearchTable() {
       </div>
 
       {data2.length === 0 ? (
-        <ResearchInstructionMessage />
-        // <FacultyPublicationsChart />
+        // <ResearchInstructionMessage />
+        <FacultyPublicationsChart />
       ) : (
         <div className="table-container">
           <table className="w-full">

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { UserCog, ClipboardList } from 'lucide-react';
+import { Label } from "@/components/ui/label";
 
 export default function AdminSISU() {
   const navigate = useNavigate();
@@ -155,6 +156,9 @@ export default function AdminSISU() {
                 required
                 className="fs-input"
               />
+              <Label>
+                Upload Your Avatar
+              </Label>
               <input
                 type="file"
                 id="avatar"
