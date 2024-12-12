@@ -75,7 +75,7 @@ export default function FacultyResearchTable() {
     const endpointMap = {
       Book: `/api/v1/book2/book/${id}`,
       BOOK: `/api/v1/book2/book/${id}`,
-      "Book Chapter": "/api/v1/chapter/chapter/",
+      "Book Chapter": `/api/v1/chapter2/chapter/${id}`,
       "Journal Article": "/api/v1/journals/journal/",
       Patent: "/api/v1/patents/patent/get",
       "Conference Paper": "/api/v1/conferences/conference/get",
@@ -105,6 +105,11 @@ export default function FacultyResearchTable() {
         );
         item.publication = publication;
       });
+      if (typeFilter === "Book Chapter") {
+        response.data.data.forEach((item) => {
+          item.publication = item.publication.name;
+        });
+      }
       setData2(response.data.data);
       console.log(data2);
     } catch (error) {
@@ -199,10 +204,10 @@ export default function FacultyResearchTable() {
       const endpointMap = {
         Book: "/api/v1/book2/book/add",
         BOOK: "/api/v1/book2/book/add",
-        "Book Chapter": "/api/v1/chapter/chapter/add",
-        "Journal Article": "/api/v1/journals/journal/add",
-        Patent: "/api/v1/patents/patent/add",
-        "Conference Paper": "/api/v1/conferences/conference/add",
+        "Book Chapter": "/api/v1/chapter2/chapter/add",
+        "Journal Article": "/api/v1/journals2/journal/add",
+        Patent: "/api/v1/patents2/patent/add",
+        "Conference Paper": "/api/v1/conferences2/conference/add",
       };
       const response2 = await axios.get(
         `http://localhost:6005/api/v1/publication/all`
@@ -230,6 +235,7 @@ export default function FacultyResearchTable() {
         }
       );
 
+      console.log(response);
       setData2((prevData) => [...prevData, response.data.data]);
       setDrawerOpen(false);
     } catch (error) {

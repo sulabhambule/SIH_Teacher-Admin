@@ -20,26 +20,89 @@ const patentSchema = new Schema(
     patentOffice: {
       type: String,
       enum: [
-        "US", "EP", "JP", "WO", "AP", "EA", "OA", "AR", "CZ", "IE", "IN", "NL", "NZ",
-        "VN", "ZA", "ZW", "MT", "MX", "TJ", "TW", "CN", "CU", "ID", "SG", "SK", "BG",
-        "AT", "BA", "ES", "FR", "DE", "EE", "KE", "LT", "LV", "PT", "IL", "IT", "NO",
-        "PH", "CH", "YU", "CS", "HK", "MW", "MY", "TR", "SU", "BR", "GB", "AU", "BE",
-        "FI", "LU", "MC", "PL", "RO", "SE", "GR", "HR", "DZ", "GC", "MA", "MD", "RU",
-        "ZM", "CY", "HU", "MN",
+        "US",
+        "EP",
+        "JP",
+        "WO",
+        "AP",
+        "EA",
+        "OA",
+        "AR",
+        "CZ",
+        "IE",
+        "IN",
+        "NL",
+        "NZ",
+        "VN",
+        "ZA",
+        "ZW",
+        "MT",
+        "MX",
+        "TJ",
+        "TW",
+        "CN",
+        "CU",
+        "ID",
+        "SG",
+        "SK",
+        "BG",
+        "AT",
+        "BA",
+        "ES",
+        "FR",
+        "DE",
+        "EE",
+        "KE",
+        "LT",
+        "LV",
+        "PT",
+        "IL",
+        "IT",
+        "NO",
+        "PH",
+        "CH",
+        "YU",
+        "CS",
+        "HK",
+        "MW",
+        "MY",
+        "TR",
+        "SU",
+        "BR",
+        "GB",
+        "AU",
+        "BE",
+        "FI",
+        "LU",
+        "MC",
+        "PL",
+        "RO",
+        "SE",
+        "GR",
+        "HR",
+        "DZ",
+        "GC",
+        "MA",
+        "MD",
+        "RU",
+        "ZM",
+        "CY",
+        "HU",
+        "MN",
       ],
       required: true,
     },
     publication: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
-    h5_index:{
-        type: Number,
-        required: false,
+    h5_index: {
+      type: Number,
+      required: false,
     },
-    h5_median:{
-        type: Number,
-        required: false,
+    h5_median: {
+      type: Number,
+      required: false,
     },
     patentNumber: {
       type: String,
@@ -57,63 +120,72 @@ const patentSchema = new Schema(
   },
   { timestamps: true }
 );
+const allocatePublicationPoints = async (teacherId, publicationId) => {
+  const publication = await PublicationPoint.findById(publicationId);
+  if (!publication) {
+    throw new Error("Publication not found");
+  }
 
-// // Function to get points for a domain from the DomainPoint model
-// const getPointsForDomain = async (domain) => {
-//   const domainPoint = await DomainPoint.findOne({ domain });
-//   return domainPoint?.points || 0; // Default to 0 if the domain is not found
-// };
+  const points = publication.hindex / 100; // Use hindex as the points value
 
-// // Function to allocate points in the `Point` model
-// const allocatePoints = async (teacherId, domain, publicationDate) => {
-//   const points = await getPointsForDomain(domain); // Fetch points for the domain
+  // Search for an existing point entry for the teacher
+  const existingPoint = await Point.findOne({
+    owner: teacherId,
+    domain: publication.name,
+  });
 
-//   // Search for an existing domain for the teacher
-//   const existingPoint = await Point.findOne({ owner: teacherId, domain });
+  if (existingPoint) {
+    // Update points if the domain exists
+    await Point.findByIdAndUpdate(existingPoint._id, {
+      $inc: { points },
+    });
+  } else {
+    // Create a new point entry if it does not exist
+    await Point.create({
+      date: new Date(),
+      points,
+      domain: `${publication.name} (book)`,
+      owner: teacherId,
+    });
+  }
+};
 
-//   if (existingPoint) {
-//       // Update points if the domain exists
-//       await Point.findByIdAndUpdate(existingPoint._id, {
-//           $inc: { points },
-//       });
-//   } else {
-//       // Create a new domain if it does not exist
-//       await Point.create({
-//           date: publicationDate,
-//           points,
-//           domain,
-//           owner: teacherId,
-//       });
-//   }
-// };
+// Post-save hook to allocate points based on publication hindex
+patentSchema.post("save", async function (doc) {
+  await allocatePublicationPoints(doc.owner, doc.publication);
+});
 
-// // Post-save hook to allocate points
-// patentSchema.post('save', async function (doc) {
-//   const domain = `${doc.patentType} Patent`; // Generate the domain key (e.g., "International Patent")
-//   await allocatePoints(doc.owner, domain, doc.publicationDate);
-// });
+// Post-remove hook to deduct points based on publication hindex
+patentSchema.post("findOneAndDelete", async function (doc) {
+  if (doc) {
+    const publication = await PublicationPoint.findById(doc.publication);
+    // console.log(publication);
+    if (!publication) {
+      throw new Error("Publication not found");
+    }
 
-// // Post-remove hook to deduct points
-// patentSchema.post('findOneAndDelete', async function (doc) {
-//   if (doc) {
-//       const domain = `${doc.patentType} Patent`; // Generate the domain key (e.g., "International Patent")
-//       const points = await getPointsForDomain(domain); // Fetch points for the domain
+    const points = publication.hindex / 100; // Use hindex as the points value
 
-//       // Search for an existing domain for the teacher
-//       const existingPoint = await Point.findOne({ owner: doc.owner, domain });
+    // Search for an existing point entry for the teacher
+    const existingPoint = await Point.findOne({
+      owner: doc.owner,
+      domain: publication.name,
+    });
 
-//       if (existingPoint) {
-//           // Deduct points
-//           await Point.findByIdAndUpdate(existingPoint._id, {
-//               $inc: { points: -points },
-//           });
+    console.log(existingPoint);
 
-//           // Optionally, remove the document if points drop to 0
-//           if (existingPoint.points - points <= 0) {
-//               await Point.findByIdAndDelete(existingPoint._id);
-//           }
-//       }
-//   }
-// });
+    if (existingPoint) {
+      // Deduct points
+      await Point.findByIdAndUpdate(existingPoint._id, {
+        $inc: { points: -points },
+      });
+
+      // Optionally, remove the document if points drop to 0
+      if (existingPoint.points - points <= 0) {
+        await Point.findByIdAndDelete(existingPoint._id);
+      }
+    }
+  }
+});
 
 export const Patent2 = mongoose.model("Patent2", patentSchema);
