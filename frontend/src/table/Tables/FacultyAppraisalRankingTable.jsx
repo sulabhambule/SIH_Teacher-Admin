@@ -37,18 +37,19 @@ export default function FacultyAppraisalRankingTable() {
     const fetchTeacherInfo = async () => {
       try {
         const token = sessionStorage.getItem("adminAccessToken");
-
+        
         const response = await axios.get(
-          `http://localhost:6005/api/v1/admins/teachers/${id}/events-participated`,
+          `http://localhost:6005/api/v1/points2/ad-teacher-ranks`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
+        console.log("jnfonio")
         console.log(response.data.data);
         setData(response.data.data);
-        console.log("EVENT DATA Is", eventData);
+        // console.log(data);
       } catch (error) {
         console.log("An error occurred while fetching teacher info.");
       }

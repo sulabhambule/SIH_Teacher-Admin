@@ -89,7 +89,7 @@ const AdminFacultyAppraisalReport = ({
         highestPoints: item.highestPoints || 0,
       }));
 
-      // console.log("formattedData", formattedData);
+      console.log(formattedData);
 
       setAppraisalData(formattedData);
     } catch (error) {
