@@ -30,6 +30,11 @@ The project is deployed on Google Cloud using NGINX.
 - Simplified feedback collection from students.
 - Analytics and reporting for career advancement.
 - User-friendly interface for all stakeholders.
+  Standardized Publication Grading: Objective grading using Google Scholar matrix.
+  Departmental Targets & Collaboration: Admin sets targets, HOD fosters teamwork.
+  Role-Based Evaluation: HODs focus on publications, professors on teaching.
+  Security: Anonymized feedback from students
+  Real-Time Rankings: Personal growth tracking, no peer rivalry.
 
 ---
 
