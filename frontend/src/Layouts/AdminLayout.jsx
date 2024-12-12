@@ -35,6 +35,9 @@ const FacultyLayout = () => {
           </aside>
           <main className="flex-1 flex flex-col overflow-hidden min-h-screen">
             <h1 className="text-xl font-bold text-center p-4">Admin Portal</h1>
+            <div className="flex justify-start p-4">
+    <BackButton /> {/* BackButton here */}
+  </div>
             <div className="flex-1 overflow-auto p-4 bg-gray-100">
               {navigation.state === "loading" ? <LoadingPage /> : <Outlet />}
             </div>

@@ -74,6 +74,9 @@ import AdminSeminarLayout from './Layouts/AdminSeminarLayouy';
 import FacultyInfoCard from './pages/FacultyPortal/FacultyList/FacultyInfoCard';
 import AdminPostsPage from './pages/AdminPortal/AdminList/AdminPostsPage';
 import AdminHodData from './pages/AdminPortal/AdminList/AdminHodData';
+import HODAppraisalLayout from './Layouts/HODAppraisalLayout';
+import HODTaskDistributionLayout from './Layouts/HODTaskDistributionLayout';
+import WeightageDistributionLayout from './Layouts/WeightageDistributionLayout';
 
 
 
@@ -128,15 +131,18 @@ const router = createBrowserRouter(
     
     <Route path="admin" element={<AdminHomeLayout/>} errorElement={<NotFoundPage/>}>
     <Route  index element={<AdminHome/>} errorElement={<NotFoundPage/>}/>
-    <Route path="faculty-data" element={<AdminHome/>} errorElement={<NotFoundPage/>}/>
-    <Route path="hod-data" element={<AdminHodData/>} errorElement={<NotFoundPage/>}/>
+    <Route path="faculty-data" element={ <RouteTransitionWrapper><AdminHome/></RouteTransitionWrapper>} errorElement={<NotFoundPage/>}/>
+    <Route path="hod-data" element={<RouteTransitionWrapper><HODAppraisalLayout/></RouteTransitionWrapper>} errorElement={<NotFoundPage/>}/>
 
-    <Route path="allocate-lectures" element={<AdminLectureAllocationPage/>} errorElement={<NotFoundPage/>}/>
-    <Route path="release-feedbacks" element={<ReleaseFeedbacks/>} errorElement={<NotFoundPage/>}/>
-    <Route path="register-faulty" element={<FacultyRegister/>} errorElement={<NotFoundPage/>}/>
-    <Route path="register-student" element={<StudentRegister/>} errorElement={<NotFoundPage/>}/>
-    <Route path="allocate-sub-student" element={<AdminAllocateSubjectToStudent/>} errorElement={<NotFoundPage/>}/>
-    <Route path="appraisal-points" element={<AdminPointAllocationLayout/>} errorElement={<NotFoundPage/>}/>
+    <Route path="allocate-lectures" element={<RouteTransitionWrapper><AdminLectureAllocationPage/></RouteTransitionWrapper>} errorElement={<NotFoundPage/>}/>
+    <Route path="release-feedbacks" element={<RouteTransitionWrapper><ReleaseFeedbacks/></RouteTransitionWrapper>} errorElement={<NotFoundPage/>}/>
+    <Route path="register-faulty" element={<RouteTransitionWrapper><FacultyRegister/></RouteTransitionWrapper>} errorElement={<NotFoundPage/>}/>
+    <Route path="register-student" element={<RouteTransitionWrapper><StudentRegister/></RouteTransitionWrapper>} errorElement={<NotFoundPage/>}/>
+    <Route path="allocate-sub-student" element={<RouteTransitionWrapper><AdminAllocateSubjectToStudent/></RouteTransitionWrapper>} errorElement={<NotFoundPage/>}/>
+    <Route path="appraisal-points" element={<RouteTransitionWrapper><AdminPointAllocationLayout/></RouteTransitionWrapper>} errorElement={<NotFoundPage/>}/>
+    <Route path="assign-tasks" element={<RouteTransitionWrapper><HODTaskDistributionLayout/></RouteTransitionWrapper>} errorElement={<NotFoundPage/>}/>
+<Route path="weightage-distribution" element={<RouteTransitionWrapper><WeightageDistributionLayout/></RouteTransitionWrapper>} errorElement={<NotFoundPage/>} />
+
 
     </Route>
  
@@ -164,10 +170,10 @@ const router = createBrowserRouter(
        
       
       <Route path="student-home" element={<StudentHome />} /> {/* Route for student portal */}
-      <Route path="student" element={<StudentLayout/>}>
-      <Route path="lecture" element={<LectureCards/>} errorElement={<NotFoundPage/>} />
+      <Route path="student" element={<RouteTransitionWrapper><StudentLayout/></RouteTransitionWrapper>}>
+      <Route path="lecture" element={<RouteTransitionWrapper><LectureCards/></RouteTransitionWrapper>} errorElement={<NotFoundPage/>} />
       {/* <Route path="upcoming-rsvp" element={< UpcomingRsvp/>} errorElement={<NotFoundPage/>} /> */}
-      <Route path="seminar" element={<SeminarCards />} errorElement={<NotFoundPage/>} />
+      <Route path="seminar" element={<RouteTransitionWrapper><SeminarCards /></RouteTransitionWrapper>} errorElement={<NotFoundPage/>} />
       </Route>
     </Route>
   )
