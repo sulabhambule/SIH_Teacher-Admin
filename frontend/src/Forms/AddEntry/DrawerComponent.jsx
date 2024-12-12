@@ -311,11 +311,13 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
 
   const handleSuggestionSelect = (suggestion) => {
     setValue("publication", suggestion.name);
+    
     setValue("h5_index", suggestion.hindex);
     setValue("h5_median", suggestion.median);
-    setFilteredSuggestions([]);
+    setFilteredSuggestions([]); // Clear the suggestions
     setSelectedPublication(suggestion);
   };
+  
 
   return (
     <Drawer open={isOpen} onOpenChange={onClose}>

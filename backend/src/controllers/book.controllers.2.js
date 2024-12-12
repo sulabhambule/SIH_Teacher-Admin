@@ -10,6 +10,7 @@ const addBook = asyncHandler(async (req, res) => {
   const { title, authors, publicationDate, volume, pages, publication, owner } =
     req.body;
 
+  // console.log(publication);
   if (!mongoose.Types.ObjectId.isValid(publication)) {
     throw new ApiError(404, "Publication not found");
   }

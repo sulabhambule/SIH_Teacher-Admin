@@ -19,17 +19,20 @@ const addChapter = asyncHandler(async (req, res) => {
     owner,
   } = req.body;
 
-  if(!mongoose.Types.ObjectId.isValid(publication)){
+  if (!mongoose.Types.ObjectId.isValid(publication)) {
     throw new ApiError(404, "Publication not found");
   }
 
-    const publications = await PublicationPoint.findById(publication);
+  const publications = await PublicationPoint.findById(publication);
 
-    const h5_index = publications.hindex;
-    const h5_median = publications.median;
+  const h5_index = publications.hindex;
+  const h5_median = publications.median;
 
   if (!title || !authors || !publicationDate || !publication || !owner) {
-    throw new ApiError(400, "Required fields: title, authors, publicationDate, publication, owner");
+    throw new ApiError(
+      400,
+      "Required fields: title, authors, publicationDate, publication, owner"
+    );
   }
 
   const chapter = await Chapter2.create({
@@ -47,7 +50,9 @@ const addChapter = asyncHandler(async (req, res) => {
   });
 
   if (chapter) {
-    res.status(201).json(new ApiResponse(201, chapter, "Chapter added successfully"));
+    res
+      .status(201)
+      .json(new ApiResponse(201, chapter, "Chapter added successfully"));
   } else {
     throw new ApiError(500, "Failed to add chapter");
   }
@@ -55,14 +60,21 @@ const addChapter = asyncHandler(async (req, res) => {
 
 // Get all chapters
 const getChapters = asyncHandler(async (req, res) => {
-    const {id} = req.params;
+  const { id } = req.params;
 
-    if(!mongoose.Types.ObjectId.isValid(id)){
-        throw new ApiError(404, "User not found");
-    }
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new ApiError(404, "User not found");
+  }
 
-  const chapters = await Chapter2.find({owner: id}).populate("owner", "name email");
-  res.status(200).json(new ApiResponse(200, chapters, "All the chapters retrieved successfully"));
+  const chapters = await Chapter2.find({ owner: id }).populate(
+    "owner",
+    "name email"
+  );
+  res
+    .status(200)
+    .json(
+      new ApiResponse(200, chapters, "All the chapters retrieved successfully")
+    );
 });
 
 // Update a chapter
@@ -80,15 +92,15 @@ const updateChapter = asyncHandler(async (req, res) => {
     h5_index,
     h5_median,
   } = req.body;
-  
-  if(!mongoose.Types.ObjectId.isValid(publication)){
+
+  if (!mongoose.Types.ObjectId.isValid(publication)) {
     throw new ApiError(404, "Publication not found");
   }
 
-    const publications = await PublicationPoint.findById(publication);
+  const publications = await PublicationPoint.findById(publication);
 
   h5_index = publications.hindex;
-    h5_median = publications.median;
+  h5_median = publications.median;
 
   const chapter = await Chapter2.findById(id);
 
@@ -109,7 +121,9 @@ const updateChapter = asyncHandler(async (req, res) => {
 
   const updatedChapter = await chapter.save();
 
-  res.status(200).json(new ApiResponse(200, updatedChapter, "Chapter updated successfully"));
+  res
+    .status(200)
+    .json(new ApiResponse(200, updatedChapter, "Chapter updated successfully"));
 });
 
 // Delete a chapter
