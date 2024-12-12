@@ -8,6 +8,7 @@ import FacultyNavigation from "@/components/NavigationSIdeBar/FacultyNavigation"
 import React from "react";
 import { Footer } from "@/components";
 import LoadingPage from "@/pages/LoadingPage";
+import BackButton from "@/components/BackButton";
 
 import "./loading.css";
 

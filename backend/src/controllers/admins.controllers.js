@@ -92,7 +92,7 @@ const registerAdmin = asyncHandler(async (req, res) => {
     name,
     email,
     designation,
-    avatar: avatarUrl, // Assuming `uploadToGCS` returns an object with a `url` field
+    avatar: avatar, // Assuming `uploadToGCS` returns an object with a `url` field
     password,
   });
 
@@ -2181,6 +2181,18 @@ const getAllContributions = asyncHandler(async (req, res) => {
     );
 });
 
+const fetchHODs = asyncHandler(async (req, res) => {
+  const hod = await Teacher.find({ designation: "HOD" });
+
+  if (!hod || hod.length === 0) {
+    throw new ApiError(404, "No HODs Found");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, hod, "All HODs fetched successfully"));
+});
+
 export {
   registerAdmin,
   registerTeacher,
@@ -2237,4 +2249,5 @@ export {
   getAllseminarAttended,
   getAllResearchWork,
   getAllContributions,
+  fetchHODs,
 };

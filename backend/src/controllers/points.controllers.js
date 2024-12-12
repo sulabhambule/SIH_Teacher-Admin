@@ -1474,7 +1474,6 @@ const completeConference2Points = asyncHandler(async (req, res) => {
     );
 });
 
-
 const completeChapterPoints = asyncHandler(async (req, res) => {
   const chapterDomains = [
     "International Chapter",

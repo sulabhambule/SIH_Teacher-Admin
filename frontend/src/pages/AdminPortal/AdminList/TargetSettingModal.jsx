@@ -4,16 +4,19 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Progress } from "@/components/ui/progress"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+// import { Calendar } from "../../../components/ui/calendar"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { CalendarIcon } from 'lucide-react'
+import { format } from "date-fns"
+import { cn } from "@/lib/utils"
 
 const targetCategories = [
   { id: 'publications', name: 'Publications', defaultTarget: 10, maxTarget: 20 },
   { id: 'events', name: 'Events', defaultTarget: 3, maxTarget: 10 },
-  { id: 'research', name: 'Research Grants', defaultTarget: 2, maxTarget: 5 },
-  { id: 'students', name: 'Student Mentorship', defaultTarget: 15, maxTarget: 30 },
-  { id: 'collaborations', name: 'Industry Collaborations', defaultTarget: 2, maxTarget: 5 },
+  { id: 'seminars', name: 'Seminars', defaultTarget: 2, maxTarget: 5 },
+  { id: 'sttp', name: 'STTP', defaultTarget: 15, maxTarget: 30 },
 ]
 
 export function TargetSettingModal({ isOpen, onClose, department, hodName, onSaveTargets }) {
@@ -24,7 +27,9 @@ export function TargetSettingModal({ isOpen, onClose, department, hodName, onSav
       category: category.id,
       name: category.name,
       target: category.defaultTarget,
+      title: '',
       description: '',
+      date: category.id === 'events' ? new Date() : null,
       progress: 0
     }))
   )
@@ -55,16 +60,6 @@ export function TargetSettingModal({ isOpen, onClose, department, hodName, onSav
         <div className="flex-grow overflow-y-auto pr-4">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-semibold text-blue-500">{department} Department - HOD: {hodName}</h3>
-            <Select value={selectedYear.toString()} onValueChange={(value) => setSelectedYear(parseInt(value))}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select Year" />
-              </SelectTrigger>
-              <SelectContent>
-                {[currentYear, currentYear + 1, currentYear + 2].map((year) => (
-                  <SelectItem key={year} value={year.toString()}>{year}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
           </div>
           <Tabs defaultValue={targetCategories[0].id} className="w-full">
             <TabsList className="grid w-full grid-cols-5">
@@ -74,6 +69,15 @@ export function TargetSettingModal({ isOpen, onClose, department, hodName, onSav
             </TabsList>
             {targetCategories.map((category, index) => (
               <TabsContent key={category.id} value={category.id} className="mt-4 space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor={`title-${category.id}`}>Title:</Label>
+                  <Input
+                    id={`title-${category.id}`}
+                    value={targets[index].title}
+                    onChange={(e) => handleTargetChange(index, 'title', e.target.value)}
+                    placeholder={`Enter ${category.name.toLowerCase()} title...`}
+                  />
+                </div>
                 <div className="flex items-center space-x-4">
                   <Label htmlFor={`target-${category.id}`} className="w-24">Target:</Label>
                   <Input
@@ -96,22 +100,17 @@ export function TargetSettingModal({ isOpen, onClose, department, hodName, onSav
                     placeholder={`Describe the ${category.name.toLowerCase()} target...`}
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor={`progress-${category.id}`}>Progress:</Label>
-                  <div className="flex items-center space-x-4">
-                    <Input
-                      id={`progress-${category.id}`}
-                      type="number"
-                      value={targets[index].progress}
-                      onChange={(e) => handleProgressChange(index, parseInt(e.target.value))}
-                      min="0"
-                      max="100"
-                      className="w-20"
-                    />
-                    <Progress value={targets[index].progress} className="flex-grow" />
-                    <span>{targets[index].progress}%</span>
-                  </div>
-                </div>
+                {category.id === 'events' && (
+  <div className="flex flex-col space-y-2">
+    <Label htmlFor="date">Date:</Label>
+    <Input
+      type="date"
+      id={`date-${category.id}`}
+      value={targets[index].date ? format(targets[index].date, "yyyy-MM-dd") : ""}
+      onChange={(e) => handleTargetChange(index, 'date', new Date(e.target.value))}
+    />
+  </div>
+)}
               </TabsContent>
             ))}
           </Tabs>
@@ -133,7 +132,8 @@ export function TargetSettingModal({ isOpen, onClose, department, hodName, onSav
                 <ul className="list-disc pl-5">
                   {targets.map((target) => (
                     <li key={target.category}>
-                      {target.name}: {target.target} (Progress: {target.progress}%)
+                      {target.name}: {target.title} - {target.target} 
+                      {target.category === 'events' && target.date && ` (Date: ${format(target.date, "PPP")})`}
                     </li>
                   ))}
                 </ul>

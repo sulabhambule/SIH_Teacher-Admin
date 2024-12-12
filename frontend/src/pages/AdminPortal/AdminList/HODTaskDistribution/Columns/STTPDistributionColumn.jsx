@@ -13,11 +13,6 @@ export const columnDef = [
     enableSorting: true,
   },
   {
-    accessorKey: "dailyDuration",
-    header: "Duration",
-    enableSorting: true,
-  },
-  {
     accessorKey: "startDate",
     header: ({ column }) => {
       return (

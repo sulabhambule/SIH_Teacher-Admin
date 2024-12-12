@@ -17,10 +17,6 @@ export const columnDef = [
     header: "Department",
   },
   {
-    accessorKey: "points",
-    header: "Total Points",
-  },
-  {
     accessorKey: "lastUpdated",
     header: "Last Updated",
   },

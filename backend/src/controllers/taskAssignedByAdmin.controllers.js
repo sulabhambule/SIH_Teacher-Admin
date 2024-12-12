@@ -2,12 +2,12 @@ import { ApiError } from "../utils/ApiErrors";
 import { ApiResponse } from "../utils/ApiResponse";
 import { asyncHandler } from "../utils/AsyncHandler2";
 import { TaskAssigned } from "../models/taskAssignedByAdmin.models.js";
-import { mongo } from "mongoose";
+import mongoose, { mongo } from "mongoose";
 
 const addATask = asyncHandler(async (req, res) => {
     const { title, description, taskType, assignedTo, task, deadline } = req.body;
 
-    if(!mongo.Types.ObjectId.isValid(assignedTo)) {
+    if(!mongoose.Types.ObjectId.isValid(assignedTo)) {
         throw new ApiError(404, "Teacher not found");
     }
 

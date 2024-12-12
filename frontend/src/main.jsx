@@ -74,9 +74,18 @@ import AdminSeminarLayout from './Layouts/AdminSeminarLayouy';
 import FacultyInfoCard from './pages/FacultyPortal/FacultyList/FacultyInfoCard';
 import AdminPostsPage from './pages/AdminPortal/AdminList/AdminPostsPage';
 import AdminHodData from './pages/AdminPortal/AdminList/AdminHodData';
+<<<<<<< HEAD
 import HODAppraisalLayout from './Layouts/HODAppraisalLayout';
 import HODTaskDistributionLayout from './Layouts/HODTaskDistributionLayout';
 import WeightageDistributionLayout from './Layouts/WeightageDistributionLayout';
+=======
+import FacultyResearchTable2 from './table/Tables/Admin/FacultyResearchTable2';
+import HODAppraisalLayout from './Layouts/HODAppraisalLayout';
+import HODTaskDistributionLayout from './Layouts/HODTaskDistributionLayout';
+import WeightageDistributionLayout from './Layouts/WeightageDistributionLayout';
+import FacultyAppraisalRankingTable from './table/Tables/FacultyAppraisalRankingTable';
+
+>>>>>>> defb8820d96122d51a4419c7813449ed877ce23c
 
 
 
@@ -143,6 +152,7 @@ const router = createBrowserRouter(
     <Route path="assign-tasks" element={<RouteTransitionWrapper><HODTaskDistributionLayout/></RouteTransitionWrapper>} errorElement={<NotFoundPage/>}/>
 <Route path="weightage-distribution" element={<RouteTransitionWrapper><WeightageDistributionLayout/></RouteTransitionWrapper>} errorElement={<NotFoundPage/>} />
 
+<Route path="appraisal-ranking" element={<RouteTransitionWrapper><FacultyAppraisalRankingTable/></RouteTransitionWrapper>} errorElement={<NotFoundPage/>} />
 
     </Route>
  
