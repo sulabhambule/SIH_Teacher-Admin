@@ -9,8 +9,8 @@ The frontend of the Faculty Appraisal and Career Advancement Portal is built usi
 
 ## Tech Stack
 - **Frontend Framework**: React
-- **CSS Framework**: Tailwind CSS
-- **State Management**: React Context or Redux (if used)
+- **CSS Framework**: Tailwind CSS, ShadCN, Tanstck Table
+- **Client Side Validation**: zod
 - **API Communication**: Axios (for making HTTP requests)
 - **Deployment**: Deployed on Google Cloud Platform
 
