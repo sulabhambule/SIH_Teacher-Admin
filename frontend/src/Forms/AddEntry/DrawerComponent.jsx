@@ -331,6 +331,7 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
                   col.accessorKey &&
                   col.accessorKey !== "actions" &&
                   col.accessorKey !== "View"
+                  
                 ) {
                   const headerText =
                     typeof col.header === "function"

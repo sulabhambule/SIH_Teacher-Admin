@@ -7,7 +7,7 @@ const router = Router();
 
 router.post("/book/add", verifyTeacherJWT, addBook);
 router.get("/book/:id", verifyTeacherJWT, getBooks);
-router.patch("/book/edit/:id", verifyTeacherJWT, updateBook);
-// router.delete("/book/delete/:id", verifyTeacherJWT, deleteBook);
+router.patch("/book/:id", verifyTeacherJWT, updateBook);
+router.delete("/book/delete/:id", verifyTeacherJWT, deleteBook);
 
 export default router;
