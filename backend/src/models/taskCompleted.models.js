@@ -20,4 +20,4 @@ const taskCompletedSchema = new Schema(
 },
 { timestamps: true });
 
-export const User = mongoose.model('User', taskCompletedSchema);
+export const CompletedTask = mongoose.model('CompletedTask', taskCompletedSchema);
