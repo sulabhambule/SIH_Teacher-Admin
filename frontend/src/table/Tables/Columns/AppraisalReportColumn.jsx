@@ -12,11 +12,11 @@ export const columnDef = [
     header: "Faculty Points",
     enableSorting: true,
   },
-  // {
-  //   accessorKey: "highestPoints",
-  //   header: "Highest Points",
-  //   enableSorting: true,
-  // },
+  {
+    accessorKey: "highestPoints",
+    header: "Highest Points",
+    enableSorting: true,
+  },
   // {
   //   accessorKey: "rank",
   //   header: "Rank",

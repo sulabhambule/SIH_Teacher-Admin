@@ -10,11 +10,11 @@ export const PatentcolumnDef = [
     enableSorting: true,
   },
 
-  {
-    accessorKey: "inventors",
-    header: "Inventors",
-    enableSorting: true,
-  },
+  // {
+  //   accessorKey: "inventors",
+  //   header: "Inventors",
+  //   enableSorting: true,
+  // },
   {
     accessorKey: "publication",
     header: "Publication",

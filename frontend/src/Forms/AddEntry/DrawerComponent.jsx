@@ -254,7 +254,7 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
             },
           }
         );
-        console.log(response.data.data); // Log the response data
+        // console.log(response.data.data); // Log the response data
         setPublicationData(response.data.data);
       } catch (error) {
         console.error("An error occurred while fetching teacher info:", error);
@@ -271,7 +271,7 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
   }, [isOpen, rowData, setValue, watch]);
 
   const handleFormSubmit = (data) => {
-    console.log(data);
+    // console.log(data);
     const formData = new FormData();
 
     Object.entries(data).forEach(([key, value]) => {
@@ -331,7 +331,6 @@ function DrawerComponent({ isOpen, onClose, onSubmit, columns, rowData }) {
                   col.accessorKey &&
                   col.accessorKey !== "actions" &&
                   col.accessorKey !== "View"
-                  
                 ) {
                   const headerText =
                     typeof col.header === "function"
