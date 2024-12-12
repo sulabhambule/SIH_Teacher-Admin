@@ -2,6 +2,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/AsyncHandler2.js";
 import { ApiError } from "../utils/ApiErrors.js";
 import { Patent } from "../models/patent.models.js";
+import { useParams } from "react-router-dom";
 
 const addPatent = asyncHandler(async (req, res) => {
   const {
@@ -94,8 +95,9 @@ const deletePatent = asyncHandler(async (req, res) => {
 });
 
 const getAllPatents = asyncHandler(async (req, res) => {
-  const owner = req.teacher._id;
-  const patents = await Patent.find({ owner }).sort({ createdAt: -1 }).lean(publicationDate, publicationDate, patentOffice, patentNumber, applicationNumber);
+  const { id } = useParams();
+  const owner = id;
+  const patents = await Patent.find({ owner }).sort({ createdAt: -1 });
 
   return res
     .status(200)

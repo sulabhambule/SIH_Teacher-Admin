@@ -3,28 +3,14 @@ import { asyncHandler } from "../utils/AsyncHandler2.js";
 import { ApiError } from "../utils/ApiErrors.js";
 import { Journal2 } from "../models/journal.model.2.js";
 import { PublicationPoint } from "../models/publication-points.models.js";
-import mongoose from "mongoose";  
+import mongoose from "mongoose";
 
 const addJournal = asyncHandler(async (req, res) => {
-  const {
-    title,
-    authors,
-    publication,
-    publicationDate,
-    volume,
-    issue,
-    pages
-  } = req.body;
+  const { title, authors, publication, publicationDate, volume, issue, pages } =
+    req.body;
 
   const owner = req.teacher._id;
-  if (
-    !title ||
-    !authors ||
-    !publicationDate ||
-    !volume ||
-    !issue ||
-    !pages 
-  ) {
+  if (!title || !authors || !publicationDate || !volume || !issue || !pages) {
     throw new ApiError(400, "Please provide all mandatory fields");
   }
 
@@ -124,7 +110,8 @@ const deleteJournal = asyncHandler(async (req, res) => {
 });
 
 const getAllJournals = asyncHandler(async (req, res) => {
-  const owner = req.teacher._id;
+  const { id } = req.params;
+  const owner = id;
   const journals = await Journal2.find({ owner }).sort({ createdAt: -1 });
 
   return res

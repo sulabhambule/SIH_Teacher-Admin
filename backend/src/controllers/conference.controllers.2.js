@@ -16,8 +16,8 @@ const addConference = asyncHandler(async (req, res) => {
     pages,
     publication,
   } = req.body;
-
-  const owner = req.teacher._id;
+  const { id } = req.params;
+  const owner = id;
 
   // Check for mandatory fields
   if (!title || !authors || !publicationDate || !conference) {
@@ -42,6 +42,7 @@ const addConference = asyncHandler(async (req, res) => {
       title,
       authors,
       publicationDate,
+      publication,
       conference,
       volume,
       issue,
@@ -119,7 +120,8 @@ const deleteConference = asyncHandler(async (req, res) => {
 });
 
 const getAllConferences = asyncHandler(async (req, res) => {
-  const owner = req.teacher._id;
+  const { id } = req.params;
+  const owner = id;
   const conferences = await Conference2.find({ owner }).sort({ createdAt: -1 });
 
   return res

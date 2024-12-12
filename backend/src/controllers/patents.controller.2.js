@@ -7,7 +7,7 @@ import { PublicationPoint } from "../models/publication-points.models.js";
 const addPatent = asyncHandler(async (req, res) => {
   const {
     title,
-    inventors,
+    // inventors,
     patentOffice,
     publicationDate,
     publication,
@@ -18,7 +18,7 @@ const addPatent = asyncHandler(async (req, res) => {
 
   if (
     !title ||
-    !inventors ||
+    // !inventors ||
     !publicationDate ||
     !patentOffice ||
     !patentNumber ||
@@ -34,7 +34,7 @@ const addPatent = asyncHandler(async (req, res) => {
 
   const patentEntry = await Patent2.create({
     title,
-    inventors,
+    inventors: "John Doe",
     publicationDate,
     patentOffice,
     publication,
@@ -102,7 +102,9 @@ const deletePatent = asyncHandler(async (req, res) => {
 });
 
 const getAllPatents = asyncHandler(async (req, res) => {
-  const owner = req.teacher._id;
+  // const owner = req.teacher._id;
+  const {id} = req.params;
+  const owner = id;
   const patents = await Patent2.find({ owner }).sort({ createdAt: -1 });
 
   return res

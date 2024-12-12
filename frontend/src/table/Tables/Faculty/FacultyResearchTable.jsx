@@ -76,9 +76,9 @@ export default function FacultyResearchTable() {
       Book: `/api/v1/book2/book/${id}`,
       BOOK: `/api/v1/book2/book/${id}`,
       "Book Chapter": `/api/v1/chapter2/chapter/${id}`,
-      "Journal Article": "/api/v1/journals2/journal/",
-      Patent: "/api/v1/patents2/patent/get",
-      "Conference Paper": "/api/v1/conferences2/conference/get",
+      "Journal Article": `/api/v1/journals2/journal/${id}`,
+      Patent: `/api/v1/patents2/patent/get/${id}`,
+      "Conference Paper": `/api/v1/conferences2/conference/get/${id}`,
     };
 
     const publicationType = mapPublicationType(typeFilter);
@@ -178,7 +178,7 @@ export default function FacultyResearchTable() {
       ) {
         return {
           ...col,
-          cell: ({ row }) => <span>{row.original.publication.name}</span>,
+          cell: ({ row }) => <span>{row.original.publication?.name}</span>,
         };
       }
       return col;
@@ -214,7 +214,7 @@ export default function FacultyResearchTable() {
         "Book Chapter": "/api/v1/chapter2/chapter/add",
         "Journal Article": "/api/v1/journals2/journal/add",
         Patent: "/api/v1/patents2/patent/add",
-        "Conference Paper": "/api/v1/conferences2/conference/add",
+        "Conference Paper": `/api/v1/conferences2/conference/add/${id}`,
       };
       const response2 = await axios.get(
         `http://localhost:6005/api/v1/publication/all`
@@ -392,8 +392,8 @@ export default function FacultyResearchTable() {
 
       {data2.length === 0 ? (
         <ResearchInstructionMessage />
-        // <FacultyPublicationsChart />
       ) : (
+        // <FacultyPublicationsChart />
         <div className="table-container">
           <table className="w-full">
             <thead>

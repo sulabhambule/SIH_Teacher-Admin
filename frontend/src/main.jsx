@@ -74,13 +74,9 @@ import AdminSeminarLayout from './Layouts/AdminSeminarLayouy';
 import FacultyInfoCard from './pages/FacultyPortal/FacultyList/FacultyInfoCard';
 import AdminPostsPage from './pages/AdminPortal/AdminList/AdminPostsPage';
 import AdminHodData from './pages/AdminPortal/AdminList/AdminHodData';
-<<<<<<< HEAD
-import FacultyResearchTable2 from './table/Tables/Admin/FacultyResearchTable2';
-=======
 import HODAppraisalLayout from './Layouts/HODAppraisalLayout';
 import HODTaskDistributionLayout from './Layouts/HODTaskDistributionLayout';
 import WeightageDistributionLayout from './Layouts/WeightageDistributionLayout';
->>>>>>> 5a2bbebeef7614707c72b2a090e9182d793692f0
 
 
 

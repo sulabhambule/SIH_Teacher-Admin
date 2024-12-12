@@ -11,7 +11,7 @@ import {
 const router = Router();
 
 router.post("/patent/add", verifyTeacherJWT, addPatent);
-router.get("/patent/get", getAllPatents);
+router.get("/patent/get/:id", getAllPatents);
 router.patch("/patent/:id", verifyTeacherJWT, updatePatent);
 router.delete("/patent/:id", verifyTeacherJWT, deletePatent);
 

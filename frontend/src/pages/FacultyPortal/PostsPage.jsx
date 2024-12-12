@@ -348,17 +348,17 @@ const PostsPage = () => {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  {/* <label className="block text-sm font-medium text-gray-700">
                     Report (Optional)
-                  </label>
-                  <div className="flex items-center space-x-2">
+                  </label> */}
+                  {/* <div className="flex items-center space-x-2">
                     <input
                       type="file"
                       onChange={handleReportFile}
                       className="block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded file:border file:border-gray-300 file:text-sm file:bg-gray-50 file:text-gray-700 file:hover:border-gray-600"
                     />
                     <PaperclipIcon className="h-5 w-5 text-gray-400" />
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <div className="mt-6 flex justify-end">
@@ -393,12 +393,12 @@ const PostsPage = () => {
                       <CalendarIcon className="h-4 w-4 inline" />
                       {post.createdAt.toLocaleDateString()}
                     </p>
-                    <Button
+                    {/* <Button
                       variant="outline"
                       onClick={() => handleEditPost(post.id)}
                     >
                       Edit
-                    </Button>
+                    </Button> */}
                   </div>
                 </CardFooter>
               </Card>
