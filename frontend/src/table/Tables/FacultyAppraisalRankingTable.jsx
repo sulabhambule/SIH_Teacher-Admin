@@ -10,14 +10,14 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import { columnDef } from "./Faculty/FacultyAppraisalRankingColumn";
-import "../../table.css";
-import DownloadBtn from "../../DownloadBtn.jsx";
-import DebouncedInput from "../../DebouncedInput.jsx";
+import "../../table/table.css";
+import DownloadBtn from "../../table/DownloadBtn.jsx";
+import DebouncedInput from "../../table/DebouncedInput.jsx";
 import { SearchIcon, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button.jsx";
 import { Checkbox } from "@/components/ui/checkbox.jsx";
-import DrawerComponent from "../../../Forms/AddEntry/DrawerComponent.jsx";
-import DeleteDialog from "../../DeleteDialog.jsx";
+import DrawerComponent from "../../Forms/AddEntry/DrawerComponent.jsx";
+import DeleteDialog from "../../table/DeleteDialog.jsx";
 import axios from "axios";
 
 export default function FacultyAppraisalRankingTable() {
