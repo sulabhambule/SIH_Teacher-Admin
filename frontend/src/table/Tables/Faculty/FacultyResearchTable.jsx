@@ -75,10 +75,10 @@ export default function FacultyResearchTable() {
     const endpointMap = {
       Book: `/api/v1/book2/book/${id}`,
       BOOK: `/api/v1/book2/book/${id}`,
-      "Book Chapter": "/api/v1/chapter/chapter/",
-      "Journal Article": "/api/v1/journals/journal/",
-      Patent: "/api/v1/patents/patent/get",
-      "Conference Paper": "/api/v1/conferences/conference/get",
+      "Book Chapter": `/api/v1/chapter2/chapter/${id}`,
+      "Journal Article": "/api/v1/journals2/journal/",
+      Patent: "/api/v1/patents2/patent/get",
+      "Conference Paper": "/api/v1/conferences2/conference/get",
     };
 
     const publicationType = mapPublicationType(typeFilter);
@@ -105,6 +105,11 @@ export default function FacultyResearchTable() {
         );
         item.publication = publication;
       });
+      // if (typeFilter === "Book Chapter") {
+      //   response.data.data.forEach((item) => {
+      //     item.publication = item.publication.name;
+      //   });
+      // }
       setData2(response.data.data);
       console.log(data2);
     } catch (error) {
@@ -163,7 +168,14 @@ export default function FacultyResearchTable() {
             </div>
           ),
         };
-      } else if (col.accessorKey === "publication" && typeFilter === "Book") {
+      } else if (
+        col.accessorKey === "publication" &&
+        (typeFilter === "Book" ||
+          typeFilter === "Patent" ||
+          typeFilter === "Conference Paper" ||
+          typeFilter === "Journal Article" ||
+          typeFilter === "Book Chapter")
+      ) {
         return {
           ...col,
           cell: ({ row }) => <span>{row.original.publication.name}</span>,
@@ -199,10 +211,10 @@ export default function FacultyResearchTable() {
       const endpointMap = {
         Book: "/api/v1/book2/book/add",
         BOOK: "/api/v1/book2/book/add",
-        "Book Chapter": "/api/v1/chapter/chapter/add",
-        "Journal Article": "/api/v1/journals/journal/add",
-        Patent: "/api/v1/patents/patent/add",
-        "Conference Paper": "/api/v1/conferences/conference/add",
+        "Book Chapter": "/api/v1/chapter2/chapter/add",
+        "Journal Article": "/api/v1/journals2/journal/add",
+        Patent: "/api/v1/patents2/patent/add",
+        "Conference Paper": "/api/v1/conferences2/conference/add",
       };
       const response2 = await axios.get(
         `http://localhost:6005/api/v1/publication/all`
@@ -230,6 +242,7 @@ export default function FacultyResearchTable() {
         }
       );
 
+      console.log(response);
       setData2((prevData) => [...prevData, response.data.data]);
       setDrawerOpen(false);
     } catch (error) {
@@ -243,7 +256,7 @@ export default function FacultyResearchTable() {
       const type = typeFilter;
       const publicationType = mapPublicationType(type);
       const endpointMap = {
-        Book: "/api/v1/book/book/edit",
+        Book: "/api/v1/book/book2/edit",
         "Book Chapter": "/api/v1/chapter/chapter/edit",
         "Journal Article": "/api/v1/journals/journal/edit",
         Patent: "/api/v1/patents/patent/edit",

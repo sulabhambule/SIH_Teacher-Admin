@@ -37,11 +37,17 @@ import bookRouter from "./routes/books.routes.js";
 import book2Router from "./routes/books2.routes.js";
 
 import journalRouter from "./routes/journal.routes.js";
+import journal2Router from "./routes/journal2.routes.js";
 import patentRouter from "./routes/patent.routes.js";
+import patent2Router from "./routes/patents2.routes.js";
+
 import conferenceRouter from "./routes/conference.routes.js";
+import conference2Router from "./routes/conference.2.routes.js";
+
 import pointRouter from "./routes/points.routes.js";
 import postRouter from "./routes/extracontribution.routes.js";
 import chapterRouter from "./routes/chapter.routes.js";
+import chapter2Router from "./routes/chapters.2.routes.js";
 import lecfeedback from "./routes/lecture-feedbacks.routes.js";
 import publicationRouter from "./routes/publicationPoints.routes.js";
 
@@ -64,9 +70,16 @@ app.use("/api/v1/domain-points", domainPoints);
 app.use("/api/v1/book", bookRouter);
 app.use("/api/v1/book2", book2Router);
 app.use("/api/v1/chapter", chapterRouter);
+app.use("/api/v1/chapter2", chapter2Router);
+
 app.use("/api/v1/journals", journalRouter);
+app.use("/api/v1/journals2", journal2Router);
+
 app.use("/api/v1/patents", patentRouter);
+app.use("/api/v1/patents2", patent2Router);
 app.use("/api/v1/conferences", conferenceRouter);
+app.use("/api/v1/conferences2", conference2Router);
+
 app.use("/api/v1/points", pointRouter);
 app.use("/api/v1/posts", postRouter);
 app.use("/api/v1/publication", publicationRouter);
