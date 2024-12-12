@@ -44,7 +44,7 @@ const addJournal = asyncHandler(async (req, res) => {
     volume,
     issue,
     pages,
-    publisher : "Cengage Learning",
+    publication,
     h5_index,
     h5_median,
     owner,
