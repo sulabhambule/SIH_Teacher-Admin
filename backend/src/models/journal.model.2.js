@@ -1,115 +1,125 @@
-import mongoose, { Schema } from 'mongoose';
-import { Point } from './points.models.js';
-import { DomainPoint } from './domainpoints.models.js';
-import { PublicationPoint } from './publication-points.models.js';
+import mongoose, { Schema } from "mongoose";
+import { Point } from "./points.models.js";
+import { DomainPoint } from "./domainpoints.models.js";
+import { PublicationPoint } from "./publication-points.models.js";
 
 const journalSchema = new Schema(
-    {
-        title: {
-            type: String,
-            required: true,
-        },
-        authors: {
-            type: [String],
-            required: true,
-        },
-        publicationDate: {
-            type: Date,
-            required: true,
-        },
-        publication: {
-            type: Schema.Types.ObjectId,
-            ref: 'PublicationPoint',
-        },
-        h5_index:{
-            type: Number,
-            required: false,
-        },
-        h5_median:{
-            type: Number,
-            required: false,
-        },
-        volume: {
-            type: Number,
-            required: true, 
-        },
-        issue: {
-            type: Number,
-            required: true,
-        },
-        pages: {
-            type: String,
-            required: true,
-        },
-        publisher: {
-            type: String,
-            required: true,
-        },
-        owner: {
-            type: Schema.Types.ObjectId,
-            ref: 'Teacher',
-            required: true,
-        },
+  {
+    title: {
+      type: String,
+      required: true,
     },
-    { timestamps: true }
+    authors: {
+      type: [String],
+      required: true,
+    },
+    publicationDate: {
+      type: Date,
+      required: true,
+    },
+    publication: {
+      type: Schema.Types.ObjectId,
+      ref: "PublicationPoint",
+    },
+    h5_index: {
+      type: Number,
+      required: false,
+    },
+    h5_median: {
+      type: Number,
+      required: false,
+    },
+    volume: {
+      type: Number,
+      required: true,
+    },
+    issue: {
+      type: Number,
+      required: true,
+    },
+    pages: {
+      type: String,
+      required: true,
+    },
+    publisher: {
+      type: String,
+      required: true,
+    },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "Teacher",
+      required: true,
+    },
+  },
+  { timestamps: true }
 );
 
-// // Function to get points for a domain from the DomainPoint model
-// const getPointsForDomain = async (domain) => {
-//     const domainPoint = await DomainPoint.findOne({ domain });
-//     return domainPoint?.points || 0; // Default to 0 if the domain is not found
-// };
+const allocatePublicationPoints = async (teacherId, publicationId) => {
+  const publication = await PublicationPoint.findById(publicationId);
+  if (!publication) {
+    throw new Error("Publication not found");
+  }
 
-// // Function to allocate points in the `Point` model
-// const allocatePoints = async (teacherId, domain, publicationDate) => {
-//     const points = await getPointsForDomain(domain); // Fetch points for the domain
+  const points = publication.hindex / 100; // Use hindex as the points value
 
-//     // Search for an existing domain for the teacher
-//     const existingPoint = await Point.findOne({ owner: teacherId, domain });
+  // Search for an existing point entry for the teacher
+  const existingPoint = await Point.findOne({
+    owner: teacherId,
+    domain: `${publication.name} (book)`,
+  });
 
-//     if (existingPoint) {
-//         // Update points if the domain exists
-//         await Point.findByIdAndUpdate(existingPoint._id, {
-//             $inc: { points },
-//         });
-//     } else {
-//         // Create a new domain if it does not exist
-//         await Point.create({
-//             date: publicationDate,
-//             points,
-//             domain,
-//             owner: teacherId,
-//         });
-//     }
-// };
+  if (existingPoint) {
+    // Update points if the domain exists
+    await Point.findByIdAndUpdate(existingPoint._id, {
+      $inc: { points },
+    });
+  } else {
+    // Create a new point entry if it does not exist
+    await Point.create({
+      date: new Date(),
+      points,
+      domain: `${publication.name} (book)`,
+      owner: teacherId,
+    });
+  }
+};
 
-// // Post-save hook to allocate points
-// journalSchema.post('save', async function (doc) {
-//     const domain = `${doc.journalType} Journal`; // Generate the domain key (e.g., "International Journal")
-//     await allocatePoints(doc.owner, domain, doc.publicationDate);
-// });
+// Post-save hook to allocate points based on publication hindex
+journalSchema.post("save", async function (doc) {
+  await allocatePublicationPoints(doc.owner, doc.publication);
+});
 
-// // Post-remove hook to deduct points
-// journalSchema.post('findOneAndDelete', async function (doc) {
-//     if (doc) {
-//         const domain = `${doc.journalType} Journal`; // Generate the domain key (e.g., "International Journal")
-//         const points = await getPointsForDomain(domain); // Fetch points for the domain
+// Post-remove hook to deduct points based on publication hindex
+journalSchema.post("findOneAndDelete", async function (doc) {
+  if (doc) {
+    const publication = await PublicationPoint.findById(doc.publication);
+    // console.log(publication);
+    if (!publication) {
+      throw new Error("Publication not found");
+    }
 
-//         // Search for an existing domain for the teacher
-//         const existingPoint = await Point.findOne({ owner: doc.owner, domain });
+    const points = publication.hindex / 100; // Use hindex as the points value
 
-//         if (existingPoint) {
-//             // Deduct points
-//             await Point.findByIdAndUpdate(existingPoint._id, {
-//                 $inc: { points: -points },
-//             });
+    // Search for an existing point entry for the teacher
+    const existingPoint = await Point.findOne({
+      owner: doc.owner,
+      domain: `${publication.name} (book)`,
 
-//             // Optionally, remove the document if points drop to 0
-//             if (existingPoint.points - points <= 0) {
-//                 await Point.findByIdAndDelete(existingPoint._id);
-//             }
-//         }
-//     }
-// });
+    });
 
-export const Journal2 = mongoose.model('Journal2', journalSchema);
+    console.log(existingPoint);
+
+    if (existingPoint) {
+      // Deduct points
+      await Point.findByIdAndUpdate(existingPoint._id, {
+        $inc: { points: -points },
+      });
+
+      // Optionally, remove the document if points drop to 0
+      if (existingPoint.points - points <= 0) {
+        await Point.findByIdAndDelete(existingPoint._id);
+      }
+    }
+  }
+});
+export const Journal2 = mongoose.model("Journal2", journalSchema);

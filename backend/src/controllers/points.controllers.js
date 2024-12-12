@@ -2864,6 +2864,7 @@ export {
   completeJournal2Points,
   completeBooks2Points,
   completePatent2Points,
+  completeConference2Points,
   completeBooksPoints,
   completePatentPoints,
   completeProjectsPoints,

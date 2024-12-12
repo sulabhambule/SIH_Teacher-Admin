@@ -3,6 +3,7 @@ import { asyncHandler } from "../utils/AsyncHandler2.js";
 import { ApiError } from "../utils/ApiErrors.js";
 import { Conference2 } from "../models/conferences.models.2.js";
 import { PublicationPoint } from "../models/publication-points.models.js";
+import mongoose from "mongoose";
 
 const addConference = asyncHandler(async (req, res) => {
   const {
@@ -13,45 +14,31 @@ const addConference = asyncHandler(async (req, res) => {
     volume,
     issue,
     pages,
-    conferenceType,
     publication,
   } = req.body;
 
   const owner = req.teacher._id;
 
   // Check for mandatory fields
-  if (
-    !title ||
-    !authors ||
-    !publicationDate ||
-    !conference ||
-    !conferenceType
-  ) {
+  if (!title || !authors || !publicationDate || !conference) {
     throw new ApiError(400, "Please provide all mandatory fields");
   }
 
-  // Validate the publication ID if provided
-  let h5_index = null;
-  let h5_median = null;
-
-  if (publication) {
-    if (!mongoose.Types.ObjectId.isValid(publication)) {
-      throw new ApiError(404, "Invalid publication ID");
-    }
-
-    const publications = await PublicationPoint.findById(publication);
-
-    if (!publications) {
-      throw new ApiError(404, "Publication not found");
-    }
-
-    h5_index = publications.hindex;
-    h5_median = publications.median;
+  if (!mongoose.Types.ObjectId.isValid(publication)) {
+    throw new ApiError(404, "Invalid publication ID");
   }
 
-  // Create the conference entry
+  const publications = await PublicationPoint.findById(publication);
+
+  if (!publications) {
+    throw new ApiError(404, "Publication not found");
+  }
+
+  const h5_index = publications.hindex;
+  const h5_median = publications.median;
+
   try {
-    const conferenceEntry = await Conference.create({
+    const conferenceEntry = await Conference2.create({
       title,
       authors,
       publicationDate,
@@ -59,7 +46,6 @@ const addConference = asyncHandler(async (req, res) => {
       volume,
       issue,
       pages,
-      conferenceType,
       h5_index,
       h5_median,
       owner,

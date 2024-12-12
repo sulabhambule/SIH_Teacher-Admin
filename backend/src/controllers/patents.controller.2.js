@@ -1,7 +1,8 @@
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/AsyncHandler2.js";
 import { ApiError } from "../utils/ApiErrors.js";
-import { Patent } from "../models/patent.models.js";
+import { Patent2 } from "../models/patent.models.2.js";
+import { PublicationPoint } from "../models/publication-points.models.js";
 
 const addPatent = asyncHandler(async (req, res) => {
   const {
@@ -9,7 +10,7 @@ const addPatent = asyncHandler(async (req, res) => {
     inventors,
     patentOffice,
     publicationDate,
-    patentType,
+    publication,
     patentNumber,
     applicationNumber,
   } = req.body;
@@ -18,7 +19,6 @@ const addPatent = asyncHandler(async (req, res) => {
   if (
     !title ||
     !inventors ||
-    !patentType ||
     !publicationDate ||
     !patentOffice ||
     !patentNumber ||
@@ -26,14 +26,22 @@ const addPatent = asyncHandler(async (req, res) => {
   ) {
     throw new ApiError(400, "Please provide all mandatory fields");
   }
-  const patentEntry = await Patent.create({
+
+  const publications = await PublicationPoint.findById(publication);
+
+  const h5_index = publications.hindex;
+  const h5_median = publications.median;
+
+  const patentEntry = await Patent2.create({
     title,
     inventors,
     publicationDate,
     patentOffice,
-    patentType,
+    publication,
     patentNumber,
     applicationNumber,
+    h5_index,
+    h5_median,
     owner,
   });
 
@@ -53,7 +61,7 @@ const updatePatent = asyncHandler(async (req, res) => {
     applicationNumber,
   } = req.body;
 
-  const updatedPatent = await Patent.findByIdAndUpdate(
+  const updatedPatent = await Patent2.findByIdAndUpdate(
     id,
     {
       $set: {
@@ -82,7 +90,7 @@ const updatePatent = asyncHandler(async (req, res) => {
 const deletePatent = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  const deletedPatent = await Patent.findByIdAndDelete(id);
+  const deletedPatent = await Patent2.findByIdAndDelete(id);
 
   if (!deletedPatent) {
     throw new ApiError(404, "Patent not found");
@@ -95,7 +103,7 @@ const deletePatent = asyncHandler(async (req, res) => {
 
 const getAllPatents = asyncHandler(async (req, res) => {
   const owner = req.teacher._id;
-  const patents = await Patent.find({ owner }).sort({ createdAt: -1 });
+  const patents = await Patent2.find({ owner }).sort({ createdAt: -1 });
 
   return res
     .status(200)
