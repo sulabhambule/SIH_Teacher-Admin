@@ -86,3 +86,5 @@ const addCompletedTask = asyncHandler(async (req, res) => {
 
     res.status(201).json(new ApiResponse(201, completedTask, "Task completed successfully"));
 });
+
+export { getAssignedTaskForHOD, assignTask, viewAssignedTasksByHOD, getAssignedTasksByHOD, addCompletedTask };
