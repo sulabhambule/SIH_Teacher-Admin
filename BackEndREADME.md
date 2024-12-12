@@ -33,21 +33,37 @@ The backend of the Faculty Appraisal and Career Advancement Portal is built usin
 4. Set up environment variables:
    - Create a `.env` file in the root directory.
    - Add the following variables:
-     ```
-     MONGO_URI=your-mongo-uri
-     JWT_SECRET=your-secret
-     PORT=5000
-     ```
+ 
 5. Run the backend application:
    ```bash
    npm start
    ```
 
-## API Endpoints
-- **POST /login**: Authenticates a user and returns a JWT.
-- **GET /faculty**: Retrieves all faculty data.
-- **POST /feedback**: Submits feedback from students.
+## Usage
 
+### Login Credentials
+
+| **Role**    | **Username**               | **Password** |
+|-------------|----------------------------|--------------|
+| **Admin**   | `admin@gmail.com`           | `admin`      |
+| **Faculty** | `akhiljaiby@gmail.com`      | `1234`       |
+| **Student** | `himanshu@gmail.com`        | `1234`       |
+
+### Steps to Use
+1. Visit the deployed URL: [https://facultyappraisal.live/](https://facultyappraisal.live/)
+2. Login using the credentials above.
+3. Explore the respective portals:
+   - **Admin**: Manage profiles, appraisals, and reports.
+   - **Faculty**: View performance and feedback.
+   - **Student**: Submit feedback anonymously.
+
+---
+
+## Deployment
+The project is deployed on **Google Cloud Platform (GCP)** and can be accessed at:  
+[https://facultyappraisal.live/](https://facultyappraisal.live/)
+
+---
 ## Deployment
 The backend is deployed on Google Cloud and can be accessed at:
 [https://facultyappraisal-backend.live/](https://facultyappraisal-backend.live/)
