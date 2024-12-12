@@ -92,7 +92,7 @@ const registerAdmin = asyncHandler(async (req, res) => {
     name,
     email,
     designation,
-    avatar: avatarUrl, // Assuming `uploadToGCS` returns an object with a `url` field
+    avatar: avatar, // Assuming `uploadToGCS` returns an object with a `url` field
     password,
   });
 

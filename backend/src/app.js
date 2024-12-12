@@ -52,6 +52,7 @@ import chapterRouter from "./routes/chapter.routes.js";
 import chapter2Router from "./routes/chapters.2.routes.js";
 import lecfeedback from "./routes/lecture-feedbacks.routes.js";
 import publicationRouter from "./routes/publicationPoints.routes.js";
+import weightage from './routes/weightage.routes.js'
 
 app.use("/api/v1/teachers", teacherRouter);
 app.use("/api/v1/admins", adminRouter);
@@ -87,5 +88,7 @@ app.use("/api/v1/points2", point2Router);
 
 app.use("/api/v1/posts", postRouter);
 app.use("/api/v1/publication", publicationRouter);
+
+app.use("/api/v1/weightage", weightage);
 
 export { app };
