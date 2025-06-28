@@ -2,10 +2,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/AsyncHandler2.js";
 import { ApiError } from "../utils/ApiErrors.js";
 import { Patent } from "../models/patent.models.js";
-<<<<<<< HEAD
 // import { useParams } from "react-router-dom";
-=======
->>>>>>> cc8396065646dffd1dac6230e1d5b167ff3a1662
 
 const addPatent = asyncHandler(async (req, res) => {
   const {
